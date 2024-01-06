@@ -15,9 +15,9 @@ const Home = (props) => {
       
       <HomeSlider />
       <Banner />
-      <FeaturedProducts products={featuredProducts} />
-      <Testimonials />
-      <Footer />
+      {/* <FeaturedProducts products={featuredProducts} />
+      <Testimonials /> */}
+      {/* <Footer /> */}
       <Footer />
     </>
   );
