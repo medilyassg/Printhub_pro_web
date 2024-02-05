@@ -39,7 +39,6 @@ const App = () => {
 
   useEffect(() => {
 
-    // Add Tawk.to script
     var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
     (function() {
       var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
@@ -51,7 +50,7 @@ const App = () => {
     })();
   }, []);
 
-  
+
   const fetchCategories = async () => {
     try {
       const response = await get("http://127.0.0.1:8000/api/categories")
