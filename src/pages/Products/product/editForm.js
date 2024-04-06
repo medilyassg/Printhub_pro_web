@@ -26,6 +26,7 @@ const EditForm = props => {
   const [SelectedSubCat, setSelectedSubCat] = useState(null);
   const [rulesModalOpen, setRulesModalOpen] = useState(false);
   const [quantityPriceRules, setQuantityPriceRules] = useState({});
+  const [discountType, setDiscountType] = useState("percent");
 
   useEffect(() => {
     if (props.product?.subCategory) {
@@ -139,7 +140,9 @@ const EditForm = props => {
     const newRule = {
       operator: form.operator.value,
       quantity: form.quantity.value,
-      discount: form.discount.value,
+      discountType: form.discountType.value,
+      discount: form.discountType.value === "percent" ? form.discount.value : null,
+      amount: form.discountType.value === "fixed" ? form.amount.value : null,
     };
     const newRuleIndex = Object.keys(quantityPriceRules).length;
     setQuantityPriceRules({ ...quantityPriceRules, [newRuleIndex]: newRule });
@@ -162,8 +165,8 @@ const EditForm = props => {
   const quantityPriceRuleOptions = Object.values(quantityPriceRules).map(
     (rule, index) => ({
       value: rule,
-      label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
-      key: `${rule.quantity}-${rule.operator}-${rule.discount}-${index}`, // Ensure unique keys
+      label: `${rule.quantity} ${rule.operator} ${rule.discountType === "percent" ? `${rule.discount}%` : `$${rule.amount}`}`,
+      key: `${rule.quantity}-${rule.operator}-${rule.discountType === "percent" ? rule.discount : rule.amount}-${index}`, // Ensure unique keys
     })
   );
 
@@ -305,8 +308,8 @@ const EditForm = props => {
               onChange={handleQuantityPriceRulesChange}
               value={Object.values(quantityPriceRules).map((rule, index) => ({
                 value: rule,
-                label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
-                key: `${rule.quantity}-${rule.operator}-${rule.discount}-${index}`, // Ensure unique keys
+                label: `${rule.quantity} ${rule.operator} ${rule.discountType === "percent" ? `${rule.discount}%` : `$${rule.amount}`}`,
+                key: `${rule.quantity}-${rule.operator}-${rule.discountType === "percent" ? rule.discount : rule.amount}-${index}`, // Ensure unique keys
               }))}
             />
             {validation.touched.quantity_price_rules &&
@@ -421,11 +424,40 @@ const EditForm = props => {
               </Col>
               <Col md={4}>
                 <div className="mb-3">
-                  <Label className="form-label">Discount</Label>
-                  <Input type="text" name="discount" required />
+                  <Label className="form-label">Discount Type</Label>
+                  <Input
+                    type="select"
+                    name="discountType"
+                    value={discountType}
+                    onChange={(e) => setDiscountType(e.target.value)}
+                    required
+                  >
+                    <option value="percent">Percent</option>
+                    <option value="fixed">Fixed</option>
+                  </Input>
                 </div>
               </Col>
             </Row>
+            {discountType === "percent" && (
+              <Row>
+                <Col md={12}>
+                  <div className="mb-3">
+                    <Label className="form-label">Discount</Label>
+                    <Input type="text" name="discount" required />
+                  </div>
+                </Col>
+              </Row>
+            )}
+            {discountType === "fixed" && (
+              <Row>
+                <Col md={12}>
+                  <div className="mb-3">
+                    <Label className="form-label">Amount</Label>
+                    <Input type="text" name="amount" required />
+                  </div>
+                </Col>
+              </Row>
+            )}
             <Button type="submit" color="primary">
               Add Rule
             </Button>
