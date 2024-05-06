@@ -1,40 +1,35 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from "react";
+import axios from 'axios';
+import { connect, useSelector, useDispatch } from "react-redux";
 
 import { Row, Col, CardBody, Card, Container, Label, Form, FormFeedback, Input } from "reactstrap";
-
-// Redux
-import { connect, useSelector, useDispatch } from "react-redux";
-import { Link } from 'react-router-dom';
-import withRouter from 'components/Common/withRouter';
-
-// Formik validation
-import * as Yup from "yup";
-import { useFormik } from "formik";
-
-// actions
+import { Link, useNavigate } from 'react-router-dom';
 import { loginUser, apiError } from "../../store/actions";
+import * as Yup from "yup";
 
-// import images
 import logoSm from "../../assets/images/logo-sm.png";
+import withRouter from 'components/Common/withRouter';
+import { useFormik } from 'formik/dist';
+import { post } from 'helpers/api_helper';
 
 const Login = props => {
-  const dispatch = useDispatch();
-
-  const [userLogin, setUserLogin] = useState([]);
-
-  const { user } = useSelector(state => ({
-    user: state.Account.user,
-  }));
-
+  const [userLogin, setUserLogin] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const naviagte=useNavigate()
   useEffect(() => {
-    if (user && user) {
+    // If user details are available from Redux store, update the local state
+    const { user } = props;
+    if (user) {
       setUserLogin({
-        email: user.email,
-        password: user.password
+        email: user.email || '',
+        password: user.password || ''
       });
     }
-  }, [user]);
+  }, [props.user]);
 
   const validation = useFormik({
     // enableReinitialize : use this flag when initial values needs to be changed
@@ -48,8 +43,23 @@ const Login = props => {
       email: Yup.string().required("Please Enter Your User Name"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
-    onSubmit: (values) => {
-      dispatch(loginUser(values, props.router.navigate));
+    onSubmit: async  (values) =>  {
+      try {
+        const response = await post('http://127.0.0.1:8000/api/login', {
+          email: values.email,
+          password: values.password
+        });
+        console.log(response.data)
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          naviagte("/dashboard");
+        } else {
+          setError(error.message);
+        }
+      } catch (error) {
+        console.log(error)
+        // setError(response.message);
+      }
     }
   });
 
@@ -82,14 +92,7 @@ const Login = props => {
 
                 <CardBody className="p-4">
                   <div className="p-3">
-                    <Form className="mt-4"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        validation.handleSubmit();
-                        return false;
-                      }}
-                      action="#">
-
+                    <Form className="mt-4" onSubmit={validation.handleSubmit} action="#">
                       <div className="mb-3">
                         <Label className="form-label" htmlFor="username">Username</Label>
                         <Input
@@ -129,6 +132,8 @@ const Login = props => {
                         ) : null}
                       </div>
 
+                      {error && <div className="mb-3 text-danger">{error}</div>}
+
                       <div className="mb-3 row">
                         <div className="col-sm-6">
                           <div className="form-check">
@@ -146,7 +151,6 @@ const Login = props => {
                           <Link to="/forgot-password"><i className="mdi mdi-lock"></i> Forgot your password?</Link>
                         </div>
                       </div>
-
                     </Form>
                   </div>
                 </CardBody>

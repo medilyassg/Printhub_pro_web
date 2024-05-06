@@ -13,6 +13,7 @@ import Pages500 from "../pages/Utility/pages-500";
 
 // Dashboard
 import Dashboard from "../pages/Dashboard/index";
+import Register from "pages/Authentication/Register";
 
 
 const userRoutes = [
@@ -28,6 +29,7 @@ const userRoutes = [
 const authRoutes = [
   { path: "/logout", component: <Logout /> },
   { path: "/login", component: <Login /> },
+  { path: "/register", component: <Register /> },
   { path: "/pages-404", component: <Pages404 /> },
   { path: "/pages-500", component: <Pages500 /> },
 ];
