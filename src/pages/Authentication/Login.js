@@ -21,7 +21,6 @@ const Login = props => {
   const [error, setError] = useState('');
   const naviagte=useNavigate()
   useEffect(() => {
-    // If user details are available from Redux store, update the local state
     const { user } = props;
     if (user) {
       setUserLogin({
@@ -32,12 +31,11 @@ const Login = props => {
   }, [props.user]);
 
   const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
-      email: userLogin.email || "admin@themesbrand.com" || '',
-      password: userLogin.password || "123456" || '',
+      email: userLogin.email || '' ,
+      password: userLogin.password  || '',
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your User Name"),
@@ -49,7 +47,6 @@ const Login = props => {
           email: values.email,
           password: values.password
         });
-        console.log(response.data)
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
           naviagte("/dashboard");
@@ -58,7 +55,7 @@ const Login = props => {
         }
       } catch (error) {
         console.log(error)
-        // setError(response.message);
+        setError(error.response.data.message);
       }
     }
   });
