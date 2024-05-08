@@ -15,11 +15,13 @@ import Pages500 from "../pages/Utility/pages-500";
 import Dashboard from "../pages/Dashboard/index";
 import Register from "pages/Authentication/Register";
 import Userindex from "pages/users/users";
+import Productindex from "pages/Products/product";
 
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
   { path: "/users", component: <Userindex /> },
+  { path: "/products", component: <Productindex /> },
 
   // //profile
   { path: "/profile", component: <UserProfile /> },
