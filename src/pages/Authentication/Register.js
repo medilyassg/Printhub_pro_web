@@ -81,12 +81,11 @@ const Register = props => {
     enableReinitialize: false,
     initialValues: {
       email: '',
-      username: '',
       password: '',
       confirmPassword: '',
       name: '',
-      lastName: '',
-      telephone: '',
+      last_name: '',
+      phone_number: '',
       address1: '',
       address2: '',
       region:selectedRegion,
@@ -100,10 +99,9 @@ const Register = props => {
         .required("Please Confirm Your Password")
         .oneOf([Yup.ref("password"), null], "Passwords must match"),
       name: Yup.string().required("Please Enter Your Name"),
-      lastName: Yup.string().required("Please Enter Your Last Name"),
-      telephone: Yup.string().required("Please Enter Your Telephone"),
+      last_name: Yup.string().required("Please Enter Your Last Name"),
+      phone_number: Yup.string().required("Please Enter Your phone_number"),
       address1: Yup.string().required("Please Enter Your Address 1"),
-      address2: Yup.string().required("Please Enter Your Address 2"),
 
       region: Yup.string().required("Please Enter Your Region"),
       city: Yup.string().required("Please Enter Your City"),
@@ -111,7 +109,10 @@ const Register = props => {
     }),
     onSubmit: async  (values) =>  {
       try {
-        const response = await post('http://127.0.0.1:8000/api/register',values);
+        const response = await post('http://127.0.0.1:8000/api/register',{
+          ...values,
+          addresses: [{name:values.address1,type:"nobe"}, {name:values.address2,type:"none"}]
+      });
         if (response.data.user) {
 
           localStorage.setItem('token', response.data.token);
@@ -175,22 +176,21 @@ const Register = props => {
                           <FormFeedback>{validation.errors.name}</FormFeedback>
                         </Col>
                         <Col xs={12} sm={6} className="mb-3">
-                          <Label className="form-label" htmlFor="lastName">Last Name</Label>
+                          <Label className="form-label" htmlFor="last_name">Last Name</Label>
                           <Input
-                            name="lastName"
+                            name="last_name"
                             className="form-control"
                             placeholder="Enter Last Name"
                             type="text"
-                            id="lastName"
+                            id="last_name"
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.lastName || ""}
-                            invalid={validation.touched.lastName && validation.errors.lastName}
+                            value={validation.values.last_name || ""}
+                            invalid={validation.touched.last_name && validation.errors.last_name}
                           />
-                          <FormFeedback>{validation.errors.lastName}</FormFeedback>
+                          <FormFeedback>{validation.errors.last_name}</FormFeedback>
                         </Col>
                       </Row>
-                      {/* Email & Username */}
                       <Row>
                         <Col xs={12} sm={6} className="mb-3">
                           <Label className="form-label" htmlFor="useremail">Email</Label>
@@ -208,19 +208,19 @@ const Register = props => {
                           <FormFeedback>{validation.errors.email}</FormFeedback>
                         </Col>
                         <Col xs={12} sm={6} className="mb-3">
-                          <Label className="form-label" htmlFor="telephone">Telephone</Label>
+                          <Label className="form-label" htmlFor="phone_number">phone_number</Label>
                           <Input
-                            name="telephone"
+                            name="phone_number"
                             className="form-control"
-                            placeholder="Enter Telephone"
+                            placeholder="Enter phone_number"
                             type="text"
-                            id="telephone"
+                            id="phone_number"
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
-                            value={validation.values.telephone || ""}
-                            invalid={validation.touched.telephone && validation.errors.telephone}
+                            value={validation.values.phone_number || ""}
+                            invalid={validation.touched.phone_number && validation.errors.phone_number}
                           />
-                          <FormFeedback>{validation.errors.telephone}</FormFeedback>
+                          <FormFeedback>{validation.errors.phone_number}</FormFeedback>
                         </Col>
                       </Row>
                       <Row>
