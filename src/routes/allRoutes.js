@@ -16,12 +16,14 @@ import Dashboard from "../pages/Dashboard/index";
 import Register from "pages/Authentication/Register";
 import Userindex from "pages/users/users";
 import Productindex from "pages/Products/product";
+import Propertyindex from "pages/Properties/property";
 
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
   { path: "/users", component: <Userindex /> },
   { path: "/products", component: <Productindex /> },
+  { path: "/properties", component: <Propertyindex /> },
 
   // //profile
   { path: "/profile", component: <UserProfile /> },
