@@ -11,6 +11,7 @@ import {
   ModalBody,
   ModalHeader,
 } from "reactstrap";
+import EditPermissionForm from "./EditPermissionForm";
 
 //Import Breadcrumb
 
@@ -19,14 +20,15 @@ import {
 const PermissionTable = (props) => {
     const [modal_edit, setmodal_edit] = useState(false);
     const [modal_delete, setmodal_delete] = useState(false);
-    const [SlectedPermission, setSlectedPermission] = useState(null);
+    const [SelectedPermission, setSlectedPermission] = useState(null);
 
     const removeBodyCss = () => {
       document.body.classList.add("no_padding");
     };
   
-    const tog_edit = () => {
+    const tog_edit = (permission) => {
       setmodal_edit(!modal_edit);
+      setSlectedPermission(permission)
       removeBodyCss();
     };
     const tog_delete = (permission) => {
@@ -36,7 +38,6 @@ const PermissionTable = (props) => {
     };
   
    
-  
   
     const data = {
         columns: [
@@ -70,7 +71,7 @@ const PermissionTable = (props) => {
           guard_name: permission.guard_name,
           actions: (
             <div className="d-flex align-items-center">
-              <button className="btn btn-info btn-sm mx-2" onClick={tog_edit}>
+              <button className="btn btn-info btn-sm mx-2" onClick={()=>tog_edit(permission)}>
                 <i className="ti-pencil-alt"></i>
               </button>
               <button className="btn btn-danger btn-sm" onClick={()=>tog_delete(permission)}>
@@ -94,7 +95,8 @@ const PermissionTable = (props) => {
                       <Modal isOpen={modal_edit} toggle={tog_edit} centered>
                         <ModalHeader className="mt-0" toggle={tog_edit}>Edit Permission</ModalHeader>
                         <ModalBody>
-                          
+                          <EditPermissionForm permission={SelectedPermission} handleEdit={(id,values)=>{props.handleEdit(id,values)
+                          setmodal_edit(false)}} handleCancel={tog_edit}/>
                         </ModalBody>
                       </Modal>
                     </Col>
@@ -121,7 +123,7 @@ const PermissionTable = (props) => {
               <button
                 type="button"
                 className="btn btn-success btn-lg ms-2"
-                onClick={()=>props.handleDelete(SlectedPermission)}
+                onClick={()=>props.handleDelete(SelectedPermission)}
               >
                 Yes, delete it!
               </button>
@@ -143,4 +145,6 @@ const PermissionTable = (props) => {
     );
 };
 
+
 export default PermissionTable;
+

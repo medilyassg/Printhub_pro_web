@@ -25,7 +25,7 @@ const EditPermissionForm = props => {
       guard_name: props.permission.guard_name,
     },
     validationSchema,
-    onSubmit: (values) => props.handleEdit(values)
+    onSubmit: (values) => props.handleEdit(props.permission.id,values)
   });
 
   return (
@@ -86,7 +86,7 @@ const EditPermissionForm = props => {
   );
 };
 
-AddPermissionForm.propTypes = {
+EditPermissionForm.propTypes = {
   apiError: PropTypes.func.isRequired,
 };
 
