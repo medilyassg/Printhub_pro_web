@@ -6,7 +6,6 @@ import {
     ModalHeader,
 } from "reactstrap";
 
-//Import Breadcrumb
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import "../../../../src/assets/scss/datatables.scss";
 import CategoryTable from "./table";
