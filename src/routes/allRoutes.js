@@ -15,13 +15,16 @@ import Pages500 from "../pages/Utility/pages-500";
 import Dashboard from "../pages/Dashboard/index";
 import Register from "pages/Authentication/Register";
 import Userindex from "pages/users/users";
+import Roleindex from "pages/users/roles";
+import Permissionindex from "pages/users/permissions";
 
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
   { path: "/users", component: <Userindex /> },
+  { path: "/permissions", component: <Permissionindex /> },
+  { path: "/roles", component: <Roleindex /> },
 
-  // //profile
   { path: "/profile", component: <UserProfile /> },
 
   // this route should be at the end of all other routes
