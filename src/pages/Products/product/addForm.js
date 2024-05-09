@@ -57,7 +57,8 @@ const AddForm = ({ isOpen, toggle }) => {
       <div className="mb-3">
         <label className="form-label">Price Unit</label>
         <input
-          type="text"
+          type="number"
+          step={0.1}
           className="form-control"
           name="price_unit"
           value={newProduct.price_unit}
@@ -67,7 +68,8 @@ const AddForm = ({ isOpen, toggle }) => {
       <div className="mb-3">
         <label className="form-label">Price Total</label>
         <input
-          type="text"
+          type="number"
+          step={0.1}
           className="form-control"
           name="price_total"
           value={newProduct.price_total}
@@ -107,7 +109,7 @@ const AddForm = ({ isOpen, toggle }) => {
       <div className="mb-3">
         <label className="form-label">Quantity</label>
         <input
-          type="text"
+          type="number"
           className="form-control"
           name="quantity"
           value={newProduct.quantity}

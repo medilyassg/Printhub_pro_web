@@ -21,7 +21,8 @@ const EditForm = ({ product, onSubmit , toggle}) => {
       <div className="mb-3">
         <label className="form-label">Price Unit</label>
         <input
-          type="text"
+          type="number"
+          step={0.1}
           className="form-control"
           name="price_unit"
           value={editedProduct.price_unit}
@@ -31,7 +32,8 @@ const EditForm = ({ product, onSubmit , toggle}) => {
       <div className="mb-3">
         <label className="form-label">Price Total</label>
         <input
-          type="text"
+          type="number"
+          step={0.1}
           className="form-control"
           name="price_total"
           value={editedProduct.price_total}
@@ -71,7 +73,7 @@ const EditForm = ({ product, onSubmit , toggle}) => {
       <div className="mb-3">
         <label className="form-label">Quantity</label>
         <input
-          type="text"
+          type="number"
           className="form-control"
           name="quantity"
           value={editedProduct.quantity}
