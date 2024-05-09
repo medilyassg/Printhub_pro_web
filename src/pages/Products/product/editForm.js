@@ -69,7 +69,7 @@ const EditForm = ({ product, onSubmit , toggle}) => {
           value={editedProduct.format}
           onChange={handleChange}
         />
-      </div>
+      </div>n
       <div className="mb-3">
         <label className="form-label">Quantity</label>
         <input

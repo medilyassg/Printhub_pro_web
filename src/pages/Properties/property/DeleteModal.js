@@ -12,7 +12,7 @@ const DeleteModal = ({ isOpen, toggle, productId, onDelete }) => {
   return (
     <Modal isOpen={isOpen} toggle={toggle} centered>
       <ModalHeader className="mt-0" toggle={toggle}>
-        Delete Product
+        Delete Property
       </ModalHeader>
       <ModalBody>
         <div className="text-center">

@@ -150,7 +150,7 @@ const PropertyTable = () => {
     <React.Fragment>
           <Modal isOpen={modal_edit} toggle={tog_edit} centered>
             <ModalHeader className="mt-0" toggle={tog_edit}>
-              Edit User
+              Edit Property
             </ModalHeader>
             <ModalBody>
               <EditForm
@@ -163,7 +163,7 @@ const PropertyTable = () => {
           </Modal>
           <Modal isOpen={modal_delete} toggle={tog_delete} centered>
             <ModalHeader className="mt-0" toggle={tog_delete}>
-              Delete User
+              Delete Property
             </ModalHeader>
             <ModalBody>
               <DeleteModal

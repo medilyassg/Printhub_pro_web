@@ -171,7 +171,7 @@ const ProductTable = () => {
     <React.Fragment>
           <Modal isOpen={modal_edit} toggle={tog_edit} centered>
             <ModalHeader className="mt-0" toggle={tog_edit}>
-              Edit User
+              Edit Product
             </ModalHeader>
             <ModalBody>
               <EditForm
@@ -184,7 +184,7 @@ const ProductTable = () => {
           </Modal>
           <Modal isOpen={modal_delete} toggle={tog_delete} centered>
             <ModalHeader className="mt-0" toggle={tog_delete}>
-              Delete User
+              Delete Product
             </ModalHeader>
             <ModalBody>
               <DeleteModal
