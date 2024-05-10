@@ -10,18 +10,18 @@ import { connect } from "react-redux";
 
 import { useFormik } from "formik/dist";
 
-const EditPermissionForm = props => {
+const EditRoleForm = props => {
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Please Enter Permission Name")
+    name: Yup.string().required("Please Enter Role Name")
   });
 
   const validation = useFormik({
     initialValues: {
-      name: props.permission.name
+      name: props.role.name
     },
     validationSchema,
-    onSubmit: (values) => props.handleEdit(props.permission.id, values)
+    onSubmit: (values) => props.handleEdit(props.role.id, values)
   });
 
   return (
@@ -36,11 +36,11 @@ const EditPermissionForm = props => {
               <Form className="mt-4" onSubmit={validation.handleSubmit} action="#">
                 <Row>
                   <Col xs={12} md={12} xl={12}>
-                    <Label className="form-label" htmlFor="name">Permission Name</Label>
+                    <Label className="form-label" htmlFor="name">Role Name</Label>
                     <Input
                       name="name"
                       className="form-control"
-                      placeholder="Enter Permission Name"
+                      placeholder="Enter Role Name"
                       type="text"
                       id="name"
                       onChange={validation.handleChange}
@@ -54,7 +54,7 @@ const EditPermissionForm = props => {
 
                 <div className="mt-3 d-flex justify-content-between">
                   <button className="btn btn-secondary waves-effect" type="button" onClick={props.handleCancel}>Cancel</button>
-                  <button className="btn btn-primary waves-effect" type="submit">Save Permission</button>
+                  <button className="btn btn-primary waves-effect" type="submit">Save Role</button>
                 </div>
               </Form>
             </div>
@@ -66,10 +66,10 @@ const EditPermissionForm = props => {
   );
 };
 
-EditPermissionForm.propTypes = {
+EditRoleForm.propTypes = {
   apiError: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
   apiError,
-})(EditPermissionForm);
+})(EditRoleForm);

@@ -10,18 +10,18 @@ import { connect } from "react-redux";
 
 import { useFormik } from "formik/dist";
 
-const EditPermissionForm = props => {
+const AddRoleForm = props => {
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Please Enter Permission Name")
+    name: Yup.string().required("Please Enter Role Name")
   });
 
   const validation = useFormik({
     initialValues: {
-      name: props.permission.name
+      name: ''
     },
     validationSchema,
-    onSubmit: (values) => props.handleEdit(props.permission.id, values)
+    onSubmit: (values) => props.handleSave(values)
   });
 
   return (
@@ -32,11 +32,10 @@ const EditPermissionForm = props => {
 
           <CardBody className="">
             <div className="">
-              {props.error && <Alert color="danger">{props.error}</Alert>}
               <Form className="mt-4" onSubmit={validation.handleSubmit} action="#">
                 <Row>
                   <Col xs={12} md={12} xl={12}>
-                    <Label className="form-label" htmlFor="name">Permission Name</Label>
+                    <Label className="form-label" htmlFor="name">Role Name</Label>
                     <Input
                       name="name"
                       className="form-control"
@@ -54,7 +53,7 @@ const EditPermissionForm = props => {
 
                 <div className="mt-3 d-flex justify-content-between">
                   <button className="btn btn-secondary waves-effect" type="button" onClick={props.handleCancel}>Cancel</button>
-                  <button className="btn btn-primary waves-effect" type="submit">Save Permission</button>
+                  <button className="btn btn-primary waves-effect" type="submit">Save Role</button>
                 </div>
               </Form>
             </div>
@@ -66,10 +65,10 @@ const EditPermissionForm = props => {
   );
 };
 
-EditPermissionForm.propTypes = {
+AddRoleForm.propTypes = {
   apiError: PropTypes.func.isRequired,
 };
 
 export default connect(null, {
   apiError,
-})(EditPermissionForm);
+})(AddRoleForm);
