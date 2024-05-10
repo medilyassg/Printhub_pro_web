@@ -1,8 +1,6 @@
-// EditForm.js
-
 import React, { useState } from "react";
 
-const EditForm = ({ property, onSubmit , toggle}) => {
+const EditForm = ({ property, onSubmit, toggle, subCategories }) => {
   const [editedProperty, setEditedProperty] = useState(property);
 
   const handleChange = e => {
@@ -10,10 +8,21 @@ const EditForm = ({ property, onSubmit , toggle}) => {
     setEditedProperty({ ...editedProperty, [name]: value });
   };
 
+  const handleSubcategoryChange = e => {
+    const { options } = e.target;
+    const selectedSubcategories = [];
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selectedSubcategories.push(parseInt(options[i].value));
+      }
+    }
+    setEditedProperty({ ...editedProperty, sub_categories: selectedSubcategories });
+  };
+
   const handleSubmit = e => {
     e.preventDefault();
     onSubmit(editedProperty);
-    toggle()
+    toggle();
   };
 
   return (
@@ -23,8 +32,8 @@ const EditForm = ({ property, onSubmit , toggle}) => {
         <input
           type="text"
           className="form-control"
-          name="name"
-          value={editedProperty.name}
+          name="nom"
+          value={editedProperty.nom}
           onChange={handleChange}
         />
       </div>
@@ -49,8 +58,23 @@ const EditForm = ({ property, onSubmit , toggle}) => {
           onChange={handleChange}
         />
       </div>
-      
-      <button type="submit" className="btn btn-primary" >
+      <div className="mb-3">
+        <label className="form-label">Subcategories</label>
+        <select
+          className="form-select"
+          name="sub_categories"
+          multiple
+          value={editedProperty.sub_categories}
+          onChange={handleSubcategoryChange}
+        >
+          {subCategories.map(subCategory => (
+            <option key={subCategory.id} value={subCategory.id}>
+              {subCategory.nom}
+            </option>
+          ))}
+        </select>
+      </div>
+      <button type="submit" className="btn btn-primary">
         Save Changes
       </button>
       <button type="button" className="btn btn-secondary" onClick={toggle}>

@@ -5,10 +5,22 @@ import EditForm from "./editForm"
 import DeleteModal from "./DeleteModal"
 
 const PropertyTable = () => {
-  const [modal_edit, setmodal_edit] = useState(false)
-  const [modal_delete, setmodal_delete] = useState(false)
-  const [properties, setProperties] = useState([])
-  const [selectedProperty, setSelectedProperty] = useState(null)
+  const [modal_edit, setmodal_edit] = useState(false);
+  const [modal_delete, setmodal_delete] = useState(false);
+  const [properties, setProperties] = useState([]);
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [subCategories, setSubCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/subcategories")
+      .then(response => response.json())
+      .then(data => {
+        setSubCategories(data.data);
+      })
+      .catch(error => {
+        console.error("Error fetching subcategories:", error);
+      });
+  }, []);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/properties")
@@ -110,6 +122,11 @@ const PropertyTable = () => {
         width: 150,
       },
       {
+        label: "Subcategories",
+        field: "sub_categories",
+        width: 150,
+      },
+      {
         label: "Actions",
         field: "actions",
         width: 150,
@@ -117,26 +134,26 @@ const PropertyTable = () => {
     ],
     rows: properties.map(property => ({
       id: property.id,
-      name: property.name,
+      name: property.nom,
       description: property.description,
       price: property.price,
+      sub_categories: property.sub_categories.map(subCategory => subCategory.nom).join(", "),
       actions: (
         <div className="flex">
           <button
             className="btn btn-info btn-sm mx-2"
-            onClick={() =>{
-              setSelectedProperty(property)
-              tog_edit(property)}
-            } 
-            
+            onClick={() => {
+              setSelectedProperty(property);
+              tog_edit(property);
+            }}
           >
             <i className="ti-pencil-alt "></i>{" "}
           </button>
           <button
             className="btn btn-danger btn-sm"
             onClick={() => {
-              setSelectedProperty(property)
-              tog_delete()
+              setSelectedProperty(property);
+              tog_delete();
             }}
           >
             <i className="ti-trash"></i>
@@ -144,7 +161,8 @@ const PropertyTable = () => {
         </div>
       ),
     })),
-  }
+  };
+  
 
   return (
     <React.Fragment>
@@ -155,6 +173,7 @@ const PropertyTable = () => {
             <ModalBody>
               <EditForm
                 isOpen={modal_edit}
+                subCategories={subCategories} // Pass subCategories as prop
                 property={selectedProperty}
                 onSubmit={handleEditSubmit}
                 toggle={tog_edit}

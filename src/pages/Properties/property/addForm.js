@@ -1,16 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AddForm = ({ isOpen, toggle }) => {
   const [newProperty, setNewProperty] = useState({
-    name: "",
+    nom: "",
     description: "",
     price: "",
-   
+    sub_categories: [],
   });
+
+  const [subCategories, setSubCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/subcategories")
+      .then(response => response.json())
+      .then(data => {
+        setSubCategories(data.data);
+      })
+      .catch(error => {
+        console.error("Error fetching subcategories:", error);
+      });
+  }, []);
 
   const handleChange = e => {
     const { name, value } = e.target;
     setNewProperty({ ...newProperty, [name]: value });
+  };
+
+  const handleSubcategoryChange = e => {
+    const { options } = e.target;
+    const selectedSubcategories = [];
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        selectedSubcategories.push(parseInt(options[i].value));
+      }
+    }
+    setNewProperty({ ...newProperty, sub_categories: selectedSubcategories });
   };
 
   const handleSubmit = e => {
@@ -20,12 +44,7 @@ const AddForm = ({ isOpen, toggle }) => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        name: newProperty.name,
-        description: newProperty.description,
-        price: newProperty.price,
-        
-      })
+      body: JSON.stringify(newProperty)
     })
       .then(response => {
         if (response.ok) {
@@ -43,9 +62,7 @@ const AddForm = ({ isOpen, toggle }) => {
         console.error("Error adding new property:", error);
       });
   };
-  
 
-  
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
@@ -53,8 +70,8 @@ const AddForm = ({ isOpen, toggle }) => {
         <input
           type="text"
           className="form-control"
-          name="name"
-          value={newProperty.name}
+          name="nom"
+          value={newProperty.nom}
           onChange={handleChange}
         />
       </div>
@@ -79,11 +96,26 @@ const AddForm = ({ isOpen, toggle }) => {
           onChange={handleChange}
         />
       </div>
-      
+      <div className="mb-3">
+        <label className="form-label">Subcategories</label>
+        <select
+          className="form-select"
+          name="sub_categories"
+          multiple
+          value={newProperty.sub_categories}
+          onChange={handleSubcategoryChange}
+        >
+          {subCategories.map(subCategory => (
+            <option key={subCategory.id} value={subCategory.id}>
+              {subCategory.nom}
+            </option>
+          ))}
+        </select>
+      </div>
       <button type="submit" className="btn btn-primary">Add Property</button>
       <button type="button" className="btn btn-secondary ms-2" onClick={toggle}>Cancel</button>
     </form>
   )
 }
 
-export default AddForm
+export default AddForm;
