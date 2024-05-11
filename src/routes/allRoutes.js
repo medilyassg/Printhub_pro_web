@@ -17,6 +17,8 @@ import Register from "pages/Authentication/Register";
 import Userindex from "pages/users/users";
 import Roleindex from "pages/users/roles";
 import Permissionindex from "pages/users/permissions";
+import CategoryIndex from "pages/Categories/Category";
+import SubCategoryIndex from "pages/Categories/Sub-Category";
 
 
 const userRoutes = [
@@ -24,7 +26,8 @@ const userRoutes = [
   { path: "/users", component: <Userindex /> },
   { path: "/permissions", component: <Permissionindex /> },
   { path: "/roles", component: <Roleindex /> },
-
+  {path:"/categories",component:<CategoryIndex/>},
+  {path:"/sub-categories",component:<SubCategoryIndex/>},
   { path: "/profile", component: <UserProfile /> },
 
   // this route should be at the end of all other routes
