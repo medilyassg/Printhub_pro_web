@@ -1,61 +1,46 @@
+import { useFormik } from "formik";
 import React, { useState } from "react";
+import { Form, FormFeedback, Input, Label } from "reactstrap";
+import * as Yup from "yup";
 
-const AddForm = ({ isOpen, toggle }) => {
-  const [newCategory, setNewCategory] = useState({
-    nom: "",
+const AddForm = props => {
+  const validationSchema = Yup.object({
+    nom: Yup.string().required("Please Enter Category Name")
   });
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setNewCategory({ ...newCategory, [name]: value });
-  };
+  const validation = useFormik({
+    initialValues: {
+      nom: ''
+    },
+    validationSchema,
+    onSubmit: (values) => props.handleSave({...values})
+  });
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    fetch("http://127.0.0.1:8000/api/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        nom: newCategory.nom,
-      })
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Failed to add new category");
-        }
-      })
-      .then(data => {
-        console.log("New category added successfully:", data);
-        toggle();
-      })
-      .catch(error => {
-        console.error("Error adding new category:", error);
-      });
-  };
+ 
   
 
   
   return (
-    <form onSubmit={handleSubmit}>
+    <Form onSubmit={validation.handleSubmit}>
       <div className="mb-3">
-        <label className="form-label">Category name</label>
-        <input
+        <Label className="form-label">Category name</Label>
+        <Input
           type="text"
+          placeholder="Enter category name"
           step={0.1}
           className="form-control"
           name="nom"
-          value={newCategory.nom}
-          onChange={handleChange}
-          required
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.nom || ""}
+          invalid={validation.touched.nom && validation.errors.nom}
         />
+        <FormFeedback>{validation.errors.nom}</FormFeedback>
+      
       </div>
       <button type="submit" className="btn btn-primary">Add Category</button>
-      <button type="button" className="btn btn-secondary ms-2" onClick={toggle}>Cancel</button>
-    </form>
+      <button type="button" className="btn btn-secondary ms-2" onClick={props.handleCancel}>Cancel</button>
+    </Form>
   )
 }
 
