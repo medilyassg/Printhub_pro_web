@@ -23,60 +23,6 @@ const CategoryTable = (props) => {
     const [modal_delete, setmodal_delete] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null)
 
-    // useEffect(() => {
-    //     fetch("http://127.0.0.1:8000/api/categories")
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             setCategories(data.data)
-    //         })
-    //         .catch(error => {
-    //             console.error("Error fetching products:", error)
-    //         })
-    // }, [])
-
-    // const handleEdit = updatedCategory => {
-    //     const updatedCategories = categories.map(category =>
-    //       category.id === updatedCategory.id ? updatedCategory : category
-    //     );
-    //     setCategories(updatedCategories);
-
-    //     fetch(`http://127.0.0.1:8000/api/categories/${updatedCategory.id}`, {
-    //       method: "PUT",
-    //       headers: {
-    //         "Content-Type": "application/json"
-    //       },
-    //       body: JSON.stringify(updatedCategory)
-    //     })
-    //       .then(response => {
-    //         if (!response.ok) {
-    //           console.error("Failed to update product");
-    //         }
-    //       })
-    //       .catch(error => {
-    //         console.error("Error updating product:", error);
-    //       });
-    //   };
-    // const handleDelete = () => {
-    //     if (!selectedCategory) return
-
-    //     fetch(`http://127.0.0.1:8000/api/categories/${selectedCategory.id}`, {
-    //         method: "DELETE",
-    //     })
-    //         .then(response => {
-    //             if (response.ok) {
-    //                 const updatedCategories = categories.filter(
-    //                     category => category.id !== selectedCategory.id
-    //                 )
-    //                 setCategories(updatedCategories)
-    //                 setmodal_delete(false)
-    //             } else {
-    //                 console.error("Failed to delete category")
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error("Error deleting category:", error)
-    //         })
-    // };
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };

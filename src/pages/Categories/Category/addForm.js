@@ -16,10 +16,6 @@ const AddForm = props => {
     onSubmit: (values) => props.handleSave({...values})
   });
 
- 
-  
-
-  
   return (
     <Form onSubmit={validation.handleSubmit}>
       <div className="mb-3">
