@@ -21,7 +21,7 @@ const AddRoleForm = props => {
       name: ''
     },
     validationSchema,
-    onSubmit: (values) => props.handleSave(values)
+    onSubmit: (values) => props.handleSave({...values,guard_name:'web'})
   });
 
   return (

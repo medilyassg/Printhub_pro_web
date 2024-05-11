@@ -47,8 +47,12 @@ const Login = props => {
           email: values.email,
           password: values.password
         });
-        if (response.data.token) {
-          localStorage.setItem('token', response.data.token);
+        const token=response.data.token
+        if (token) {
+          localStorage.removeItem('token')
+          localStorage.setItem('token', token);
+          localStorage.setItem('authUser', JSON.stringify(response.data.user));
+          console.log('Token set:', token); // Check if this logs before navigating
           naviagte("/dashboard");
         } else {
           setError(error.message);

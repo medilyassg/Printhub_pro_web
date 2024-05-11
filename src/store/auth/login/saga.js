@@ -11,48 +11,48 @@ import {
   postJwtLogin,
   postSocialLogin,
 } from "../../../helpers/fakebackend_helper";
+import { post } from "helpers/api_helper";
 
 const fireBaseBackend = getFirebaseBackend();
 
 function* loginUser({ payload: { user, history } }) {
-  try {
-    if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-      const response = yield call(
-        fireBaseBackend.loginUser,
-        user.email,
-        user.password
-      );
-      yield put(loginSuccess(response));
-    } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
-      const response = yield call(postJwtLogin, {
-        email: user.email,
-        password: user.password,
-      });
-      localStorage.setItem("authUser", JSON.stringify(response));
-      yield put(loginSuccess(response));
-    } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
-      const response = yield call(postFakeLogin, {
-        email: user.email,
-        password: user.password,
-      });
-      localStorage.setItem("authUser", JSON.stringify(response));
-      yield put(loginSuccess(response));
-    }
-    history("/dashboard");
-  } catch (error) {
-    yield put(apiError(error));
-  }
+  // try {
+  //   if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
+  //     const response = yield call(
+  //       fireBaseBackend.loginUser,
+  //       user.email,
+  //       user.password
+  //     );
+  //     yield put(loginSuccess(response));
+  //   } else if (process.env.REACT_APP_DEFAULTAUTH === "jwt") {
+  //     const response = yield call(postJwtLogin, {
+  //       email: user.email,
+  //       password: user.password,
+  //     });
+  //     localStorage.setItem("authUser", JSON.stringify(response));
+  //     yield put(loginSuccess(response));
+  //   } else if (process.env.REACT_APP_DEFAULTAUTH === "fake") {
+  //     const response = yield call(postFakeLogin, {
+  //       email: user.email,
+  //       password: user.password,
+  //     });
+  //     localStorage.setItem("authUser", JSON.stringify(response));
+  //     yield put(loginSuccess(response));
+  //   }
+  //   history("/dashboard");
+  // } catch (error) {
+  //   yield put(apiError(error));
+  // }
 }
 
 function* logoutUser({ payload: { history } }) {
   try {
-    localStorage.removeItem("authUser");
+    yield post('http://127.0.0.1:8000/api/logout');
 
-    if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
-      const response = yield call(fireBaseBackend.logout);
-      yield put(logoutUserSuccess(response));
-    }
-    history("/login");
+    localStorage.removeItem("authUser");
+    localStorage.removeItem("token");
+
+    history("/login");    
   } catch (error) {
     yield put(apiError(error));
   }
