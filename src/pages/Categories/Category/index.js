@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MDBDataTable } from "mdbreact";
 import {
     Row, Col, Card, CardBody, CardTitle, CardSubtitle, Modal,
@@ -8,11 +8,14 @@ import {
 
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import "../../../../src/assets/scss/datatables.scss";
+import { post, get, del, put } from "helpers/api_helper";
 import CategoryTable from "./table";
 import AddForm from "./addForm";
 
 const CategoryIndex = () => {
     const [modal_add, setmodal_add] = useState(false);
+    const [categories,setCategories]=useState([])
+    const [error, setError] = useState('');
 
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
@@ -22,7 +25,60 @@ const CategoryIndex = () => {
         setmodal_add(!modal_add);
         removeBodyCss();
     };
-
+    const handleSave = async (values) => {
+        try {
+          const response = await post('http://127.0.0.1:8000/api/categories', values);
+          if (response.status === 200) {
+            setmodal_add(false)
+          } else {
+            setError('');
+            setmodal_add(false)
+            fetchCategories();
+    
+          }
+        } catch (error) {
+          setError(error.response.data.message);
+        }
+      }
+      const handleEdit = async (id, values) => {
+        try {
+          const response = await put(`http://127.0.0.1:8000/api/categories/${id}`, { ...values, id: id });
+          if (response.status === 200) {
+          } else {
+            setError('');
+            fetchCategories();
+    
+          }
+        } catch (error) {
+          console.error('Error editing categories:', error);
+          setError(error.response.data.message);
+        }
+      }
+    useEffect(() => {
+        fetchCategories();
+      }, []);
+    
+      const fetchCategories = async () => {
+        try {
+          const response = await get("http://127.0.0.1:8000/api/categories");
+    
+          const data = await response.data;
+          setCategories(data);
+          console.log(categories)
+        } catch (error) {
+          setError(error.response.data.message);
+    
+        }
+      };
+      const handleDelete = async (category) => {
+        try {
+          const response = await del(`http://127.0.0.1:8000/api/categories/${category.id}`);
+    
+          fetchCategories()
+        } catch (error) {
+          setError(error.response.data.message);
+        }
+      };
     document.title = "Categories Table";
     return (
         <React.Fragment>
@@ -30,7 +86,7 @@ const CategoryIndex = () => {
 
                 <Modal isOpen={modal_add} toggle={tog_add} centered>
                     <ModalHeader className="mt-0" toggle={tog_add}>Add New Category</ModalHeader>
-                    <ModalBody><AddForm isOpen={modal_add} toggle={tog_add} />
+                    <ModalBody><AddForm handleCancel={tog_add} handleSave={handleSave} error={error} />
                     </ModalBody>
                 </Modal>
             </Col>
@@ -42,7 +98,7 @@ const CategoryIndex = () => {
                         <Col className="col-12">
                             <Card>
                                 <CardBody>
-                                    <CategoryTable />
+                                    <CategoryTable categories={categories} handleDelete={handleDelete} handleEdit={handleEdit}/>
                                 </CardBody>
                             </Card>
                         </Col>

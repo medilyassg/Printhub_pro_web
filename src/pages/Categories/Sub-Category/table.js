@@ -13,7 +13,6 @@ import {
     ModalHeader,
     Button,
 } from "reactstrap";
-import DeleteModal from "./deleteModal";
 import EditForm from "./editForm";
 
 
@@ -21,86 +20,23 @@ import EditForm from "./editForm";
 
 
 
-const SubCategoryTable = () => {
+const SubCategoryTable = (props) => {
     const [modal_edit, setmodal_edit] = useState(false);
     const [modal_delete, setmodal_delete] = useState(false);
-    const [subcategories, setSubCategories] = useState([])
-    const [categories, setCategories] = useState([]);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null)
 
-    useEffect(() => {
-        fetch("http://127.0.0.1:8000/api/subcategories")
-            .then(response => response.json())
-            .then(data => {
-                setSubCategories(data.data)
-            })
-            .catch(error => {
-                console.error("Error fetching products:", error)
-            });
-            fetch("http://127.0.0.1:8000/api/categories")
-            .then(response => response.json())
-            .then(data => {
-                setCategories(data.data)
-            })
-            .catch(error => {
-                console.error("Error fetching categories:", error)
-            });
-    }, [])
-    
-
-    const handleEdit = updatedSubCategory => {
-        const updatedSubCategories = subcategories.map(subcategory =>
-          subcategory.id === updatedSubCategory.id ? updatedSubCategory : subcategory
-        );
-        setSubCategories(updatedSubCategories);
-    
-        fetch(`http://127.0.0.1:8000/api/subcategories/${updatedSubCategory.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(updatedSubCategory)
-        })
-          .then(response => {
-            if (!response.ok) {
-              console.error("Failed to update subcategory");
-            }
-          })
-          .catch(error => {
-            console.error("Error updating subcategory:", error);
-          });
-      };
-    const handleDelete = () => {
-        if (!selectedSubCategory) return
-
-        fetch(`http://127.0.0.1:8000/api/subcategories/${selectedSubCategory.id}`, {
-            method: "DELETE",
-        })
-            .then(response => {
-                if (response.ok) {
-                    const updatedSubCategories = subcategories.filter(
-                        subcategory => subcategory.id !== selectedSubCategory.id
-                    )
-                    setSubCategories(updatedSubCategories)
-                    setmodal_delete(false)
-                } else {
-                    console.error("Failed to delete subcategory")
-                }
-            })
-            .catch(error => {
-                console.error("Error deleting subcategory:", error)
-            })
-    };
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };
 
-    const tog_edit = () => {
+    const tog_edit = (subcategory) => {
         setmodal_edit(!modal_edit);
+        setSelectedSubCategory(subcategory)
         removeBodyCss();
     };
-    const tog_delete = () => {
+    const tog_delete = (subcategory) => {
         setmodal_delete(!modal_delete);
+        setSelectedSubCategory(subcategory)
         removeBodyCss();
     };
 
@@ -132,10 +68,10 @@ const SubCategoryTable = () => {
                 width: 150,
             },
         ],
-        rows: subcategories.map(subcategory => ({
+        rows: props.subcategories.map(subcategory => ({
             id: subcategory.id,
             nom: subcategory.nom,
-            category:categories.find(category => category.id === subcategory.categorie_id)?.nom,
+            category:props.categories.find(category => category.id === subcategory.categorie_id)?.nom,
             actions: (
                 <div className="flex">
                     <button
@@ -174,10 +110,12 @@ const SubCategoryTable = () => {
                     <ModalHeader className="mt-0" toggle={tog_edit}>Edit Sub-Category</ModalHeader>
                     <ModalBody>
                     <EditForm
-                            isOpen={modal_edit}
-                            toggle={tog_edit}
-                            onSubmit={handleEdit}
+                            categories={props.categories}
                             subcategory={selectedSubCategory}
+                            handleEdit={(id, values) => {
+                                props.handleEdit(id, values)
+                                setmodal_edit(false)
+                              }} handleCancel={tog_edit}
                         />
                     </ModalBody>
                 </Modal>
@@ -187,11 +125,41 @@ const SubCategoryTable = () => {
                 <Modal isOpen={modal_delete} toggle={tog_delete} centered>
                     <ModalHeader className="mt-0" toggle={tog_delete}>Delete Sub-Category</ModalHeader>
                     <ModalBody>
-                        <DeleteModal
-                            isOpen={modal_delete}
-                            toggle={tog_delete}
-                            onDelete={handleDelete}
-                        />
+                    <Row>
+                            <Col lg={12}>
+                                <div className="text-center">
+                                    <i
+                                        className="mdi mdi-alert-circle-outline"
+                                        style={{ fontSize: "9em", color: "orange" }}
+                                    />
+                                    <h2>Are you sure?</h2>
+                                    <h4>{"You won't be able to revert this!"}</h4>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <div className="text-center mt-3">
+                                    <button
+                                        type="button"
+                                        className="btn btn-success btn-lg ms-2"
+                                        onClick={() => {
+                                            props.handleDelete(selectedSubCategory)
+                                            tog_delete()
+                                        }}
+                                    >
+                                        Yes, delete it!
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger btn-lg ms-2"
+                                        onClick={tog_delete}
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </Col>
+                        </Row>
                     </ModalBody>
                 </Modal>
             </Col>
