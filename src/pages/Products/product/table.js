@@ -3,23 +3,33 @@ import { MDBDataTable } from "mdbreact"
 import { Modal, ModalBody, ModalHeader, Button } from "reactstrap"
 import EditForm from "./editForm"
 import DeleteModal from "./DeleteModal"
+import { get } from "helpers/api_helper"
 
 const ProductTable = () => {
   const [modal_edit, setmodal_edit] = useState(false)
   const [modal_delete, setmodal_delete] = useState(false)
   const [products, setProducts] = useState([])
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [Error, setError] = useState(null)
+  
+  
+  const fetchProducts = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/products");
+  
+      const data = await response.data;
+      setProducts(data);
+    } catch (error) {
+      setError(error.response.data.message);
+  
+    }
+  };
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/products")
-      .then(response => response.json())
-      .then(data => {
-        setProducts(data.data)
-      })
-      .catch(error => {
-        console.error("Error fetching products:", error)
-      })
-  }, [])
+   fetchProducts()
+
+  },[]);
+
 
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
