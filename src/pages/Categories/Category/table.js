@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { MDBDataTable } from "mdbreact";
-import { Row, Col, Card, CardBody, CardTitle, CardSubtitle } from "reactstrap";
+import { Row, Col } from "reactstrap";
 
 //Import Breadcrumb
 import "../../../../src/assets/scss/datatables.scss";
@@ -14,6 +14,7 @@ import {
     Button,
 } from "reactstrap";
 import EditForm from "./editForm";
+import usePermissions from "helpers/permissions";
 
 
 
@@ -22,6 +23,11 @@ const CategoryTable = (props) => {
     const [modal_edit, setmodal_edit] = useState(false);
     const [modal_delete, setmodal_delete] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null)
+    const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+    useEffect(()=>{
+        checkUserPermissions();
+    
+      },[])
 
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
@@ -65,6 +71,8 @@ const CategoryTable = (props) => {
             nom: category.nom,
             actions: (
                 <div className="flex">
+                    {hasPermissions.updateCategory && 
+
                     <button
                         className="btn btn-info btn-sm mx-2"
                         onClick={() => {
@@ -73,8 +81,12 @@ const CategoryTable = (props) => {
                         }
 
                     >
+                    
                         <i className="ti-pencil-alt "></i>{" "}
                     </button>
+        }
+                  {hasPermissions.deleteCategory && 
+
                     <button
                         className="btn btn-danger btn-sm"
                         onClick={() => {
@@ -83,6 +95,7 @@ const CategoryTable = (props) => {
                     >
                         <i className="ti-trash"></i>
                     </button>
+        }
                 </div>
             ),
         })),

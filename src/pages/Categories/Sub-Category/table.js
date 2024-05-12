@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { MDBDataTable } from "mdbreact";
-import { Row, Col, Card, CardBody, CardTitle, CardSubtitle } from "reactstrap";
+import { Row, Col} from "reactstrap";
 
 //Import Breadcrumb
 import "../../../../src/assets/scss/datatables.scss";
@@ -14,6 +14,7 @@ import {
     Button,
 } from "reactstrap";
 import EditForm from "./editForm";
+import usePermissions from "helpers/permissions";
 
 
 //Import Breadcrumb
@@ -24,7 +25,11 @@ const SubCategoryTable = (props) => {
     const [modal_edit, setmodal_edit] = useState(false);
     const [modal_delete, setmodal_delete] = useState(false);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null)
-
+    const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+    useEffect(()=>{
+        checkUserPermissions();
+    
+      },[])
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };
@@ -74,6 +79,8 @@ const SubCategoryTable = (props) => {
             category:props.categories.find(category => category.id === subcategory.categorie_id)?.nom,
             actions: (
                 <div className="flex">
+                    {hasPermissions.updateSubCategory && 
+
                     <button
                         className="btn btn-info btn-sm mx-2"
                         onClick={() => {
@@ -85,6 +92,9 @@ const SubCategoryTable = (props) => {
                     >
                         <i className="ti-pencil-alt "></i>{" "}
                     </button>
+        }
+                  {hasPermissions.deleteSubCategory && 
+
                     <button
                         className="btn btn-danger btn-sm"
                         onClick={() => {
@@ -94,6 +104,7 @@ const SubCategoryTable = (props) => {
                     >
                         <i className="ti-trash"></i>
                     </button>
+        }
                 </div>
             ),
         })),

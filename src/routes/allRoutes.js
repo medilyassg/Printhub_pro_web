@@ -13,10 +13,8 @@ import Pages500 from "../pages/Utility/pages-500";
 
 // Dashboard
 import Dashboard from "../pages/Dashboard/index";
-import Register from "pages/Authentication/ParticularRegister";
 import Userindex from "pages/users/users";
 import Roleindex from "pages/users/roles";
-import Permissionindex from "pages/users/permissions";
 import CategoryIndex from "pages/Categories/Category";
 import SubCategoryIndex from "pages/Categories/Sub-Category";
 import Productindex from "pages/Products/product";
@@ -29,7 +27,6 @@ const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
   { path: "/users", component: <Userindex /> },
   { path: "/costumers", component: <Costumerindex /> },
-  { path: "/permissions", component: <Permissionindex /> },
   { path: "/roles", component: <Roleindex /> },
   {path:"/categories",component:<CategoryIndex/>},
   {path:"/sub-categories",component:<SubCategoryIndex/>},

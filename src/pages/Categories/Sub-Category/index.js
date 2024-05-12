@@ -6,12 +6,13 @@ import {
     ModalHeader,
 } from "reactstrap";
 
-//Import Breadcrumb
 import Breadcrumbs from "../../../components/Common/Breadcrumb";
 import "../../../../src/assets/scss/datatables.scss";
 import SubCategoryTable from "./table";
 import AddForm from "./addForm";
 import { del, get, post, put } from "helpers/api_helper";
+import useSweetAlert from "helpers/notifications";
+import usePermissions from "helpers/permissions";
 
 
 const SubCategoryIndex = () => {
@@ -19,6 +20,9 @@ const SubCategoryIndex = () => {
     const [subcategories,setSubCategories]=useState([])
     const [categories,setCategories]=useState([])
     const [error, setError] = useState('');
+    const {  showSuccessAlert, showErrorAlert } = useSweetAlert();
+    const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+
 
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
@@ -31,36 +35,36 @@ const SubCategoryIndex = () => {
     const handleSave = async (values) => {
         try {
           const response = await post('http://127.0.0.1:8000/api/subcategories', values);
-          if (response.status === 200) {
-            setmodal_add(false)
-          } else {
-            setError('');
+          
             setmodal_add(false)
             fetchCategories();
+            showSuccessAlert('Add New Category ', response.message);
+
             fetchSubCategories()
     
-          }
         } catch (error) {
-          setError(error.response.data.message);
+          showErrorAlert('Add New Category ', error.response.data.message);
         }
       }
       const handleEdit = async (id, values) => {
         try {
           const response = await put(`http://127.0.0.1:8000/api/subcategories/${id}`, { ...values, id: id });
-          if (response.status === 200) {
-          } else {
+         
             setError('');
             fetchCategories();
             fetchSubCategories()
+            showSuccessAlert('Update Category ', response.message);
+
     
-          }
         } catch (error) {
-          setError(error.response.data.message);
+          showErrorAlert('Update Category ', error.response.data.message);
+
         }
       }
     useEffect(() => {
         fetchCategories();
         fetchSubCategories();
+        checkUserPermissions()
       }, []);
     
       const fetchSubCategories = async () => {
@@ -93,8 +97,10 @@ const SubCategoryIndex = () => {
     
           fetchCategories()
           fetchSubCategories()
+          showSuccessAlert('Delete Category ', response.message);
+
         } catch (error) {
-          setError(error.response.data.message);
+          showErrorAlert('Delete Category ', error.response.data.message);
         }
       };
 
@@ -112,7 +118,7 @@ const SubCategoryIndex = () => {
             </Col>
             <div className="page-content">
                 <div className="container-fluid">
-                    <Breadcrumbs maintitle="Categories" title="Sub-Category" breadcrumbItem="Sub-Category Table" tog_add={tog_add} />
+                    <Breadcrumbs maintitle="Categories" title="Sub-Category" breadcrumbItem="Sub-Category Table" tog_add={hasPermissions.createSubCategory && tog_add} />
                     <Row>
                         <Col className="col-12">
                             <Card>

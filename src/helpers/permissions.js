@@ -14,6 +14,14 @@ const usePermissions = () => {
     updateUser:false,
     deleteUser:false,
     createUser:false,
+    browseCategory:false,
+    updateCategory:false,
+    deleteCategory:false,
+    createCategory:false,
+    browseSubCategory:false,
+    updateSubCategory:false,
+    deleteSubCategory:false,
+    createSubCategory:false,
 
     // Add more permissions as needed
   });
@@ -36,8 +44,15 @@ const usePermissions = () => {
         updateUser:permissions.some(permission => permission.name === "update user"),
         deleteUser:permissions.some(permission => permission.name === "delete user"),
         createUser:permissions.some(permission => permission.name === "create user"),
-        // Add more permissions as needed
-      });
+        browseCategory:permissions.some(permission => permission.name === "browse category"),
+        updateCategory:permissions.some(permission => permission.name === "update category"),
+        deleteCategory:permissions.some(permission => permission.name === "delete category"),
+        createCategory:permissions.some(permission => permission.name === "create category"),
+        browseSubCategory:permissions.some(permission => permission.name === "browse sub category"),
+        updateSubCategory:permissions.some(permission => permission.name === "update sub category"),
+        deleteSubCategory:permissions.some(permission => permission.name === "delete sub category"),
+        createSubCategory:permissions.some(permission => permission.name === "create sub category")
+          });
     }
   };
 

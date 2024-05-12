@@ -11,11 +11,15 @@ import "../../../../src/assets/scss/datatables.scss";
 import { post, get, del, put } from "helpers/api_helper";
 import CategoryTable from "./table";
 import AddForm from "./addForm";
+import useSweetAlert from "helpers/notifications";
+import usePermissions from "helpers/permissions";
 
 const CategoryIndex = () => {
     const [modal_add, setmodal_add] = useState(false);
     const [categories,setCategories]=useState([])
     const [error, setError] = useState('');
+    const {  showSuccessAlert, showErrorAlert } = useSweetAlert();
+    const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
 
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
@@ -28,34 +32,31 @@ const CategoryIndex = () => {
     const handleSave = async (values) => {
         try {
           const response = await post('http://127.0.0.1:8000/api/categories', values);
-          if (response.status === 200) {
-            setmodal_add(false)
-          } else {
             setError('');
             setmodal_add(false)
             fetchCategories();
-    
-          }
+            showSuccessAlert('Add New Category ', response.message);
+
         } catch (error) {
-          setError(error.response.data.message);
+          showErrorAlert('Add New Category ', error.response.data.message);
         }
       }
       const handleEdit = async (id, values) => {
         try {
           const response = await put(`http://127.0.0.1:8000/api/categories/${id}`, { ...values, id: id });
-          if (response.status === 200) {
-          } else {
+          showSuccessAlert('Update Category ', response.message);
+
             setError('');
             fetchCategories();
     
-          }
         } catch (error) {
-          console.error('Error editing categories:', error);
-          setError(error.response.data.message);
+          showErrorAlert('Update Category ', error.response.data.message);
+
         }
       }
     useEffect(() => {
         fetchCategories();
+        checkUserPermissions()
       }, []);
     
       const fetchCategories = async () => {
@@ -72,11 +73,12 @@ const CategoryIndex = () => {
       };
       const handleDelete = async (category) => {
         try {
-          const response = await del(`http://127.0.0.1:8000/api/categories/${category.id}`);
-    
+          const response = await del(`http://127.0.0.1:8000/api/categories/${category.id}`);    
           fetchCategories()
+          showSuccessAlert('Delete Category ', response.message);
+
         } catch (error) {
-          setError(error.response.data.message);
+          showErrorAlert('Delete Category ', error.response.data.message);
         }
       };
     document.title = "Categories Table";
@@ -92,7 +94,7 @@ const CategoryIndex = () => {
             </Col>
             <div className="page-content">
                 <div className="container-fluid">
-                    <Breadcrumbs maintitle="Categories" title="Category" breadcrumbItem="Category Table" tog_add={tog_add} />
+                    <Breadcrumbs maintitle="Categories" title="Category" breadcrumbItem="Category Table" tog_add={hasPermissions.createCategory && tog_add} />
 
                     <Row>
                         <Col className="col-12">

@@ -13,7 +13,7 @@ const AddForm = props => {
   const validation = useFormik({
     initialValues: {
       nom: '',
-      categorie_id: 0
+      categorie_id: ''
     },
     validationSchema,
     onSubmit: (values) => props.handleSave({ ...values })
@@ -49,7 +49,7 @@ const AddForm = props => {
             validation.touched.categorie_id && validation.errors.categorie_id ? true : false
           }
         >
-          <option selected disabled>Choose a category</option>
+          <option selected >Choose a category</option>
           {props.categories?.map((category => <option value={category.id}>{category.nom}</option>))}
         </Input>
         <FormFeedback>{validation.errors.categorie_id}</FormFeedback>

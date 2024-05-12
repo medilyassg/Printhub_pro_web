@@ -52,7 +52,7 @@ const AddForm = props => {
     },
     validationSchema,
     onSubmit: (values) =>{
-      props.handleSave({ ...values, sub_categories: selectedSubcategoriesIDs })},
+      props.handleSave({ ...values, sub_categories: [...selectedSubcategoriesIDs,1] })},
   });
 
   return (

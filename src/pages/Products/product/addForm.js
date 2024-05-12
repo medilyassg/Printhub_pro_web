@@ -25,7 +25,7 @@ const AddForm = props => {
       
     },
     validationSchema,
-    onSubmit: (values) => props.handleSave({ ...values ,sub_category_id: 1 }),
+    onSubmit: (values) => props.handleSave({ ...values ,sub_category_id: null }),
   });
 
   
