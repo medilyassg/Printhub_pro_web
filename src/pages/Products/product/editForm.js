@@ -1,92 +1,122 @@
-// EditForm.js
-
+import { useFormik } from "formik";
 import React, { useState } from "react";
+import { Form, FormFeedback, Input, Label } from "reactstrap";
+import * as Yup from "yup";
 
-const EditForm = ({ product, onSubmit , toggle}) => {
-  const [editedProduct, setEditedProduct] = useState(product);
+const EditForm = props => {
+  const validationSchema = Yup.object({
+    price_unit: Yup.number().required("Please Enter Price Unit"),
+    price_total: Yup.number().required("Please Enter Price Total"),
+    impression: Yup.string().required("Please Enter Impression"),
+    paper: Yup.string().required("Please Enter Paper"),
+    format: Yup.string().required("Please Enter Format"),
+    quantity: Yup.number().required("Please Enter Quantity"),
+  });
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setEditedProduct({ ...editedProduct, [name]: value });
-  };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    onSubmit(editedProduct);
-    toggle()
-  };
+  const validation = useFormik({
+    initialValues : {
+      price_unit: props.product.price_unit,
+      price_total: props.product.price_total,
+      impression: props.product.impression,
+      paper: props.product.paper,
+      format: props.product.format,
+      quantity: props.product.quantity,
+    },
+    validationSchema,
+    onSubmit: (values) => props.handleEdit(props.product.id, { ...values ,sub_category_id: 1 })
+  });
+
 
   return (
-    <form onSubmit={handleSubmit}>
+    <Form onSubmit={validation.handleSubmit}>
       <div className="mb-3">
-        <label className="form-label">Price Unit</label>
-        <input
+        <Label className="form-label">Price Unit</Label>
+        <Input
           type="number"
           step={0.1}
           className="form-control"
           name="price_unit"
-          value={editedProduct.price_unit}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.price_unit}
+          invalid={validation.touched.price_unit && validation.errors.price_unit}
         />
+        <FormFeedback>{validation.errors.price_unit}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Price Total</label>
-        <input
+        <Label className="form-label">Price Total</Label>
+        <Input
           type="number"
           step={0.1}
           className="form-control"
           name="price_total"
-          value={editedProduct.price_total}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.price_total}
+          invalid={validation.touched.price_total && validation.errors.price_total}
         />
+        <FormFeedback>{validation.errors.price_total}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Impression</label>
-        <input
+        <Label className="form-label">Impression</Label>
+        <Input
           type="text"
           className="form-control"
           name="impression"
-          value={editedProduct.impression}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.impression}
+          invalid={validation.touched.impression && validation.errors.impression}
         />
+        <FormFeedback>{validation.errors.impression}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Paper</label>
-        <input
+        <Label className="form-label">Paper</Label>
+        <Input
           type="text"
           className="form-control"
           name="paper"
-          value={editedProduct.paper}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.paper}
+          invalid={validation.touched.paper && validation.errors.paper}
         />
+        <FormFeedback>{validation.errors.paper}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Format</label>
-        <input
+        <Label className="form-label">Format</Label>
+        <Input
           type="text"
           className="form-control"
           name="format"
-          value={editedProduct.format}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.format}
+          invalid={validation.touched.format && validation.errors.format}
         />
+        <FormFeedback>{validation.errors.format}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Quantity</label>
-        <input
+        <Label className="form-label">Quantity</Label>
+        <Input
           type="number"
           className="form-control"
           name="quantity"
-          value={editedProduct.quantity}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.quantity}
+          invalid={validation.touched.quantity && validation.errors.quantity}
         />
+        <FormFeedback>{validation.errors.quantity}</FormFeedback>
       </div>
-      <button type="submit" className="btn btn-primary" >
+      <button type="submit" className="btn btn-primary mx-2" >
         Save Changes
       </button>
-      <button type="button" className="btn btn-secondary" onClick={toggle}>
+      <button type="button" className="btn btn-secondary" onClick={props.handleCancel}>
         Cancel
       </button>
-    </form>
+    </Form>
   );
 };
 

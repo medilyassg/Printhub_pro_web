@@ -1,123 +1,118 @@
+import { useFormik } from "formik";
 import React, { useState } from "react";
+import { Form, FormFeedback, Input, Label } from "reactstrap";
+import * as Yup from "yup";
 
-const AddForm = ({ isOpen, toggle }) => {
-  const [newProduct, setNewProduct] = useState({
-    price_unit: "",
-    price_total: "",
-    impression: "",
-    paper: "",
-    format: "",
-    quantity: "",
-    sub_category_id: 1 
+const AddForm = props => {
+  const validationSchema = Yup.object({
+    price_unit: Yup.number().required("Please Enter Price Unit"),
+    price_total: Yup.number().required("Please Enter Price Total"),
+    impression: Yup.string().required("Please Enter Impression"),
+    paper: Yup.string().required("Please Enter Paper"),
+    format: Yup.string().required("Please Enter Format"),
+    quantity: Yup.number().required("Please Enter Quantity"),
   });
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setNewProduct({ ...newProduct, [name]: value });
-  };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    fetch("http://127.0.0.1:8000/api/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        price_unit: newProduct.price_unit,
-        price_total: newProduct.price_total,
-        impression: newProduct.impression,
-        paper: newProduct.paper,
-        format: newProduct.format,
-        quantity: newProduct.quantity,
-        sub_category_id: newProduct.sub_category_id
-      })
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Failed to add new product");
-        }
-      })
-      .then(data => {
-        console.log("New product added successfully:", data);
-        // Close the modal after submitting
-        toggle();
-      })
-      .catch(error => {
-        console.error("Error adding new product:", error);
-      });
-  };
-  
+  const validation = useFormik({
+    initialValues : {
+      price_unit: "",
+      price_total: "",
+      impression: "",
+      paper: "",
+      format: "",
+      quantity: "",
+      
+    },
+    validationSchema,
+    onSubmit: (values) => props.handleSave({ ...values ,sub_category_id: 1 }),
+  });
 
   
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={validation.handleSubmit}>
       <div className="mb-3">
-        <label className="form-label">Price Unit</label>
-        <input
+        <Label className="form-label">Price Unit</Label>
+        <Input
           type="number"
           step={0.1}
           className="form-control"
           name="price_unit"
-          value={newProduct.price_unit}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.price_unit}
+          invalid={validation.touched.price_unit && validation.errors.price_unit}
         />
+        <FormFeedback>{validation.errors.price_unit}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Price Total</label>
-        <input
+        <Label className="form-label">Price Total</Label>
+        <Input
           type="number"
           step={0.1}
           className="form-control"
           name="price_total"
-          value={newProduct.price_total}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.price_total}
+          invalid={validation.touched.price_total && validation.errors.price_total}
         />
+        <FormFeedback>{validation.errors.price_total}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Impression</label>
-        <input
+        <Label className="form-label">Impression</Label>
+        <Input
           type="text"
           className="form-control"
           name="impression"
-          value={newProduct.impression}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.impression}
+          invalid={validation.touched.impression && validation.errors.impression}
         />
+        <FormFeedback>{validation.errors.impression}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Paper</label>
-        <input
+        <Label className="form-label">Paper</Label>
+        <Input
           type="text"
           className="form-control"
           name="paper"
-          value={newProduct.paper}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.paper}
+          invalid={validation.touched.paper && validation.errors.paper}
         />
+        <FormFeedback>{validation.errors.paper}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Format</label>
-        <input
+        <Label className="form-label">Format</Label>
+        <Input
           type="text"
           className="form-control"
           name="format"
-          value={newProduct.format}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.format}
+          invalid={validation.touched.format && validation.errors.format}
         />
+        <FormFeedback>{validation.errors.format}</FormFeedback>
       </div>
       <div className="mb-3">
-        <label className="form-label">Quantity</label>
-        <input
+        <Label className="form-label">Quantity</Label>
+        <Input
           type="number"
           className="form-control"
           name="quantity"
-          value={newProduct.quantity}
-          onChange={handleChange}
+          onChange={validation.handleChange}
+          onBlur={validation.handleBlur}
+          value={validation.values.quantity}
+          invalid={validation.touched.quantity && validation.errors.quantity}
         />
+        <FormFeedback>{validation.errors.quantity}</FormFeedback>
       </div>
       <button type="submit" className="btn btn-primary">Add Product</button>
-      <button type="button" className="btn btn-secondary ms-2" onClick={toggle}>Cancel</button>
+      <button type="button" className="btn btn-secondary ms-2" onClick={props.handleCancel} >Cancel</button>
     </form>
   )
 }
