@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MDBDataTable } from "mdbreact";
 import { Row, Col, Badge } from "reactstrap";
 
@@ -12,6 +12,7 @@ import {
 } from "reactstrap";
 import { get, put } from "helpers/api_helper";
 import EditUserForm from "./EditUserForm";
+import usePermissions from "helpers/permissions";
 
 //Import Breadcrumb
 
@@ -22,11 +23,15 @@ const UserTable = (props) => {
   const [modal_delete, setmodal_delete] = useState(false);
   const [SelectedUser, setSlectedUser] = useState(null);
   const [error, setError] = useState(null); 
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
 
   const removeBodyCss = () => {
     document.body.classList.add("no_padding");
   };
+  useEffect(()=>{
+    checkUserPermissions();
 
+  },[])
   const tog_edit = (user) => {
     setmodal_edit(!modal_edit);
     setSlectedUser(user)
@@ -92,7 +97,7 @@ const UserTable = (props) => {
       roles:(
         <div className="d-flex align-items-center">
       {user.roles.map((role) => (
-        <Badge color="primary" className="rounded-pill bg-primary mx-1">
+        <Badge color="primary" key={role.id} className="rounded-pill bg-primary mx-1">
         {role.name}
       </Badge>
       ))}
@@ -100,13 +105,17 @@ const UserTable = (props) => {
       ),
       actions: (
         <div className="d-flex align-items-center">
-          <button className="btn btn-info btn-sm mx-2" onClick={() => tog_edit(user)}>
-            <i className="ti-pencil-alt"></i>
-          </button>
+          {hasPermissions.updateUser && 
+           <button className="btn btn-info btn-sm mx-2" onClick={() => tog_edit(user)}>
+           <i className="ti-pencil-alt"></i>
+         </button>
+          }
+          {hasPermissions.deleteUser && 
+
           <button className="btn btn-danger btn-sm mx-2" onClick={() => tog_delete(user)}>
             <i className="ti-trash"></i>
           </button>
-          
+          }
         </div>
       ),
     })),

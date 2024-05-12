@@ -50,7 +50,7 @@ const EditRolePermissionForm = (props) => {
                     checked={rolePermissions ? permission.id in rolePermissions : ""}
                     onChange={() => handleCheckboxChange(permission)}
                   />
-                  <span className="ml-2 mx-2">{permission.name}</span>
+                  <span className=" mx-2">{permission.name}</span>
                 </Label>
               </Col>
             ))}

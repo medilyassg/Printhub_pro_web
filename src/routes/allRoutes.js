@@ -13,7 +13,7 @@ import Pages500 from "../pages/Utility/pages-500";
 
 // Dashboard
 import Dashboard from "../pages/Dashboard/index";
-import Register from "pages/Authentication/Register";
+import Register from "pages/Authentication/ParticularRegister";
 import Userindex from "pages/users/users";
 import Roleindex from "pages/users/roles";
 import Permissionindex from "pages/users/permissions";
@@ -21,11 +21,14 @@ import CategoryIndex from "pages/Categories/Category";
 import SubCategoryIndex from "pages/Categories/Sub-Category";
 import Productindex from "pages/Products/product";
 import Propertyindex from "pages/Properties/property";
+import Costumerindex from "pages/users/customers";
+import RegisterIndex from "pages/Authentication/RegisterIndex";
 
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
   { path: "/users", component: <Userindex /> },
+  { path: "/costumers", component: <Costumerindex /> },
   { path: "/permissions", component: <Permissionindex /> },
   { path: "/roles", component: <Roleindex /> },
   {path:"/categories",component:<CategoryIndex/>},
@@ -43,7 +46,7 @@ const userRoutes = [
 const authRoutes = [
   { path: "/logout", component: <Logout /> },
   { path: "/login", component: <Login /> },
-  { path: "/register", component: <Register /> },
+  { path: "/register", component: <RegisterIndex /> },
   { path: "/pages-404", component: <Pages404 /> },
   { path: "/pages-500", component: <Pages500 /> },
 ];

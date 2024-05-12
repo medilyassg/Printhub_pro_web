@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
-import { Row, Col, CardBody, Card, Container, Form, FormFeedback, Label, Input, Alert } from "reactstrap";
+import { Row, Col, CardBody, Card, Form, FormFeedback, Label, Input, Alert } from "reactstrap";
 
 import * as Yup from "yup";
 
@@ -11,11 +11,10 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 // import images
-import logoSm from "../../assets/images/logo-sm.png";
 import { post } from "helpers/api_helper";
 import { useFormik } from "formik/dist";
 
-const Register = props => {
+const ProfessionalRegister = props => {
   const history = useNavigate();
 
   const dispatch = useDispatch();
@@ -91,6 +90,10 @@ const Register = props => {
       region:selectedRegion,
       city: selectedCity,
       country: 'Maroc',
+      company_size: '',
+      industry_sector: '',
+      ice: '',
+      company: '',
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Please Enter Your Email"),
@@ -106,12 +109,17 @@ const Register = props => {
       region: Yup.string().required("Please Enter Your Region"),
       city: Yup.string().required("Please Enter Your City"),
       country: Yup.string().required("Please Enter Your Country"),
+      company_size: Yup.string().required("Please Enter Your Company Size"),
+      industry_sector: Yup.string().required("Please Enter Your Industry Sector"),
+      ice: Yup.string().required("Please Enter Your Ice"),
+      company: Yup.string().required("Please Enter Your company"),
     }),
     onSubmit: async  (values) =>  {
       try {
         const response = await post('http://127.0.0.1:8000/api/register',{
           ...values,
-          addresses: [{name:values.address1,type:"nobe"}, {name:values.address2,type:"none"}]
+          addresses: [{name:values.address1,type:"nobe"}, {name:values.address2,type:"none"}],
+          customer_type:"professional",
       });
         if (response.data.user) {
 
@@ -131,24 +139,14 @@ const Register = props => {
   document.title = "Register | Veltrix - React Admin & Dashboard Template";
   return (
     <React.Fragment>
-      <div className="home-btn d-none d-sm-block">
-        <Link to="/" className="text-dark">
-          <i className="fas fa-home h2"></i>
-        </Link>
-      </div>
-      <div className="account-pages my-5 pt-sm-5">
-        <Container>
-          <Row className="justify-content-center">
+
+          <Row className="justify-content-center mt-4">
             
-            <Col md={8} lg={4} xl={8}>
+            <Col md={8} lg={4} xl={10}>
               <Card className="overflow-hidden">
                 <div className="bg-primary">
-                  <div className="text-primary text-center p-4">
-                    <h5 className="text-white font-size-20">Free Register</h5>
-                    <p className="text-white-50">Get your free Veltrix account now.</p>
-                    <Link to="/index" className="logo logo-admin">
-                      <img src={logoSm} height="24" alt="logo" />
-                    </Link>
+                  <div className="text-primary text-center ">
+                    <h5 className="text-white font-size-20 p-2">Professional Register</h5>
                   </div>
                 </div>
                 <CardBody className="p-4">
@@ -191,6 +189,98 @@ const Register = props => {
                           <FormFeedback>{validation.errors.last_name}</FormFeedback>
                         </Col>
                       </Row>
+                    <Row>
+                        <Col xs={12} sm={6} className="mb-3">
+                          <Label className="form-label" htmlFor="name">Company</Label>
+                          <Input
+                            name="company"
+                            className="form-control"
+                            placeholder="Enter COmpany Name"
+                            type="text"
+                            id="company"
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            value={validation.values.company || ""}
+                            invalid={validation.touched.company && validation.errors.company}
+                          />
+                          <FormFeedback>{validation.errors.company}</FormFeedback>
+                        </Col>
+                        <Col xs={12} sm={6} className="mb-3">
+                          <Label className="form-label" htmlFor="ice">Ice</Label>
+                          <Input
+                            name="ice"
+                            className="form-control"
+                            placeholder="Enter ice"
+                            type="text"
+                            id="ice"
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            value={validation.values.ice || ""}
+                            invalid={validation.touched.ice && validation.errors.ice}
+                          />
+                          <FormFeedback>{validation.errors.ice}</FormFeedback>
+                        </Col>
+                      </Row>
+                      <Row>
+  <Col xs={12} sm={6} className="mb-3">
+    <Label className="form-label" htmlFor="company_size">Company Size</Label>
+    <Input
+      type='select'
+      name="company_size"
+      className="form-control"
+      onChange={validation.handleChange}
+      onBlur={validation.handleBlur}
+      value={validation.values.company_size || ""}
+      invalid={validation.touched.company_size && validation.errors.company_size}
+    >
+      <option value="">Select Company Size</option>
+      
+       <option value="1 à 9">1 à 9</option>
+        <option value="10 à 49">10 à 49</option>
+        
+         <option value="50 à 99">50 à 99</option>
+          <option value="100+">100+</option>
+    </Input>
+    <FormFeedback>{validation.errors.company_size}</FormFeedback>
+  </Col>
+  <Col xs={12} sm={6} className="mb-3">
+    <Label className="form-label" htmlFor="industry_sector">Industry Sector</Label>
+    <Input
+      type='select'
+      name="industry_sector"
+      className="form-control"
+      onChange={validation.handleChange}
+      onBlur={validation.handleBlur}
+      value={validation.values.industry_sector || ""}
+      invalid={validation.touched.industry_sector && validation.errors.industry_sector}
+    >
+            <option value="">Select Industry Sector</option>
+
+       <option value="Agroalimentaire"> Agroalimentaire </option>
+        <option value="Automobile">Automobile</option>
+         <option value="Banque / Assurance"> Banque / Assurance </option>
+          <option value="BTP">BTP</option>
+        <option value="Chimie / Parachimie"> Chimie / Parachimie </option> 
+        <option value="Commerce / Négoce / Distribution"> Commerce / Négoce / Distribution </option> 
+        <option value="Edition / Communication / Multimédia"> Edition / Communication / Multimédia </option> 
+        <option value="Education">Education</option> 
+        <option value="Electronique / Electricité"> Electronique / Electricité </option> 
+        <option value="Etudes et Conseils"> Etudes et Conseils </option>
+         <option value="Hôtellerie/Restauration"> Hôtellerie/Restauration </option> 
+         <option value="Immobilier">Immobilier</option> <option value="Industrie">Industrie</option>
+          <option value="Informatique / Télécoms"> Informatique / Télécoms </option> 
+          <option value="Profession libérale"> Profession libérale </option> 
+          <option value="Pharmacie/Parapharmacie"> Pharmacie/Parapharmacie </option> 
+          <option value="Santé">Santé</option>
+           <option value="Services aux entreprises"> Services aux entreprises </option>
+            <option value="Textile">Textile</option>
+            <option value="Transport / Logistique"> Transport / Logistique </option>
+             <option value="Autre">Autre</option> 
+
+    </Input>
+    <FormFeedback>{validation.errors.industry_sector}</FormFeedback>
+  </Col>
+</Row>
                       <Row>
                         <Col xs={12} sm={6} className="mb-3">
                           <Label className="form-label" htmlFor="useremail">Email</Label>
@@ -377,13 +467,11 @@ const Register = props => {
               </div>
             </Col>
           </Row>
-        </Container>
-      </div>
     </React.Fragment>
   );
 };
 
-Register.propTypes = {
+ProfessionalRegister.propTypes = {
   registerUser: PropTypes.func,
   registerUserFailed: PropTypes.func,
   registrationError: PropTypes.any,
@@ -396,7 +484,7 @@ const mapStatetoProps = state => {
 };
 
 export default connect(mapStatetoProps, {
-  registerUser,
+  ProfessionalRegister,
   apiError,
   registerUserFailed,
-})(Register);
+})(ProfessionalRegister);

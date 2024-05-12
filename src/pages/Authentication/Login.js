@@ -1,34 +1,34 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import { connect, useSelector, useDispatch } from "react-redux";
 
 import { Row, Col, CardBody, Card, Container, Label, Form, FormFeedback, Input } from "reactstrap";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { loginUser, apiError } from "../../store/actions";
 import * as Yup from "yup";
 
 import logoSm from "../../assets/images/logo-sm.png";
 import withRouter from 'components/Common/withRouter';
 import { useFormik } from 'formik/dist';
-import { post } from 'helpers/api_helper';
 
 const Login = props => {
-  const [userLogin, setUserLogin] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
-  const naviagte=useNavigate()
+  
+  const dispatch = useDispatch();
+const [error,setError]=useState(null)
+  const [userLogin, setUserLogin] = useState([]);
+
+  const { user } = useSelector(state => ({
+    user: state.Account.user,
+  }));
+
   useEffect(() => {
-    const { user } = props;
-    if (user) {
+    if (user && user) {
       setUserLogin({
-        email: user.email || '',
-        password: user.password || ''
+        email: user.email,
+        password: user.password
       });
     }
-  }, [props.user]);
+  }, [user]);
 
   const validation = useFormik({
     enableReinitialize: true,
@@ -41,26 +41,11 @@ const Login = props => {
       email: Yup.string().required("Please Enter Your User Name"),
       password: Yup.string().required("Please Enter Your Password"),
     }),
-    onSubmit: async  (values) =>  {
-      try {
-        const response = await post('http://127.0.0.1:8000/api/login', {
-          email: values.email,
-          password: values.password
-        });
-        const token=response.data.token
-        if (token) {
-          localStorage.removeItem('token')
-          localStorage.setItem('token', token);
-          localStorage.setItem('authUser', JSON.stringify(response.data.user));
-          console.log('Token set:', token); // Check if this logs before navigating
-          naviagte("/dashboard");
-        } else {
-          setError(error.message);
+    onSubmit: (values) => {
+        dispatch(loginUser(values, props.router.navigate));
+        if(props.error){
+          setError(props.error)
         }
-      } catch (error) {
-        console.log(error)
-        setError(error.response.data.message);
-      }
     }
   });
 
@@ -94,6 +79,8 @@ const Login = props => {
                 <CardBody className="p-4">
                   <div className="p-3">
                     <Form className="mt-4" onSubmit={validation.handleSubmit} action="#">
+                    {error && <div className="mb-3 text-danger">{error}</div>}
+
                       <div className="mb-3">
                         <Label className="form-label" htmlFor="username">Username</Label>
                         <Input
@@ -133,7 +120,6 @@ const Login = props => {
                         ) : null}
                       </div>
 
-                      {error && <div className="mb-3 text-danger">{error}</div>}
 
                       <div className="mb-3 row">
                         <div className="col-sm-6">
@@ -193,4 +179,4 @@ Login.propTypes = {
   error: PropTypes.any,
   history: PropTypes.object,
   loginUser: PropTypes.func,
-};
+}

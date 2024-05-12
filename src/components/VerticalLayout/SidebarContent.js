@@ -11,39 +11,20 @@ import { Link, useLocation } from "react-router-dom";
 
 //i18n
 import { withTranslation } from "react-i18next";
+import usePermissions from "helpers/permissions";
 
 const SidebarContent = props => {
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+
   const location = useLocation();
   const ref = useRef();
   const path = location.pathname;
-  const [hasPermissions, setHasPermissions] = useState({
-    browseUsers: false,
-    browseRoles: false,
-    browsePermissions: false,
-    browseCustomers: false,
-    browseCommands: false,
-    // Add more permissions as needed
-  });
-
-  // Function to check if the authenticated user has the required permissions
-  const checkUserPermissions = () => {
-    const authUser = JSON.parse(localStorage.getItem("authUser"));
-    if (authUser && authUser.permissions) {
-      const permissions = authUser.permissions;
-      setHasPermissions({
-        browseUsers: permissions.some(permission => permission.name === "browse user"),
-        browseRoles: permissions.some(permission => permission.name === "browse role"),
-        browsePermissions: permissions.some(permission => permission.name === "browse permission"),
-        browseCustomers: permissions.some(permission => permission.name === "browse customer"),
-        browseCommands: permissions.some(permission => permission.name === "browse command "),
-        // Add more permissions as needed
-      });
-    }
-  };
+  
 
   useEffect(() => {
     new MetisMenu("#side-menu");
     checkUserPermissions();
+
   }, []);
 
   useEffect(() => {
@@ -246,9 +227,9 @@ const SidebarContent = props => {
             {hasPermissions.browseCustomers && (
 
                   <li>
-                    <Link to="#">{props.t("Costumers")} </Link>
+                    <Link to="/costumers">{props.t("Costumers")} </Link>
                   </li>
-            )}
+            )} 
 
                 </ul>
               </li>

@@ -30,10 +30,13 @@ const Breadcrumb = props => {
         </div>
       </Col>
       <Col sm={6}>
-        <div className="float-end d-none d-md-block">
+        {props.tog_add &&
+        
+        <div className="float-end  d-md-block">
                 <button onClick={props.tog_add} className="btn btn-primary  waves-effect waves-light">Add</button>
 
         </div>
+        }
       </Col>
     </Row>
   )

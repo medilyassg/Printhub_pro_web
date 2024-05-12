@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MDBDataTable } from "mdbreact";
 import { Row, Col } from "reactstrap";
 
@@ -13,6 +13,8 @@ import {
 import EditRoleForm from "./EditRoleForm";
 import EditRolePermissionForm from "./EditRolePermissionForm";
 import { get, put } from "helpers/api_helper";
+import usePermissions from "helpers/permissions";
+import useSweetAlert from "helpers/notifications";
 
 //Import Breadcrumb
 
@@ -26,7 +28,14 @@ const RoleTable = (props) => {
   const [rolesPermissions, setRolesPermissions] = useState({});
   const [error, setError] = useState(null); 
   const [message, setMessage] = useState(null); 
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
 
+  const {  showSuccessAlert, showErrorAlert } = useSweetAlert();
+
+  useEffect(()=>{
+    checkUserPermissions();
+
+  },[])
   const removeBodyCss = () => {
     document.body.classList.add("no_padding");
   };
@@ -35,6 +44,7 @@ const RoleTable = (props) => {
     setmodal_edit(!modal_edit);
     setSlectedRole(role)
     removeBodyCss();
+
   };
   const tog_delete = (role) => {
     setmodal_delete(!modal_delete);
@@ -70,9 +80,10 @@ const RoleTable = (props) => {
     try {
       const response = await put(`http://127.0.0.1:8000/api/roles/${SelectedRole.id}/give-permissions`, { permission: permissions });
       fetchRolesPermissions(response.role.id)
-      setMessage(response.message); 
+      showSuccessAlert('Edit Role Permissions', response.message);
+      tog_permissions()
     } catch (error) {
-      console.log(error)
+      showErrorAlert('Edit Role Permissions', error.response.data.message);
     }
   }
 
@@ -108,15 +119,24 @@ const RoleTable = (props) => {
       guard_name: role.guard_name,
       actions: (
         <div className="d-flex align-items-center">
+          {hasPermissions.updateRole &&
           <button className="btn btn-info btn-sm mx-2" onClick={() => tog_edit(role)}>
-            <i className="ti-pencil-alt"></i>
-          </button>
+          <i className="ti-pencil-alt"></i>
+        </button>
+          }
+          {hasPermissions.deletRole &&
+
           <button className="btn btn-danger btn-sm mx-2" onClick={() => tog_delete(role)}>
             <i className="ti-trash"></i>
           </button>
+          }
+          {hasPermissions.editRolePermissions &&
+
           <button className="btn btn-success btn-sm mx-2" onClick={() => tog_permissions(role)}>
             add / edit  permission
           </button>
+                    }
+
         </div>
       ),
     })),
@@ -132,7 +152,7 @@ const RoleTable = (props) => {
     <React.Fragment>
       <Col sm={6} md={4} xl={3}>
 
-        <Modal isOpen={modal_permissions} toggle={tog_permissions} centered>
+        <Modal isOpen={modal_permissions} toggle={tog_permissions} centered size="lg">
           <ModalHeader className="mt-0" toggle={tog_permissions}>Add / Edit Role Permissions</ModalHeader>
           <ModalBody>
             <EditRolePermissionForm message={message} rolesPermissions={rolesPermissions} role={SelectedRole} handleEdit={handleEdit} handleCancel={tog_permissions} />
@@ -194,6 +214,8 @@ const RoleTable = (props) => {
           </ModalBody>
         </Modal>
       </Col>
+      
+
       <MDBDataTable responsive bordered data={data} />
     </React.Fragment>
   );

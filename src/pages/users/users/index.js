@@ -10,11 +10,15 @@ import "../../../../src/assets/scss/datatables.scss";
 import { post, get, del, put } from "helpers/api_helper";
 import UserTable from "./table";
 import AddUserForm from "./AddUserForm";
+import usePermissions from "helpers/permissions";
+import useSweetAlert from "helpers/notifications";
 
 const Userindex = () => {
   const [modal_add, setmodal_add] = useState(false);
   const [error, setError] = useState('');
   const [users, setusers] = useState([]);
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+  const {  showSuccessAlert, showErrorAlert } = useSweetAlert();
 
   const removeBodyCss = () => {
     document.body.classList.add("no_padding");
@@ -28,35 +32,34 @@ const Userindex = () => {
   const handleSave = async (values) => {
     try {
       const response = await post('http://127.0.0.1:8000/api/users', values);
-      if (response.status === 200) {
-        setmodal_add(false)
-      } else {
+      showSuccessAlert('Add New User ', response.message);
+
         setError('');
         setmodal_add(false)
         fetchUsers();
 
-      }
+
     } catch (error) {
-      setError(error.response.data.message);
+      showErrorAlert('Add New User ', error.response.data.message);
     }
   }
 
   const handleEdit = async (id, values) => {
     try {
       const response = await put(`http://127.0.0.1:8000/api/users/${id}`, { ...values, id: id });
-      if (response.status === 200) {
-      } else {
         setError('');
         fetchUsers();
+        showSuccessAlert('Edit User ', response.message);
 
-      }
     } catch (error) {
-      setError(error.response.data.message);
+      showErrorAlert('Add New Role ', error.response.data.message);
     }
   }
 
   useEffect(() => {
     fetchUsers();
+    checkUserPermissions();
+
   }, []);
 
   const fetchUsers = async () => {
@@ -74,10 +77,11 @@ const Userindex = () => {
   const handleDelete = async (user) => {
     try {
       const response = await del(`http://127.0.0.1:8000/api/users/${user.id}`);
+      showSuccessAlert('Delete User ', response.message);
 
       fetchUsers()
     } catch (error) {
-      setError(error.response.data.message);
+      showErrorAlert('Delete ', error.response.data.message);
     }
   };
   document.title = "Users Table ";
@@ -99,7 +103,7 @@ const Userindex = () => {
       </div>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs maintitle="users" title="users" breadcrumbItem="User Table" tog_add={tog_add} />
+          <Breadcrumbs maintitle="users" title="users" breadcrumbItem="User Table" tog_add={hasPermissions.createUser && tog_add} />
 
           <Row>
             <Col className="col-12">
