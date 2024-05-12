@@ -17,7 +17,7 @@ import Breadcrumbs from "../../../components/Common/Breadcrumb"
 import "../../../../src/assets/scss/datatables.scss"
 import ProductTable from "./table"
 import AddForm from "./addForm"
-import { post, get, del, put } from "helpers/api_helper";
+import { post, get, del, put } from "helpers/api_helper"
 
 const Productindex = () => {
   const [modal_add, setmodal_add] = useState(false)
@@ -33,12 +33,9 @@ const Productindex = () => {
     removeBodyCss()
   }
 
-  const handleSave = async (values) => {
+  const handleSave = async values => {
     try {
-      const response = await post(
-        "http://127.0.0.1:8000/api/products",
-        values
-      )
+      const response = await post("http://127.0.0.1:8000/api/products", values)
       if (response.status === 200) {
         setmodal_add(false)
       } else {
@@ -46,7 +43,7 @@ const Productindex = () => {
         setmodal_add(false)
         fetchProducts()
       }
-      console.log(data);
+      console.log(data)
     } catch (error) {
       setError(error.response.data.message)
     }
@@ -67,22 +64,21 @@ const Productindex = () => {
       setError(error.response.data.message)
     }
   }
-  
+
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts()
+  }, [])
 
   const fetchProducts = async () => {
     try {
-      const response = await get("http://127.0.0.1:8000/api/products");
+      const response = await get("http://127.0.0.1:8000/api/products")
 
-      const data = await response.data;
-      setProducts(data);
+      const data = await response.data
+      setProducts(data)
     } catch (error) {
-      setError(error.response.data.message);
-
+      setError(error.response.data.message)
     }
-  };
+  }
   const handleDelete = async product => {
     try {
       const response = await del(
@@ -102,7 +98,11 @@ const Productindex = () => {
             Add New Product
           </ModalHeader>
           <ModalBody>
-            <AddForm handleCancel={tog_add} handleSave={handleSave} error={error}  />
+            <AddForm
+              handleCancel={tog_add}
+              handleSave={handleSave}
+              error={error}
+            />
           </ModalBody>
         </Modal>
       </Col>
@@ -118,7 +118,11 @@ const Productindex = () => {
             <Col className="col-12">
               <Card>
                 <CardBody>
-                  <ProductTable products={products} handleDelete={handleDelete} handleEdit={handleEdit}/>
+                  <ProductTable
+                    products={products}
+                    handleDelete={handleDelete}
+                    handleEdit={handleEdit}
+                  />
                 </CardBody>
               </Card>
             </Col>
