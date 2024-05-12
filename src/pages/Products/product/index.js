@@ -18,12 +18,15 @@ import "../../../../src/assets/scss/datatables.scss"
 import ProductTable from "./table"
 import AddForm from "./addForm"
 import { post, get, del, put } from "helpers/api_helper"
+import usePermissions from "helpers/permissions"
+import useSweetAlert from "helpers/notifications"
 
 const Productindex = () => {
   const [modal_add, setmodal_add] = useState(false)
   const [products, setProducts] = useState([])
   const [error, setError] = useState("")
-
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+  const {  showSuccessAlert, showErrorAlert } = useSweetAlert();
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
   }
@@ -36,16 +39,13 @@ const Productindex = () => {
   const handleSave = async values => {
     try {
       const response = await post("http://127.0.0.1:8000/api/products", values)
-      if (response.status === 200) {
-        setmodal_add(false)
-      } else {
         setError("")
         setmodal_add(false)
         fetchProducts()
-      }
-      console.log(data)
+        showSuccessAlert('Add new Product ', response.message);
+
     } catch (error) {
-      setError(error.response.data.message)
+      showErrorAlert('Add New Product ', error.response.data.message);
     }
   }
   const handleEdit = async (id, values) => {
@@ -54,19 +54,20 @@ const Productindex = () => {
         ...values,
         id: id,
       })
-      if (response.status === 200) {
-      } else {
+      
         setError("")
         fetchProducts()
-      }
+        showSuccessAlert('Update Product ', response.message);
+
     } catch (error) {
-      console.error("Error editing products:", error)
-      setError(error.response.data.message)
+      showErrorAlert('Update Product ', error.response.data.message);
+
     }
   }
 
   useEffect(() => {
     fetchProducts()
+    checkUserPermissions()
   }, [])
 
   const fetchProducts = async () => {
@@ -85,8 +86,10 @@ const Productindex = () => {
         `http://127.0.0.1:8000/api/products/${product.id}`
       )
       fetchProducts()
+      showSuccessAlert('Delete Product ', response.message);
+
     } catch (error) {
-      setError(error.response.data.message)
+      showErrorAlert('Delete Product ', error.response.data.message);
     }
   }
   document.title = "Products Table"
@@ -112,8 +115,7 @@ const Productindex = () => {
             maintitle="products"
             title="product"
             breadcrumbItem="Product Table"
-            tog_add={tog_add}
-          />
+            tog_add={hasPermissions.createProduct && tog_add}          />
           <Row>
             <Col className="col-12">
               <Card>

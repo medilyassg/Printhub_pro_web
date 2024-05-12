@@ -176,13 +176,18 @@ const SidebarContent = props => {
                 <span>{props.t("Products")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
-                
+              {hasPermissions.browseProduct && (
+
                 <li>
                   <Link to="/products">{props.t("Product")} </Link>
                 </li>
+              )}
+                {hasPermissions.browseProperty && (
+
                 <li>
                   <Link to="/properties">{props.t("Property")} </Link>
                 </li>
+                )}
               </ul>
             </li>
             <li>
@@ -191,13 +196,18 @@ const SidebarContent = props => {
                 <span>{props.t("Categories")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
-                
+              {hasPermissions.browseCategory && (
+
                 <li>
                   <Link to="/categories">{props.t("Category")} </Link>
                 </li>
+              )}
+                {hasPermissions.browseSubCategory && (
+
                 <li>
                   <Link to="/sub-categories">{props.t("Sub-Category")} </Link>
                 </li>
+                )}
               </ul>
             </li>
             <li>

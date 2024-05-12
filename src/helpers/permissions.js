@@ -22,6 +22,14 @@ const usePermissions = () => {
     updateSubCategory:false,
     deleteSubCategory:false,
     createSubCategory:false,
+    browseProduct:false,
+    updateProduct:false,
+    deleteProduct:false,
+    createProduct:false,
+    browseProperty:false,
+    updateProperty:false,
+    deleteProperty:false,
+    createProperty:false,
 
     // Add more permissions as needed
   });
@@ -51,7 +59,15 @@ const usePermissions = () => {
         browseSubCategory:permissions.some(permission => permission.name === "browse sub category"),
         updateSubCategory:permissions.some(permission => permission.name === "update sub category"),
         deleteSubCategory:permissions.some(permission => permission.name === "delete sub category"),
-        createSubCategory:permissions.some(permission => permission.name === "create sub category")
+        createSubCategory:permissions.some(permission => permission.name === "create sub category"),
+        browseProduct:permissions.some(permission => permission.name === "browse product"),
+        updateProduct:permissions.some(permission => permission.name === "update product"),
+        deleteProduct:permissions.some(permission => permission.name === "delete product"),
+        createProduct:permissions.some(permission => permission.name === "create product"),
+        browseProperty:permissions.some(permission => permission.name === "browse property"),
+        updateProperty:permissions.some(permission => permission.name === "update property"),
+        deleteProperty:permissions.some(permission => permission.name === "delete property"),
+        createProperty:permissions.some(permission => permission.name === "create property"),
           });
     }
   };

@@ -22,7 +22,6 @@ const UserTable = (props) => {
   const [modal_edit, setmodal_edit] = useState(false);
   const [modal_delete, setmodal_delete] = useState(false);
   const [SelectedUser, setSlectedUser] = useState(null);
-  const [error, setError] = useState(null); 
   const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
 
   const removeBodyCss = () => {

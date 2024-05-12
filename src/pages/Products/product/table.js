@@ -3,12 +3,17 @@ import { MDBDataTable } from "mdbreact"
 import { Modal, ModalBody, ModalHeader, Button } from "reactstrap"
 import EditForm from "./editForm"
 import { Row, Col, Badge } from "reactstrap"
+import usePermissions from "helpers/permissions"
 
 const ProductTable = props => {
   const [modal_edit, setmodal_edit] = useState(false)
   const [modal_delete, setmodal_delete] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+  useEffect(()=>{
+    checkUserPermissions();
 
+  },[])
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
   }
@@ -84,18 +89,24 @@ const ProductTable = props => {
       quantity: product.quantity,
       actions: (
         <div className="flex">
+                    {hasPermissions.updateProduct && 
+
           <button
             className="btn btn-info btn-sm mx-2"
             onClick={() => tog_edit(product)}
           >
             <i className="ti-pencil-alt "></i>{" "}
           </button>
+    }
+              {hasPermissions.deleteProduct && 
+
           <button
             className="btn btn-danger btn-sm"
             onClick={() => tog_delete(product)}
           >
             <i className="ti-trash"></i>
           </button>
+    }
         </div>
       ),
     })),

@@ -15,12 +15,15 @@ import "../../../../src/assets/scss/datatables.scss"
 import PropertyTable from "./table"
 import AddForm from "./addForm"
 import { post, get, del, put } from "helpers/api_helper"
+import usePermissions from "helpers/permissions"
+import useSweetAlert from "helpers/notifications"
 
 const Propertyindex = () => {
   const [modal_add, setmodal_add] = useState(false)
   const [properties, setProperties] = useState([])
   const [error, setError] = useState("")
-
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+  const {  showSuccessAlert, showErrorAlert } = useSweetAlert();
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
   }
@@ -36,16 +39,14 @@ const Propertyindex = () => {
         "http://127.0.0.1:8000/api/properties",
         values
       )
-      if (response.status === 200) {
-        console.log(response.data)
-        setmodal_add(false)
-      } else {
+      
         setError("")
         setmodal_add(false)
         fetchProperties()
-      }
+        showSuccessAlert('Add New Property ', response.message);
+
     } catch (error) {
-      setError(error.response.data.message)
+      showErrorAlert('Add New Property ', error.response.data.message);
     }
   }
 
@@ -55,19 +56,20 @@ const Propertyindex = () => {
         ...values,
         id: id,
       })
-      if (response.status === 200) {
-      } else {
+      
         setError("")
         fetchProperties()
-      }
+        showSuccessAlert('Update Property ', response.message);
+
     } catch (error) {
-      console.error("Error editing properties:", error)
-      setError(error.response.data.message)
+      showErrorAlert('Update Property ', error.response.data.message);
+
     }
   }
 
   useEffect(() => {
     fetchProperties()
+    checkUserPermissions()
   }, [])
 
   const fetchProperties = async () => {
@@ -86,8 +88,10 @@ const Propertyindex = () => {
         `http://127.0.0.1:8000/api/properties/${property.id}`
       )
       fetchProperties()
+      showSuccessAlert('Delete Property ', response.message);
+
     } catch (error) {
-      setError(error.response.data.message)
+      showErrorAlert('Delete Property ', error.response.data.message);
     }
   }
 
@@ -114,8 +118,7 @@ const Propertyindex = () => {
             maintitle="properties"
             title="property"
             breadcrumbItem="Property Table"
-            tog_add={tog_add}
-          />
+            tog_add={hasPermissions.createProperty && tog_add}          />
           <Row>
             <Col className="col-12">
               <Card>
