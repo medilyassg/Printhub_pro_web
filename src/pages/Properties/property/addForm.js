@@ -6,17 +6,22 @@ import * as Yup from "yup";
 import { get, post } from "helpers/api_helper";
 
 const AddForm = props => {
-  const [selectedMulti, setselectedMulti] = useState(null);
-  const [selectedSubcategoriesIDs, setselectedSubcategoriesIDs] = useState([]);
+  
   const [subcategories, setSubcategories] = useState([]);
+  const [SelectedCat, setSelectedCat] = useState([]);
 
   useEffect(() => {
     fetchSubcategories();
   }, []);
 
+  const handleCatChange = async (e) => {
+    const cat = e.target.value;
+    console.log(cat);
+    setSelectedCat(cat);
+}
   const fetchSubcategories = async () => {
     try {
-      const response = await get("http://127.0.0.1:8000/api/subcategories");
+      const response = await get("http://127.0.0.1:8000/api/ProprieteCategorie");
 
       const data = await response.data;
       setSubcategories(data);
@@ -25,20 +30,12 @@ const AddForm = props => {
 
     }
   };
-  const optionGroup = subcategories.map((subcategory) => ({
-    label: subcategory.nom,
-    value: subcategory.id
-  }))
+  
 
 
-  const handleMulti = (selectedOptions) => {
-    const selectedIds = selectedOptions.map(option => option.value);
-    setselectedSubcategoriesIDs(selectedIds)
-    setselectedMulti(selectedOptions);
-  };
 
   const validationSchema = Yup.object({
-    nom: Yup.string().required("Please Enter a name"),
+    name: Yup.string().required("Please Enter a name"),
     description: Yup.string().required("Please Enter description"),
     price: Yup.number().required("Please Enter price"),
   });
@@ -46,13 +43,14 @@ const AddForm = props => {
 
   const validation = useFormik({
     initialValues : {
-      nom: "",
+      name: "",
       description: "",
       price: "",
+      propriete_categorie_id: SelectedCat,
     },
     validationSchema,
     onSubmit: (values) =>{
-      props.handleSave({ ...values, sub_categories: [...selectedSubcategoriesIDs,1] })},
+      props.handleSave(values)},
   });
 
   return (
@@ -62,13 +60,13 @@ const AddForm = props => {
         <Input
           type="text"
           className="form-control"
-          name="nom"
+          name="name"
           onChange={validation.handleChange}
           onBlur={validation.handleBlur}
-          value={validation.values.nom || ""}
-          invalid={validation.touched.nom && validation.errors.nom}
+          value={validation.values.name || ""}
+          invalid={validation.touched.name && validation.errors.name}
         />
-        <FormFeedback>{validation.errors.nom}</FormFeedback>
+        <FormFeedback>{validation.errors.name}</FormFeedback>
       </div>
       <div className="mb-3">
         <Label className="form-label">Description</Label>
@@ -101,14 +99,21 @@ const AddForm = props => {
       </div>
       <div className="mb-3">
         <Label className="form-label">Subcategories</Label>
-        <Select
-          name="sub_categories"
-          value={selectedMulti}
-          isMulti={true}
-          onChange={handleMulti}
-          options={optionGroup}
+        <Input
+          type="select"
+          name="propriete_categorie_id"
+          value={SelectedCat}
+          onChange={(e)=>{handleCatChange(e) 
+            validation.handleChange(e)}}
           classNamePrefix="select2-selection"
-        />
+          invalid={validation.touched.propriete_categorie_id && validation.errors.propriete_categorie_id}
+        >
+          <option value="">Select Region</option>
+          {subcategories && subcategories.map((cat, index) => (
+            <option key={index} value={cat.id}>{cat.name}</option>
+          ))}
+          
+        </Input>
       </div>
       <FormFeedback>{validation.errors.subcategories}</FormFeedback>
       <button type="submit" className="btn btn-primary">Add Property</button>

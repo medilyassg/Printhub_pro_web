@@ -30,6 +30,10 @@ const usePermissions = () => {
     updateProperty:false,
     deleteProperty:false,
     createProperty:false,
+    createProprieteCategorie:false,
+    browseProprieteCategorie:false,
+    deleteProprieteCategorie:false,
+    updateProprieteCategorie:false,
 
     // Add more permissions as needed
   });
@@ -68,6 +72,11 @@ const usePermissions = () => {
         updateProperty:permissions.some(permission => permission.name === "update property"),
         deleteProperty:permissions.some(permission => permission.name === "delete property"),
         createProperty:permissions.some(permission => permission.name === "create property"),
+
+        browseProprieteCategorie:permissions.some(permission => permission.name === "browse Propriete Categorie"),
+        updateProprieteCategorie:permissions.some(permission => permission.name === "update Propriete Categorie"),
+        deleteProprieteCategorie:permissions.some(permission => permission.name === "delete Propriete Categorie"),
+        createProprieteCategorie:permissions.some(permission => permission.name === "create Propriete Categorie"),
           });
     }
   };
