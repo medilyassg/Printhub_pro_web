@@ -21,6 +21,7 @@ import Productindex from "pages/Products/product";
 import Propertyindex from "pages/Properties/property";
 import Costumerindex from "pages/users/customers";
 import RegisterIndex from "pages/Authentication/RegisterIndex";
+import OrderIndex from "pages/Orders/Order";
 
 
 const userRoutes = [
@@ -32,6 +33,7 @@ const userRoutes = [
   {path:"/sub-categories",component:<SubCategoryIndex/>},
   { path: "/products", component: <Productindex /> },
   { path: "/properties", component: <Propertyindex /> },
+  { path: "/orders", component: <OrderIndex /> },
 
   // //profile
   { path: "/profile", component: <UserProfile /> },
