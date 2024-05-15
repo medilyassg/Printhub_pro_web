@@ -109,7 +109,7 @@ const EditForm = props => {
       price_unit: props.product.price_unit || "",
       quantity: props.product.quantity || "",
       quantity_type: props.product.quantity_type || "",
-      sub_category_id: SelectedSubCat || "",
+      sub_category_id: props.product.subCategory.id,
       propriete: [],
 
     },
