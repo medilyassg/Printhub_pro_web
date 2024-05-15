@@ -25,8 +25,8 @@ const Productindex = () => {
   const [modal_add, setmodal_add] = useState(false)
   const [products, setProducts] = useState([])
   const [error, setError] = useState("")
-  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
-  const {  showSuccessAlert, showErrorAlert } = useSweetAlert();
+  const { hasPermissions, checkUserPermissions } = usePermissions() // Call the usePermissions hook
+  const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
   }
@@ -39,13 +39,12 @@ const Productindex = () => {
   const handleSave = async values => {
     try {
       const response = await post("http://127.0.0.1:8000/api/products", values)
-        setError("")
-        setmodal_add(false)
-        fetchProducts()
-        showSuccessAlert('Add new Product ', response.message);
-
+      setError("")
+      setmodal_add(false)
+      fetchProducts()
+      showSuccessAlert("Add new Product ", response.message)
     } catch (error) {
-      showErrorAlert('Add New Product ', error.response.data.message);
+      showErrorAlert("Add New Product ", error.response.data.message)
     }
   }
   const handleEdit = async (id, values) => {
@@ -54,14 +53,12 @@ const Productindex = () => {
         ...values,
         id: id,
       })
-      
-        setError("")
-        fetchProducts()
-        showSuccessAlert('Update Product ', response.message);
 
+      setError("")
+      fetchProducts()
+      showSuccessAlert("Update Product ", response.message)
     } catch (error) {
-      showErrorAlert('Update Product ', error.response.data.message);
-
+      showErrorAlert("Update Product ", error.response.data.message)
     }
   }
 
@@ -86,17 +83,16 @@ const Productindex = () => {
         `http://127.0.0.1:8000/api/products/${product.id}`
       )
       fetchProducts()
-      showSuccessAlert('Delete Product ', response.message);
-
+      showSuccessAlert("Delete Product ", response.message)
     } catch (error) {
-      showErrorAlert('Delete Product ', error.response.data.message);
+      showErrorAlert("Delete Product ", error.response.data.message)
     }
   }
   document.title = "Products Table"
   return (
     <React.Fragment>
       <Col sm={6} md={4} xl={3}>
-        <Modal isOpen={modal_add} toggle={tog_add} centered>
+        <Modal isOpen={modal_add} toggle={tog_add} centered size="lg">
           <ModalHeader className="mt-0" toggle={tog_add}>
             Add New Product
           </ModalHeader>
@@ -115,7 +111,8 @@ const Productindex = () => {
             maintitle="products"
             title="product"
             breadcrumbItem="Product Table"
-            tog_add={hasPermissions.createProduct && tog_add}          />
+            tog_add={hasPermissions.createProduct && tog_add}
+          />
           <Row>
             <Col className="col-12">
               <Card>
