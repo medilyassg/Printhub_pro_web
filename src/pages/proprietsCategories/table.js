@@ -5,10 +5,10 @@ import EditForm from "./editForm"
 import { Row, Col, Badge } from "reactstrap"
 import usePermissions from "helpers/permissions"
 
-const PropertyTable = props => {
+const ProprieteCategorieTable = props => {
   const [modal_edit, setmodal_edit] = useState(false)
   const [modal_delete, setmodal_delete] = useState(false)
-  const [selectedProperty, setSelectedProperty] = useState(null)
+  const [selectedProprieteCategorie, setSelectedProprieteCategorie] = useState(null)
   const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
   useEffect(()=>{
     checkUserPermissions();
@@ -20,13 +20,13 @@ const PropertyTable = props => {
 
   const tog_edit = property => {
     setmodal_edit(!modal_edit)
-    setSelectedProperty(property)
+    setSelectedProprieteCategorie(property)
     removeBodyCss()
   }
 
   const tog_delete = property => {
     setmodal_delete(!modal_delete)
-    setSelectedProperty(property)
+    setSelectedProprieteCategorie(property)
     removeBodyCss()
   }
   const data = {
@@ -50,31 +50,18 @@ const PropertyTable = props => {
         width: 150,
       },
       {
-        label: "Price",
-        field: "price",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "category ",
-        field: "category",
-        width: 150,
-      },
-      {
         label: "Actions",
         field: "actions",
         width: 150,
       },
     ],
-    rows: props.properties.map(property => ({
+    rows: props.ProprieteCategories.map(property => ({
       id: property.id,
       name: property.name,
       description: property.description,
-      price: property.price,
-      category: property.category.name,
       actions: (
         <div className="flex">
-                    {hasPermissions.updateProperty && 
+                    {hasPermissions.updateProprieteCategorie && 
 
           <button
             className="btn btn-info btn-sm mx-2"
@@ -83,7 +70,7 @@ const PropertyTable = props => {
             <i className="ti-pencil-alt "></i>{" "}
           </button>
     }
-              {hasPermissions.deleteProperty && 
+              {hasPermissions.deleteProprieteCategorie && 
 
           <button
             className="btn btn-danger btn-sm"
@@ -101,12 +88,12 @@ const PropertyTable = props => {
     <React.Fragment>
       <Modal isOpen={modal_edit} toggle={tog_edit} centered>
         <ModalHeader className="mt-0" toggle={tog_edit}>
-          Edit Property
+          Edit ProprieteCategorie
         </ModalHeader>
         <ModalBody>
           <EditForm
             isOpen={modal_edit}
-            property={selectedProperty}
+            property={selectedProprieteCategorie}
             toggle={tog_edit}
             handleEdit={(id, values) => {
               props.handleEdit(id, values)
@@ -118,7 +105,7 @@ const PropertyTable = props => {
       </Modal>
       <Modal isOpen={modal_delete} toggle={tog_delete} centered>
         <ModalHeader className="mt-0" toggle={tog_delete}>
-          Delete Property
+          Delete ProprieteCategorie
         </ModalHeader>
         <ModalBody>
           <Row>
@@ -140,7 +127,7 @@ const PropertyTable = props => {
                   type="button"
                   className="btn btn-success btn-lg ms-2"
                   onClick={() => {
-                    props.handleDelete(selectedProperty)
+                    props.handleDelete(selectedProprieteCategorie)
                     tog_delete()
                   }}
                 >
@@ -163,4 +150,4 @@ const PropertyTable = props => {
   )
 }
 
-export default PropertyTable
+export default ProprieteCategorieTable

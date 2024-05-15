@@ -6,28 +6,28 @@ import * as Yup from "yup";
 import { get } from "helpers/api_helper";
 
 const EditForm = (props) => {
-  const [selectedMulti, setselectedMulti] = useState([]);
-  const [selectedSubcategoriesIDs, setselectedSubcategoriesIDs] = useState([]);
   const [subcategories, setSubcategories] = useState([]);
+  const [SelectedCat, setSelectedCat] = useState([]);
 
   useEffect(() => {
     fetchSubcategories();
   }, []);
 
   useEffect(() => {
-    if (props.property.sub_categories) {
-      const selectedProperty = props.property.sub_categories.map((subcategory) => ({
-        label: subcategory.nom,
-        value: subcategory.id
-      }));
-      setselectedMulti(selectedProperty);
-      setselectedSubcategoriesIDs(selectedProperty.map((subcategory) => subcategory.value));
+    if (props.property.category) {
+        setSelectedCat(props.property.category.id)
     }
   }, [props.property]);
 
+
+  const handleCatChange = async (e) => {
+    const cat = e.target.value;
+    console.log(cat);
+    setSelectedCat(cat);
+}
   const fetchSubcategories = async () => {
     try {
-      const response = await get("http://127.0.0.1:8000/api/subcategories");
+      const response = await get("http://127.0.0.1:8000/api/ProprieteCategorie");
       const data = await response.data;
       setSubcategories(data);
     } catch (error) {
@@ -35,33 +35,22 @@ const EditForm = (props) => {
     }
   };
 
-  const optionGroup = subcategories.map((subcategory) => ({
-    label: subcategory.nom,
-    value: subcategory.id
-  }));
-
-  const handleMulti = (selectedOptions) => {
-    const selectedIds = selectedOptions.map((option) => option.value);
-    setselectedSubcategoriesIDs(selectedIds);
-    setselectedMulti(selectedOptions);
-  };
-
   const validationSchema = Yup.object({
-    nom: Yup.string().required("Please Enter a name"),
+    name: Yup.string().required("Please Enter a name"),
     description: Yup.string().required("Please Enter description"),
     price: Yup.number().required("Please Enter price"),
   });
 
   const validation = useFormik({
     initialValues: {
-      nom: props.property.nom || "",
+      name: props.property.name || "",
       description: props.property.description || "",
       price: props.property.price || "",
+      propriete_categorie_id: SelectedCat,
     },
     validationSchema,
-    onSubmit: (values) => {
-      props.handleEdit(props.property.id, { ...values, sub_categories: selectedSubcategoriesIDs });
-    },
+    onSubmit: (values) =>{
+      props.handleEdit(props.property.id, values)},
   });
 
   return (
@@ -71,13 +60,13 @@ const EditForm = (props) => {
         <Input
           type="text"
           className="form-control"
-          name="nom"
+          name="name"
           onChange={validation.handleChange}
           onBlur={validation.handleBlur}
-          value={validation.values.nom}
-          invalid={validation.touched.nom && validation.errors.nom}
+          value={validation.values.name || ""}
+          invalid={validation.touched.name && validation.errors.name}
         />
-        <FormFeedback>{validation.errors.nom}</FormFeedback>
+        <FormFeedback>{validation.errors.name}</FormFeedback>
       </div>
       <div className="mb-3">
         <Label className="form-label">Description</Label>
@@ -85,9 +74,10 @@ const EditForm = (props) => {
           type="text"
           className="form-control"
           name="description"
+          id="description"
           onChange={validation.handleChange}
           onBlur={validation.handleBlur}
-          value={validation.values.description}
+          value={validation.values.description || ""}
           invalid={validation.touched.description && validation.errors.description}
         />
         <FormFeedback>{validation.errors.description}</FormFeedback>
@@ -99,26 +89,34 @@ const EditForm = (props) => {
           step={0.1}
           className="form-control"
           name="price"
+          id="price"
           onChange={validation.handleChange}
           onBlur={validation.handleBlur}
-          value={validation.values.price}
+          value={validation.values.price || ""}
           invalid={validation.touched.price && validation.errors.price}
         />
         <FormFeedback>{validation.errors.price}</FormFeedback>
       </div>
       <div className="mb-3">
-        <Label className="form-label">Subcategories</Label>
-        <Select
-          name="sub_categories"
-          value={selectedMulti}
-          isMulti={true}
-          onChange={handleMulti}
-          options={optionGroup}
+        <Label className="form-label">category </Label>
+        <Input
+          type="select"
+          name="propriete_categorie_id"
+          value={SelectedCat}
+          onChange={(e)=>{handleCatChange(e) 
+            validation.handleChange(e)}}
           classNamePrefix="select2-selection"
-        />
+          invalid={validation.touched.propriete_categorie_id && validation.errors.propriete_categorie_id}
+        >
+          <option value="">Select Region</option>
+          {subcategories && subcategories.map((cat, index) => (
+            <option key={index} value={cat.id}>{cat.name}</option>
+          ))}
+          
+        </Input>
       </div>
-      <FormFeedback>{validation.errors.sub_categories}</FormFeedback>
-      <button type="submit" className="btn btn-primary">Update Property</button>
+      <FormFeedback>{validation.errors.subcategories}</FormFeedback>
+      <button type="submit" className="btn btn-primary">edit Property</button>
       <button type="button" className="btn btn-secondary ms-2" onClick={props.handleCancel}>Cancel</button>
     </form>
   );

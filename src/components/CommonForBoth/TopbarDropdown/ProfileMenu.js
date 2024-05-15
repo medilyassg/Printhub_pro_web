@@ -24,18 +24,11 @@ const ProfileMenu = props => {
   const [username, setusername] = useState("Admin")
 
   useEffect(() => {
-    if (localStorage.getItem("authUser")) {
-      if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
+    if (localStorage.getItem("authUser")) {        
         const obj = JSON.parse(localStorage.getItem("authUser"))
-        setusername(obj.displayName)
-      } else if (
-        process.env.REACT_APP_DEFAULTAUTH === "fake" ||
-        process.env.REACT_APP_DEFAULTAUTH === "jwt"
-      ) {
-        const obj = JSON.parse(localStorage.getItem("authUser"))
-        setusername(obj.username)
+        setusername(obj.user.name)
       }
-    }
+    
   }, [props.success])
 
   return (
@@ -64,19 +57,11 @@ const ProfileMenu = props => {
           </DropdownItem>
           <DropdownItem tag="a" href="#">
             {" "}
-            <i className="mdi mdi-wallet font-size-17 align-middle me-1" />
-            {props.t("My Wallet")}{" "}
+            <i className="mdi mdi-home font-size-17 align-middle me-1" />
+            {props.t("Home")}{" "}
           </DropdownItem>
-          <DropdownItem tag="a" href="#">
-            {" "}
-            <i className="mdi mdi-cog font-size-17 align-middle me-1" />
-            {props.t("Settings")}{" "}
-            <span className="badge bg-success ms-auto">11</span>
-          </DropdownItem>
-          <DropdownItem tag="a" href="#">
-            <i className="mdi mdi-lock-open-outline font-size-17 align-middle me-1" />
-            {props.t("Lock screen")}
-          </DropdownItem>
+         
+         
           <div className="dropdown-divider" />
           <Link to="/logout" className="dropdown-item text-danger">
             <i className="bx bx-power-off font-size-17 align-middle me-1 text-danger" />

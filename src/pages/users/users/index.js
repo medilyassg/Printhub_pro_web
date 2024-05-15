@@ -52,7 +52,7 @@ const Userindex = () => {
         showSuccessAlert('Edit User ', response.message);
 
     } catch (error) {
-      showErrorAlert('Add New Role ', error.response.data.message);
+      showErrorAlert('Edit User ', error.response.data.message);
     }
   }
 

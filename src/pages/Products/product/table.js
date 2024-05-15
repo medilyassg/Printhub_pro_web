@@ -9,7 +9,7 @@ const ProductTable = props => {
   const [modal_edit, setmodal_edit] = useState(false)
   const [modal_delete, setmodal_delete] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
-  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hoo
   useEffect(()=>{
     checkUserPermissions();
 
@@ -38,38 +38,50 @@ const ProductTable = props => {
         width: 150,
       },
       {
-        label: "Price Unit",
+        label: "images",
+        field: "images",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "name",
+        field: "name",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "slug",
+        field: "slug",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "description",
+        field: "description",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "design_price",
+        field: "design_price",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "price_unit",
         field: "price_unit",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "Price Total",
-        field: "price_total",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "Impression",
-        field: "impression",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "Paper",
-        field: "paper",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "Format",
-        field: "format",
         sort: "asc",
         width: 150,
       },
       {
         label: "Quantity",
         field: "quantity",
+        sort: "asc",
+        width: 150,
+      },
+      {
+        label: "subCategory name",
+        field: "subCategory",
         sort: "asc",
         width: 150,
       },
@@ -81,12 +93,14 @@ const ProductTable = props => {
     ],
     rows: props.products.map(product => ({
       id: product.id,
+      images: product.images,
+      name: product.name,
+      slug: product.slug,
+      description: product.description,
+      design_price: product.design_price,
       price_unit: product.price_unit,
-      price_total: product.price_total,
-      impression: product.impression,
-      paper: product.paper,
-      format: product.format,
       quantity: product.quantity,
+      subCategory : product.subCategory.nom,
       actions: (
         <div className="flex">
                     {hasPermissions.updateProduct && 

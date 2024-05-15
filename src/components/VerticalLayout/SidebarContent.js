@@ -188,6 +188,9 @@ const SidebarContent = props => {
                   <Link to="/properties">{props.t("Property")} </Link>
                 </li>
                 )}
+                 <li>
+                  <Link to="/propriets-categories">{props.t("propriets-categories")} </Link>
+                </li>
               </ul>
             </li>
             <li>
@@ -208,6 +211,8 @@ const SidebarContent = props => {
                   <Link to="/sub-categories">{props.t("Sub-Category")} </Link>
                 </li>
                 )}
+                <li>
+                </li>
               </ul>
             </li>
             <li>
