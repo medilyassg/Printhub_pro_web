@@ -223,11 +223,11 @@ const SidebarContent = props => {
                 {hasPermissions.browseProperty && (
 
                   <li>
-                    <Link to="/properties">{props.t("Property")} </Link>
+                    <Link to="/properties">{props.t("Attributs")} </Link>
                   </li>
                 )}
                 <li>
-                  <Link to="/propriets-categories">{props.t("propriets-categories")} </Link>
+                  <Link to="/propriets-categories">{props.t("Attributs category")} </Link>
                 </li>
               </ul>
             </li>
