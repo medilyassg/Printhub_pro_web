@@ -52,4 +52,7 @@ const authRoutes = [
   { path: "/pages-500", component: <Pages500 /> },
 ];
 
+// const clientRoutes = [
+//   { path: "/home", component: <Logout /> },
+// ];
 export { userRoutes, authRoutes };

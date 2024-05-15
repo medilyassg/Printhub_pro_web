@@ -1,19 +1,15 @@
-import { useFormik } from "formik";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Label, Input, FormFeedback } from "reactstrap";
-import Select from "react-select";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import { get } from "helpers/api_helper";
 
 const EditForm = (props) => {
-  
   const validationSchema = Yup.object({
-    name: Yup.string().required("Please Enter a name"),
-    description: Yup.string().required("Please Enter description"),
-    price: Yup.number().required("Please Enter price"),
+    name: Yup.string().required("Please enter a name"),
+    description: Yup.string().required("Please enter a description"),
   });
 
-  const validation = useFormik({
+  const formik = useFormik({
     initialValues: {
       name: props.property.name || "",
       description: props.property.description || "",
@@ -25,19 +21,19 @@ const EditForm = (props) => {
   });
 
   return (
-    <form onSubmit={validation.handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
       <div className="mb-3">
         <Label className="form-label">Name</Label>
         <Input
           type="text"
           className="form-control"
           name="name"
-          onChange={validation.handleChange}
-          onBlur={validation.handleBlur}
-          value={validation.values.name}
-          invalid={validation.touched.name && validation.errors.name}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.name}
+          invalid={formik.touched.name && formik.errors.name}
         />
-        <FormFeedback>{validation.errors.name}</FormFeedback>
+        <FormFeedback>{formik.errors.name}</FormFeedback>
       </div>
       <div className="mb-3">
         <Label className="form-label">Description</Label>
@@ -45,15 +41,20 @@ const EditForm = (props) => {
           type="text"
           className="form-control"
           name="description"
-          onChange={validation.handleChange}
-          onBlur={validation.handleBlur}
-          value={validation.values.description}
-          invalid={validation.touched.description && validation.errors.description}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.description}
+          invalid={formik.touched.description && formik.errors.description}
         />
-        <FormFeedback>{validation.errors.description}</FormFeedback>
+        <FormFeedback>{formik.errors.description}</FormFeedback>
       </div>
-      <button type="submit" className="btn btn-primary">Update ProprieteCategorie</button>
-      <button type="button" className="btn btn-secondary ms-2" onClick={props.handleCancel}>Cancel</button>
+
+      <button type="submit" className="btn btn-primary">
+        Update Propriete Categorie
+      </button>
+      <button type="button" className="btn btn-secondary ms-2" onClick={props.handleCancel}>
+        Cancel
+      </button>
     </form>
   );
 };

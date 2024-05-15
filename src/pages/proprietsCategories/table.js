@@ -9,11 +9,10 @@ const ProprieteCategorieTable = props => {
   const [modal_edit, setmodal_edit] = useState(false)
   const [modal_delete, setmodal_delete] = useState(false)
   const [selectedProprieteCategorie, setSelectedProprieteCategorie] = useState(null)
-  const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
-  useEffect(()=>{
-    checkUserPermissions();
-
-  },[])
+  const { hasPermissions, checkUserPermissions } = usePermissions() // Call the usePermissions hook
+  useEffect(() => {
+    checkUserPermissions()
+  }, [])
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
   }
@@ -61,24 +60,22 @@ const ProprieteCategorieTable = props => {
       description: property.description,
       actions: (
         <div className="flex">
-                    {hasPermissions.updateProprieteCategorie && 
-
-          <button
-            className="btn btn-info btn-sm mx-2"
-            onClick={() => tog_edit(property)}
-          >
-            <i className="ti-pencil-alt "></i>{" "}
-          </button>
-    }
-              {hasPermissions.deleteProprieteCategorie && 
-
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={() => tog_delete(property)}
-          >
-            <i className="ti-trash"></i>
-          </button>
-    }
+          {hasPermissions.updateProprieteCategorie && (
+            <button
+              className="btn btn-info btn-sm mx-2"
+              onClick={() => tog_edit(property)}
+            >
+              <i className="ti-pencil-alt "></i>{" "}
+            </button>
+          )}
+          {hasPermissions.deleteProprieteCategorie && (
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => tog_delete(property)}
+            >
+              <i className="ti-trash"></i>
+            </button>
+          )}
         </div>
       ),
     })),
@@ -88,7 +85,7 @@ const ProprieteCategorieTable = props => {
     <React.Fragment>
       <Modal isOpen={modal_edit} toggle={tog_edit} centered>
         <ModalHeader className="mt-0" toggle={tog_edit}>
-          Edit ProprieteCategorie
+          Edit Propriete Categorie
         </ModalHeader>
         <ModalBody>
           <EditForm
@@ -105,7 +102,7 @@ const ProprieteCategorieTable = props => {
       </Modal>
       <Modal isOpen={modal_delete} toggle={tog_delete} centered>
         <ModalHeader className="mt-0" toggle={tog_delete}>
-          Delete ProprieteCategorie
+          Delete Propriete Categorie
         </ModalHeader>
         <ModalBody>
           <Row>
