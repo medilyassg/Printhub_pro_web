@@ -19,7 +19,7 @@ const SidebarContent = props => {
   const location = useLocation();
   const ref = useRef();
   const path = location.pathname;
-  
+
 
   useEffect(() => {
     new MetisMenu("#side-menu");
@@ -146,7 +146,7 @@ const SidebarContent = props => {
   return (
     <React.Fragment>
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
-      <div id="sidebar-menu">
+        <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
             <li className="menu-title">{props.t("Main")} </li>
             <li>
@@ -156,100 +156,100 @@ const SidebarContent = props => {
                 <span>{props.t("Dashboard")}</span>
               </Link>
             </li>
-            <li>
-              <Link to="/orders" className="waves-effect">
-                <i className="ti-home"></i>
-                <span>{props.t("Orders")}</span>
-              </Link>
-            </li>
-            
-
-            
-
-           
-
-
 
             <li>
-              <Link to="#" className="has-arrow waves-effect">
-                <i className="ti-email"></i>
-                <span>{props.t("Products")}</span>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-user"></i>
+                <span>{props.t("User Management")}</span>
               </Link>
               <ul className="sub-menu" aria-expanded="false">
-              {hasPermissions.browseProduct && (
-
-                <li>
-                  <Link to="/products">{props.t("Product")} </Link>
-                </li>
-              )}
-                {hasPermissions.browseProperty && (
-
-                <li>
-                  <Link to="/properties">{props.t("Property")} </Link>
-                </li>
-                )}
-                 <li>
-                  <Link to="/propriets-categories">{props.t("propriets-categories")} </Link>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <Link to="#" className="has-arrow waves-effect">
-                <i className="ti-email"></i>
-                <span>{props.t("Categories")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-              {hasPermissions.browseCategory && (
-
-                <li>
-                  <Link to="/categories">{props.t("Category")} </Link>
-                </li>
-              )}
-                {hasPermissions.browseSubCategory && (
-
-                <li>
-                  <Link to="/sub-categories">{props.t("Sub-Category")} </Link>
-                </li>
-                )}
-                <li>
-                </li>
-              </ul>
-            </li>
-            <li>
-                <Link to="#" className="has-arrow waves-effect">
-                  <i className="ti-email"></i>
-                  <span>{props.t("Users")}</span>
-                </Link>
-                <ul className="sub-menu" aria-expanded="false">
                 {hasPermissions.browseUsers && (
 
                   <li>
                     <Link to="/users">{props.t("Users")}</Link>
                   </li>
-                              )}
-            {hasPermissions.browseRoles && (
+                )}
+                {hasPermissions.browseRoles && (
 
                   <li>
                     <Link to="/roles">{props.t("Roles")} </Link>
                   </li>
-                              )}
-            {hasPermissions.browsePermissions && (
-
-                  <li>
-                    <Link to="/permissions">{props.t("Permissions")} </Link>
-                  </li>
-                              )}
-            {hasPermissions.browseCustomers && (
+                )}
+                
+                {hasPermissions.browseCustomers && (
 
                   <li>
                     <Link to="/costumers">{props.t("Costumers")} </Link>
                   </li>
-            )} 
+                )}
 
-                </ul>
-              </li>
+              </ul>
+            </li>
 
-              
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-folder"></i>
+                <span>{props.t("Manage Categories")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                {hasPermissions.browseCategory && (
+
+                  <li>
+                    <Link to="/categories">{props.t("Category")} </Link>
+                  </li>
+                )}
+                {hasPermissions.browseSubCategory && (
+
+                  <li>
+                    <Link to="/sub-categories">{props.t("Sub-Category")} </Link>
+                  </li>
+                )}
+                <li>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-shopping-cart"></i>
+                <span>{props.t("Product Management")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                {hasPermissions.browseProduct && (
+
+                  <li>
+                    <Link to="/products">{props.t("Product")} </Link>
+                  </li>
+                )}
+                {hasPermissions.browseProperty && (
+
+                  <li>
+                    <Link to="/properties">{props.t("Property")} </Link>
+                  </li>
+                )}
+                <li>
+                  <Link to="/propriets-categories">{props.t("propriets-categories")} </Link>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <Link to="/#" className="has-arrow waves-effect">
+                <i className="ti-receipt"></i>
+                <span>{props.t("Orders Management")}</span>
+              </Link>
+              <ul className="sub-menu" aria-expanded="false">
+                {hasPermissions.browseProduct && (
+
+                  <li>
+                    <Link to="/orders" >{props.t("Orders")}</Link>
+                  </li>
+                )}
+
+
+              </ul>
+            </li>
+
+
+
 
 
 

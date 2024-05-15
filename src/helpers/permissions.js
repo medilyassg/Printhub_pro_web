@@ -47,7 +47,7 @@ const usePermissions = () => {
         browseUsers: permissions.some(permission => permission.name === "browse user"),
         browseRoles: permissions.some(permission => permission.name === "browse role"),
         browsePermissions: permissions.some(permission => permission.name === "browse permission"),
-        browseCustomers: permissions.some(permission => permission.name === "browse customer"),
+        browseCustomers: permissions.some(permission => permission.name === "browse costumer"),
         browseCommands: permissions.some(permission => permission.name === "browse command"),
         updateRole:permissions.some(permission => permission.name === "update role"),
         deletRole:permissions.some(permission => permission.name === "delete role"),
