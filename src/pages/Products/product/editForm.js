@@ -18,13 +18,15 @@ const EditForm = props => {
   const [categories, setCategories] = useState([])
   const [selectedProperties, setSelectedProperties] = useState([])
   const [openSubcategory, setOpenSubcategory] = useState(null)
-  const [SelectedSubCat, setSelectedSubCat] = useState([])
+  const [SelectedSubCat, setSelectedSubCat] = useState(null)
 
   useEffect(() => {
-    if (props.product.subCategory) {
+    if (props.product && props.product.subCategory) { 
       setSelectedSubCat(props.product.subCategory.id)
     }
-    setSelectedProperties(props.product.propriete.map(property => property.id))
+    if (props.product && props.product.propriete) { 
+      setSelectedProperties(props.product.propriete.map(property => property.id))
+    }
   }, [props.product])
 
   const toggleSubcategory = index => {
@@ -38,6 +40,7 @@ const EditForm = props => {
   const handleSubCatChange = async e => {
     const subcat = e.target.value
     setSelectedSubCat(subcat)
+    validation.setFieldValue('sub_category_id', subcat);
   }
 
   useEffect(() => {
@@ -99,14 +102,14 @@ const EditForm = props => {
 
   const validation = useFormik({
     initialValues: {
-      name: props.product.name,
-      slug: props.product.slug,
-      description: props.product.description,
-      design_price: props.product.design_price,
-      price_unit: props.product.price_unit,
-      quantity: props.product.quantity,
-      quantity_type: props.product.quantity_type,
-      sub_category_id: SelectedSubCat,
+      name: props.product.name || "",
+      slug: props.product.slug || "",
+      description: props.product.description || "",
+      design_price: props.product.design_price || "",
+      price_unit: props.product.price_unit || "",
+      quantity: props.product.quantity || "",
+      quantity_type: props.product.quantity_type || "",
+      sub_category_id: SelectedSubCat || "",
       propriete: [],
 
     },
