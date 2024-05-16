@@ -377,7 +377,7 @@ const Navbar = props => {
               </nav>
             </div>
 
-            <div className="col-sm-2 part3 d-flex aligin-items-center">
+            {/* <div className="col-sm-2 part3 d-flex aligin-items-center">
               <div className="phNu d-flex aligin-items-center">
                 <span>
                   <HeadphonesOutlined />
@@ -387,7 +387,7 @@ const Navbar = props => {
                   <p className="mb-0">24/7 Support Center </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

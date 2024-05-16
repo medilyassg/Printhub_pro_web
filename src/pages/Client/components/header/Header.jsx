@@ -12,15 +12,7 @@ import IconAccount from "../../images/icon-user.svg";
 import { Button } from "reactstrap";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import {
-  ArrowBack,
-  FavoriteBorderOutlined,
-  LoginOutlined,
-  MapOutlined,
-  Person2Outlined,
-  SearchOffOutlined,
-  SettingsAccessibility,
-} from "@mui/icons-material";
+import { ArrowBack, FavoriteBorderOutlined, LoginOutlined, MapOutlined, Person2Outlined, SearchOffOutlined, SettingsAccessibility } from "@mui/icons-material";
 import { ClickAwayListener } from "@mui/base/ClickAwayListener";
 import Navbar from "./nav/Navbar";
 import { Link } from "react-router-dom";
@@ -31,41 +23,13 @@ const Header = (props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   const [categoire, setcategoris] = useState([
-    "Milks & Dairies",
-    "Wines & Drinks",
-    "Clothings & Beauty",
-    "Fresh SeaFood",
-    "Pets Food & Toys",
-    "Fast Food",
-    "Baking Materials",
-    "Vegetables",
-    "Frest Foods",
-    "read & Jucies",
-    "Fresh SeaFood",
+    "Milks & Dairies", "Wines & Drinks", "Clothings & Beauty", "Fresh SeaFood", "Pets Food & Toys", "Fast Food", "Baking Materials", "Vegetables", "Frest Foods", "read & Jucies", "Fresh SeaFood"
   ]);
 
   const [openDropDown, setOpenDropDown] = useState(false);
-  const countryList = [];
 
-  useEffect(() => {
-    getCountry("https://countriesnow.space/api/v0.1/countries/");
-  }, []);
-  const getCountry = async (url) => {
-    try {
-      await axios.get(url).then((res) => {
-        if (res !== null) {
-          res.data.data.map((item, index) => {
-            // console.log(res.data.data);
-            countryList.push(item.country);
-            // console.log(item.country);
-          });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const HeaderRef = useRef();
 
   useEffect(() => {
@@ -78,13 +42,14 @@ const Header = (props) => {
       }
     });
   }, []);
+
   const [isopenSearch, setOpenSearch] = useState(false);
   const InputSearchRef = useRef();
   const doOpenSearch = () => {
     setOpenSearch(true);
     InputSearchRef.current.focus();
-    // console.log('doopenserch working')
   };
+
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>
@@ -100,19 +65,6 @@ const Header = (props) => {
                     className="d-flex align-items-center"
                     style={{ marginLeft: "auto" }}
                   >
-                    {/* Location when width 992 */}
-                    {
-                      windowWidth < 992 &&
-                    <div className="countryWrapper" style={{marginRight:"5px"}}>
-                      <SelectDrop
-                        data={countryList}
-                        placeholder={"Your Location"}
-                        icon={<LocationOnIcon style={{ opacity: "0.5" }} />}
-                      />
-                    </div>
-                    }
-                    {/* end Location when width 992 */}
-
                     <div
                       className="NavbarToggle"
                       style={{ marginRight: "5px" }}
@@ -127,14 +79,12 @@ const Header = (props) => {
                 )}
               </div>
 
-              {/* headerSearch start */}
-              <div className="col-sm-5 ResPart2" style={{paddingTop:"7px"}}>
+              <div className="col-sm-5 ResPart2" style={{ paddingTop: "7px" }}>
                 <div
                   className={`headerSearch d-flex align-items-center ${
                     isopenSearch === true ? "open" : ""
-                  }`}
+                    }`}
                 >
-                  {/* Added back arrow */}
                   {windowWidth < 992 && (
                     <div
                       className="CloseSearch"
@@ -145,7 +95,6 @@ const Header = (props) => {
                       <ArrowBack />{" "}
                     </div>
                   )}
-                  {/* End back arrow */}
 
                   <SelectDrop
                     data={categoire}
@@ -163,19 +112,9 @@ const Header = (props) => {
                   </div>
                 </div>
               </div>
-              {/* headerSearch End */}
 
               <div className="col-sm-5 d-flex align-items-center ResPart3">
                 <div className="ml-auto d-flex align-items-center">
-                  <div className="countryWrapper w-100">
-                    <SelectDrop
-                      data={countryList}
-                      placeholder={"Your Location"}
-                      icon={<LocationOnIcon style={{ opacity: "0.5" }} />}
-                    />
-                  </div>
-
-                  {/*  */}
                   <ClickAwayListener onClickAway={() => setOpenDropDown(false)}>
                     <ul className="list list-inline mb-0 headerTabs">
                       <li className="list-inline-items">
