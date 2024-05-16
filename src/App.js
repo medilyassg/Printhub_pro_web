@@ -1,27 +1,31 @@
-import PropTypes from 'prop-types';
-import React from "react";
-import { Routes, Route } from 'react-router-dom';
-import { connect } from "react-redux";
+import PropTypes from "prop-types"
+import React, { useEffect, useState } from "react"
+import { Routes, Route } from "react-router-dom"
+import { connect } from "react-redux"
+import "./App.css"
 
 // Import Routes all
-import { userRoutes, authRoutes } from "./routes/allRoutes";
+import { userRoutes, authRoutes, clientRoutes } from "./routes/allRoutes"
 
 // Import all middleware
-import Authmiddleware from "./routes/middleware/Authmiddleware";
+import Authmiddleware from "./routes/middleware/Authmiddleware"
 
 // layouts Format
-import NonAuthLayout from "./components/NonAuthLayout";
+import NonAuthLayout from "./components/NonAuthLayout"
 
 // Import scss
-import "./assets/scss/theme.scss";
+import "./assets/scss/theme.scss"
 
 // Import Firebase Configuration file
 // import { initFirebaseBackend } from "./helpers/firebase_helper"
 
-import fakeBackend from "./helpers/AuthType/fakeBackend";
+import fakeBackend from "./helpers/AuthType/fakeBackend"
 
+import dbJson from "./db.json"
+import Home from "pages/Client/pages/home/Home"
+import Details from "pages/Client/pages/details/Details"
 // Activating fake backend
-fakeBackend();
+fakeBackend()
 
 // const firebaseConfig = {
 //   apiKey: process.env.REACT_APP_APIKEY,
@@ -38,6 +42,12 @@ fakeBackend();
 // initFirebaseBackend(firebaseConfig)
 
 const App = () => {
+  const [productData, setProductData] = useState([])
+
+  useEffect(() => {
+    console.log(dbJson)
+    setProductData(dbJson.productData)
+  }, [])
   return (
     <React.Fragment>
       <Routes>
@@ -45,11 +55,7 @@ const App = () => {
           {authRoutes.map((route, idx) => (
             <Route
               path={route.path}
-              element={
-                <NonAuthLayout>
-                  {route.component}
-                </NonAuthLayout>
-              }
+              element={<NonAuthLayout>{route.component}</NonAuthLayout>}
               key={idx}
               exact={true}
             />
@@ -60,28 +66,27 @@ const App = () => {
           {userRoutes.map((route, idx) => (
             <Route
               path={route.path}
-              element={
-                <Authmiddleware>
-                  {route.component}
-                </Authmiddleware>}
+              element={<Authmiddleware>{route.component}</Authmiddleware>}
               key={idx}
               exact={true}
             />
           ))}
         </Route>
+      <Route path="/home" element={<Home data={productData} />} />
+      <Route path="/home/product/details" element={<Details data={productData} />} />
       </Routes>
     </React.Fragment>
-  );
-};
+  )
+}
 
 App.propTypes = {
-  layout: PropTypes.any
-};
+  layout: PropTypes.any,
+}
 
 const mapStateToProps = state => {
   return {
     layout: state.Layout,
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps, null)(App);
+export default connect(mapStateToProps, null)(App)

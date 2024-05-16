@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Profile
 import UserProfile from "../pages/Authentication/user-profile";
@@ -23,6 +23,9 @@ import Costumerindex from "pages/users/customers";
 import RegisterIndex from "pages/Authentication/RegisterIndex";
 import OrderIndex from "pages/Orders/Order";
 import PropertyCategoryindex from "pages/proprietsCategories";
+// import { Client } from "pages/Client/client";
+import Navbar from "pages/Client/components/header/nav/Navbar";
+import Header from "pages/Client/components/header/Header";
 
 
 const userRoutes = [
@@ -40,8 +43,7 @@ const userRoutes = [
   // //profile
   { path: "/profile", component: <UserProfile /> },
 
-  // this route should be at the end of all other routes
-  { path: "/", component: <Dashboard /> },
+  
 ];
 
 const authRoutes = [
@@ -53,6 +55,13 @@ const authRoutes = [
 ];
 
 // const clientRoutes = [
-//   { path: "/home", component: <Logout /> },
+
+//   { path: "/home", component: <Header data={productData}/> },
+//   { path: "/home", component: <Navbar /> },
+//   { path: "/home", component: <Navbar /> },
+//   { path: "/home", component: <Navbar /> },
+//   { path: "/home", component: <Navbar /> },
+//   { path: "/home", component: <Navbar /> },
+//   { path: "/home", component: <Navbar /> },
 // ];
 export { userRoutes, authRoutes };
