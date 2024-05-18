@@ -284,7 +284,8 @@ const EditForm = props => {
                   onClick={() => toggleSubcategory(index)}
                   style={{ cursor: "pointer" }}
                 >
-                  {subcategory.name}
+                  {subcategory.name}{" "}
+                  <i className="ion ion-md-arrow-dropdown"></i>
                 </h6>
                 <Collapse isOpen={openSubcategory === index}>
                   <Row>

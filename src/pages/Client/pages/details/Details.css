@@ -1,0 +1,52 @@
+.productZoom {
+  justify-content: center;
+  align-items: center;
+}
+.propriete-button {
+  display: inline-block;
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  text-align: center;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.propriete-button:hover {
+  background-color: #e9ecef;
+}
+
+.category-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.category-icon {
+  margin-left: 8px;
+  font-size: 1.2rem;
+}
+
+.price-section {
+  margin-top: 20px;
+}
+
+.price-section .price-unit {
+  font-size: 1.2rem;
+  color: #888;
+}
+
+.price-section .price-total {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.propriete-button.active {
+  /* Define your styles for the active property here */
+  background-color: #007bff; /* For example, change background color to blue */
+  color: #fff; /* Change text color to white */
+  border-color: #007bff; /* Change border color to blue */
+  /* Add any other styles you want for the active state */
+}

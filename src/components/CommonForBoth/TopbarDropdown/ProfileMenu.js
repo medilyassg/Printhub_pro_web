@@ -55,7 +55,7 @@ const ProfileMenu = props => {
             <i className="mdi mdi-account-circle font-size-17 align-middle me-1" />
             {props.t("Profile")}{" "}
           </DropdownItem>
-          <DropdownItem tag="a" href="#">
+          <DropdownItem tag="a"  href="/">
             {" "}
             <i className="mdi mdi-home font-size-17 align-middle me-1" />
             {props.t("Home")}{" "}

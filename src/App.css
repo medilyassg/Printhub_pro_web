@@ -1,0 +1,500 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css");
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color:  rgb(98, 110, 212);
+}
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  /* font-family: "Roboto", sans-serif; */
+  font-family: "Quicksand", sans-serif !important ;
+  font-weight: 400;
+  font-style: normal;
+}
+.transitions {
+  transition: all 0.3s ease-in-out;
+}
+img:focus {
+  outline: none;
+}
+.container-fluid {
+  padding: 0px 30px;
+}
+.cursor {
+  cursor: pointer;
+}
+.btn-border {
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  padding: 14px 15px;
+  color: rgba(0, 0, 0, 0.6);
+  text-transform: capitalize;
+  border-radius: 8px;
+  background: white;
+}
+.btn-border:hover {
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  background:  rgb(98, 110, 212) !important ;
+  color: #fff;
+}
+.btn-g {
+  background:  rgb(98, 110, 212) !important;
+  padding: 5px 15px;
+  border-radius: 8px;
+  text-transform: capitalize;
+  border: none;
+}
+.btn-g:hover {
+  background: #fdc040 !important;
+}
+.bg-g,
+.bg-success {
+  background:  rgb(98, 110, 212) !important;
+}
+.text-org {
+  color: #fdc040;
+}
+.text-g {
+  color:  rgb(98, 110, 212);
+
+}
+.text-light {
+  color: #b6b6b6 !important;
+}
+p {
+  color: #7e7e7e;
+}
+.hd {
+  font-size: 30px;
+  font-weight: 500;
+  /* margin-bottom: 20px !important; */
+}
+.price {
+  font-size: 17px;
+  font-weight: 700;
+  margin-right: 18px;
+}
+
+.oldPrice {
+  font-size: 14px;
+  opacity: 0.8;
+  color: #000;
+  text-decoration: line-through;
+}
+
+/* Starts listing css */
+.listingPage {
+  width: 100%;
+  height: auto;
+  padding: 45px 0px;
+}
+.breadCrumb {
+  width: 100%;
+  height: auto;
+  padding: 45px 25px;
+  background: #d8f1e5;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+.breadCrumb h1 {
+  font-weight: 600;
+  opacity: 0.9;
+  font-size: 50px;
+}
+.breadCrumb ul li {
+  margin-right: 15px;
+}
+.breadCrumb ul {
+  margin-bottom: 0px;
+}
+
+.breadCrumb ul li a {
+  text-decoration: none;
+  color: #000;
+  font-size: 15px;
+  font-weight: 500;
+}
+.breadCrumb ul li a:hover {
+  color:  rgb(98, 110, 212) !important;
+  font-weight: 800 !important;
+}
+
+/* Ends listing css */
+/* start SideBar css */
+
+.sideBarWrapper {
+  max-width: 20% !important;
+  flex: 0 0 20% !important ;
+}
+.rightContent .topStrip .tab_ {
+  width: 160px;
+}
+.rightContent .topStrip .tab_ .accountDropDownMenu {
+  top: 110% !important;
+  left: 0px !important;
+  width: 100%;
+}
+.rightContent .topStrip .tab_ .btn_ {
+  background: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  padding: 9px 8px !important;
+  font-size: 12px;
+  text-transform: capitalize !important;
+  color: rgba(0, 0, 0, 0.7);
+  border-radius: 5px !important;
+  width: 90% !important ;
+}
+.rightContent .topStrip .tab_ .btn_:hover {
+  color:  rgb(98, 110, 212);
+}
+.rightContent .topStrip {
+  padding: 0px 15px;
+}
+.rightContent .topStrip p {
+  font-size: 16px;
+}
+.rightContent .topStrip span {
+  font-weight: 600;
+}
+.rightContent {
+  max-width: 80% !important;
+  flex: 0 0 80% !important;
+}
+.sideBarWrapper .SideBar {
+  position: sticky;
+  top: 100px;
+}
+.sideBarWrapper .SideBar .card {
+  padding: 25px;
+  border-radius: 15px;
+}
+.sideBarWrapper .SideBar .card h3 {
+  font-size: 24px;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.sideBarWrapper .SideBar .card h3::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: #ccc;
+  bottom: 0px;
+  left: 0px;
+}
+.sideBarWrapper .SideBar .card h3::before {
+  content: "";
+  position: absolute;
+  width: 40%;
+  height: 3px;
+  background:  rgba(98, 109, 212, 0.392);
+  bottom: 0px;
+  left: 0px;
+  z-index: 10;
+}
+.sideBarWrapper .SideBar .card .cardList .cardItem h4 {
+  font-size: 15px;
+}
+.sideBarWrapper .SideBar .card .cardList .cardItem {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.sideBarWrapper .SideBar .card .cardList .cardItem:hover {
+  border: 1px solid rgba(0, 0, 0, 0.7);
+}
+.sideBarWrapper .SideBar .card .cardList .cardItem .rounded-circle {
+  background:  rgba(98, 109, 212, 0.392);
+  width: 25px;
+  height: 25px;
+  justify-content: center;
+  font-size: 12px;
+}
+.RangePriceSpanMargin {
+  margin-left: auto;
+}
+
+.filters {
+  padding: 25px 0px;
+}
+.filters ul {
+  max-height: 150px;
+  overflow-y: scroll;
+  margin: 0px;
+  margin-left: -12px;
+}
+.filters ul li {
+  list-style: none;
+  width: 100%;
+}
+.sideBarWrapper .SideBar .btn svg {
+  width: 20px;
+  height: 20px;
+}
+.sideBarWrapper .SideBar .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 75px;
+  /* height: 30px; */
+}
+
+/* Ends SideBar css */
+
+.MarginAuto {
+  margin-left: auto;
+}
+
+/* Start Detils css  */
+
+.detailsContainer {
+  max-width: 90%;
+}
+.breadCrumb2 {
+  width: 100%;
+  height: auto;
+  padding: 10px 15px;
+  /* background: #d8f1e5 !important; */
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+.breadCrumb3 {
+  background: none;
+  list-style: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+.breadCrumb3 li a {
+  text-decoration: none;
+  color: #000;
+}
+.breadCrumb3 li a:hover {
+  color:  rgb(98, 110, 212);
+}
+.detailPage .productInfo h2 {
+  font-size: 35px !important;
+  font-weight: 600;
+}
+.detailPage .productInfo .priceSec .priceLarge {
+  font-size: 60px;
+  font-weight: 600;
+}
+.detailPage .productInfo .priceSec .text-org {
+  font-size: 20px;
+  font-weight: 400;
+}
+.detailPage .productInfo .priceSec .text-light {
+  font-size: 30px !important;
+  font-weight: 700 !important;
+  text-decoration: line-through !important;
+}
+.productZoom {
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0px;
+  overflow: hidden;
+  border-radius: 15px;
+}
+
+.zoomSlider * {
+  outline: none !important;
+}
+.zoomSlider {
+  padding-top: 12px !important;
+}
+.zoomSlider .slick-slide {
+  border-radius: 15px;
+  overflow: hidden;
+}
+.zoomSlider .slick-slide .item {
+  margin-right: 12px !important;
+  cursor: pointer;
+}
+.zoomSlider .slick-current {
+  border: 1px solid  rgb(98, 110, 212) !important;
+}
+.zoomSlider .slick-arrow {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+/* 
+.productInfo .productSize ul li:hover {
+  color: white !important;
+} */
+
+.productSize {
+  width: 100%;
+  height: auto;
+  padding: 10px 0px;
+}
+
+.productSize ul {
+  margin: 0px;
+  padding-left: 10px;
+  cursor: pointer;
+}
+.productSize ul li {
+  margin-right: 15px !important;
+}
+.productSize ul li a {
+  border-radius: 5px;
+  text-decoration: none;
+  color: gray;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+  padding: 10px 20px;
+}
+.productSize ul li a.active {
+  background:  rgb(98, 110, 212) !important;
+  color: white !important;
+}
+
+.addCartSection {
+  width: 100%;
+  height: auto;
+}
+.addCartSection .counterSection {
+  width: 100px;
+  height: 60px;
+  border: 1px solid  rgb(98, 110, 212);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 10px;
+}
+.addCartSection .counterSection input {
+  width: 80px;
+  height: 40px;
+  border: 0px;
+  outline: none;
+  padding: 5px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -webkit-appearance: textfield; /* Safari, Chrome, Edge */
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield; /* Standard */
+}
+.counterSection {
+  margin-right: 10px;
+}
+.addCartSection .counterSection {
+  position: relative;
+}
+.addCartSection .counterSection .arrow {
+  position: absolute;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.addCartSection .counterSection .arrow.plus {
+  top: 3px;
+  right: 15px;
+}
+.addCartSection .counterSection .arrow.minus {
+  bottom: 3px;
+  right: 15px;
+}
+.addCartSection .btn-g {
+  padding: 14px 15px !important;
+}
+.addTourchBtn svg {
+  font-size: 25px !important;
+}
+.detailsPageTab {
+  border-radius: 25px !important;
+}
+.customTabs ul li button:hover {
+  background:  rgb(98, 110, 212) !important;
+  border: none;
+  color: white;
+}
+.customTabs ul li {
+  margin-right: 30px !important;
+}
+.customTabs ul li button.active {
+color: white !important;
+background-color:  rgb(98, 110, 212) !important;
+background:white;
+border: 1px solid rgba(0, 0, 0, 0.3);
+}
+.customTabs ul li button {
+  padding: 10px 25px;
+  border: 1px solid rgba(45, 45, 45, 0.3);
+  border-radius: 30px;
+  background: white;
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.tabContent .card:hover {
+  transform: translateY(10px);
+}
+.tabContent .card {cursor: pointer;
+  border-radius: 15px;
+  transition: all 0.3s ease-in-out;
+}
+.reviewsCard .rounded-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: 110px;
+  height: 110px;
+}
+.reviewsCard {
+  margin-bottom: 20px;
+}
+.reviewsCard .image {
+  width: 150px;
+}
+.reviewsCard .rounded-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.reviewCommentSection {
+  padding: 15px 0px;
+}
+.reviewCommentSection .form-control{
+margin-bottom: 10px;
+}
+.progressBarBox{
+ margin-bottom: 10px; 
+}
+/* End Detils css  */
