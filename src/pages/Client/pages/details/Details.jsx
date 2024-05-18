@@ -91,7 +91,7 @@ const Details = (props) => {
 
   return (
     <>
-      <Header data={prodData} />
+      <Header categories={props.categories} subcategories={props.subcategories} />
     
       <section className="detailPage">
         <div

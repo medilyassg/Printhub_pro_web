@@ -14,6 +14,7 @@ import NonAuthLayout from "./components/NonAuthLayout"
 
 // Import scss
 import "./assets/scss/theme.scss"
+import "./App.css"
 
 // Import Firebase Configuration file
 // import { initFirebaseBackend } from "./helpers/firebase_helper"
@@ -95,7 +96,7 @@ const App = () => {
           ))}
         </Route>
       <Route path="/" element={<Home categories={categories} subcategories={subcategories}/>} />
-      <Route path="product/details" element={<Details data={categories} />} />
+      <Route path="product/details" element={<Details categories={categories} subcategories={subcategories} />} />
       </Routes>
     </React.Fragment>
   )
