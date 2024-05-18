@@ -2,7 +2,6 @@ import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
 import { Routes, Route } from "react-router-dom"
 import { connect } from "react-redux"
-import "./App.css"
 
 // Import Routes
 import { userRoutes, authRoutes, clientRoutes } from "./routes/allRoutes"
@@ -15,27 +14,47 @@ import NonAuthLayout from "./components/NonAuthLayout"
 
 // Import scss
 import "./assets/scss/theme.scss"
+import "./App.css"
 
 // Import fake backend
 import fakeBackend from "./helpers/AuthType/fakeBackend"
 
-// Static data
-import dbJson from "./db.json"
-
-// Page Components
 import Home from "pages/Client/pages/home/Home"
 import Details from "pages/Client/pages/details/Details"
-
+import { get } from "helpers/api_helper"
 // Activating fake backend
 fakeBackend()
 
 const App = () => {
-  const [productData, setProductData] = useState([])
-
+  const [categories, setCategories] = useState([])
+  const [subcategories, setSubCategories] = useState([])
   useEffect(() => {
-    setProductData(dbJson.productData)
-  }, [])
+    fetchCategories();
+    fetchSubCategories();
+  }, []);
 
+  const fetchCategories = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/categories");
+
+      const data = await response.data;
+      setCategories(data);
+    } catch (error) {
+      console.log(error)
+
+    }
+  };
+  const fetchSubCategories = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/subcategories");
+
+      const data = await response.data;
+      setSubCategories(data);
+    } catch (error) {
+      console.log(error)
+
+    }
+  };
   return (
     <React.Fragment>
       <Routes>
@@ -62,6 +81,8 @@ const App = () => {
           <Route path="/home" element={<Home data={productData} />} />
           <Route path="/home/product/details" element={<Details data={productData} />} />
         </Route>
+      <Route path="/" element={<Home categories={categories} subcategories={subcategories}/>} />
+      <Route path="product/details" element={<Details categories={categories} subcategories={subcategories} />} />
       </Routes>
     </React.Fragment>
   )

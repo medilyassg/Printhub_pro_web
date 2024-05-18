@@ -43,7 +43,7 @@ footer {
 }
 
 footer .part1 svg {
-  color: #3bb77e !important;
+  color: rgb(98, 110, 212) !important;
 }
 
 footer .part2 h3 {
@@ -60,7 +60,7 @@ footer .part2 ul li {
   margin-bottom: 12px;
 }
 footer .part2 ul li a:hover {
-  color: #3bb77e;
+  color: rgb(98, 110, 212);
   opacity: 1;
   padding-left: 10px;
 }   
@@ -111,7 +111,7 @@ footer .lastStrip .part3 ul li a{
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: #3bb77e;
+    background: rgb(98, 110, 212);
     border-radius: 50%;
     transition: all 0.4s ease-in-out;
 }

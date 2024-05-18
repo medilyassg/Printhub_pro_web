@@ -49,7 +49,7 @@ const [error,setError]=useState(null)
     }
   });
 
-  document.title = "Login | Veltrix - React Admin & Dashboard Template";
+  document.title = "Login";
   return (
     <React.Fragment>
       <div className="home-btn d-none d-sm-block">

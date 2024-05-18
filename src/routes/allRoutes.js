@@ -40,7 +40,7 @@ const userRoutes = [
   { path: "/orders", component: <OrderIndex /> },
   { path: "/propriets-categories", component: <PropertyCategoryindex /> },
 
-  // //profile
+  //profile
   { path: "/profile", component: <UserProfile /> },
 
   

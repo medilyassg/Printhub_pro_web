@@ -120,6 +120,8 @@ const Details = ({ data }) => {
 
   return (
     <>
+      <Header categories={props.categories} subcategories={props.subcategories} />
+    
       <Header data={data} />
 
       <section className="detailPage">

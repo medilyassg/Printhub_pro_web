@@ -27,7 +27,7 @@ const HomeSlider = () => {
               <div className="info">
                 <h2 className="mb-4">
                   Don't Miss amazing <br />
-                  grocery deals
+                  impression deals
                 </h2>
                 <p>Sign up for the Daily newsLetter</p>
               </div>
@@ -36,7 +36,7 @@ const HomeSlider = () => {
               <img src={sliderimg2} className="w-100" />
               <div className="info">
                 <h2 className="mb-4">
-                  Fresh Vegetables <br />
+                  Best Deals <br />
                   Big Discounts
                 </h2>
                 <p>Save upto 50% off on your first Order.</p>

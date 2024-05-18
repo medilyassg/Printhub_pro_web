@@ -39,56 +39,56 @@ const Home = (props) => {
 
   const catArr = [];
 
-  useEffect(() => {
-    prodData.length !== 0 &&
-      prodData.map((item) => {
-        item.items.length !== 0 &&
-          item.items.map((item_) => {
-            catArr.push(item_.cat_name);
-          });
-      });
-    const list2 = catArr.filter(
-      (item, index) => catArr.indexOf(item) === index
-    );
-    setcatArray(list2);
-    setActiveTabs(list2[0]);
-  }, []);
+  // useEffect(() => {
+  //   prodData.length !== 0 &&
+  //     prodData.map((item) => {
+  //       item.items.length !== 0 &&
+  //         item.items.map((item_) => {
+  //           catArr.push(item_.cat_name);
+  //         });
+  //     });
+  //   const list2 = catArr.filter(
+  //     (item, index) => catArr.indexOf(item) === index
+  //   );
+  //   setcatArray(list2);
+  //   setActiveTabs(list2[0]);
+  // }, []);
 
-  useEffect(() => {
-    if (activeTabs && prodData.length !== 0) {
-      const newData = prodData.flatMap((item) => {
-        return item.items
-          .filter((item_) => item_.cat_name === activeTabs)
-          .flatMap((item_) => item_.products);
-      });
-      setActiveData(newData);
-    } else {
-      setActiveData([]);
-    }
-  }, [activeTabs, prodData]);
+  // useEffect(() => {
+  //   if (activeTabs && prodData.length !== 0) {
+  //     const newData = prodData.flatMap((item) => {
+  //       return item.items
+  //         .filter((item_) => item_.cat_name === activeTabs)
+  //         .flatMap((item_) => item_.products);
+  //     });
+  //     setActiveData(newData);
+  //   } else {
+  //     setActiveData([]);
+  //   }
+  // }, [activeTabs, prodData]);
 
   const bestSellerArray = [];
-  useEffect(() => {
-    {
-      prodData.length !== 0 &&
-        prodData.map((item) => {
-          if (item.cat_name === "Fashion") {
-            item.items.length !== 0 &&
-              item.items.map((item_) => {
-                item_.produts !== 0 &&
-                  item_.products.map((productItem, Index) => {
-                    bestSellerArray.push(productItem);
-                  });
-              });
-          }
-        });
-    }
-    setgetbestseller(bestSellerArray);
-  }, []);
-
+  // useEffect(() => {
+  //   {
+  //     prodData.length !== 0 &&
+  //       prodData.map((item) => {
+  //         if (item.cat_name === "Fashion") {
+  //           item.items.length !== 0 &&
+  //             item.items.map((item_) => {
+  //               item_.produts !== 0 &&
+  //                 item_.products.map((productItem, Index) => {
+  //                   bestSellerArray.push(productItem);
+  //                 });
+  //             });
+  //         }
+  //       });
+  //   }
+  //   setgetbestseller(bestSellerArray);
+  // }, []);
+  document.title = "Home";
   return (
     <>
-      <Header data={prodData} />
+      <Header categories={props.categories} subcategories={props.subcategories}/>
       <HomeSlider />
       <Banner />
 
