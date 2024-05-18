@@ -4,50 +4,38 @@ import { Routes, Route } from "react-router-dom"
 import { connect } from "react-redux"
 import "./App.css"
 
-// Import Routes all
+// Import Routes
 import { userRoutes, authRoutes, clientRoutes } from "./routes/allRoutes"
 
-// Import all middleware
+// Import middleware
 import Authmiddleware from "./routes/middleware/Authmiddleware"
 
-// layouts Format
+// Layouts
 import NonAuthLayout from "./components/NonAuthLayout"
 
 // Import scss
 import "./assets/scss/theme.scss"
 
-// Import Firebase Configuration file
-// import { initFirebaseBackend } from "./helpers/firebase_helper"
-
+// Import fake backend
 import fakeBackend from "./helpers/AuthType/fakeBackend"
 
+// Static data
 import dbJson from "./db.json"
+
+// Page Components
 import Home from "pages/Client/pages/home/Home"
 import Details from "pages/Client/pages/details/Details"
+
 // Activating fake backend
 fakeBackend()
-
-// const firebaseConfig = {
-//   apiKey: process.env.REACT_APP_APIKEY,
-//   authDomain: process.env.REACT_APP_AUTHDOMAIN,
-//   databaseURL: process.env.REACT_APP_DATABASEURL,
-//   projectId: process.env.REACT_APP_PROJECTID,
-//   storageBucket: process.env.REACT_APP_STORAGEBUCKET,
-//   messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
-//   appId: process.env.REACT_APP_APPID,
-//   measurementId: process.env.REACT_APP_MEASUREMENTID,
-// }
-
-// init firebase backend
-// initFirebaseBackend(firebaseConfig)
 
 const App = () => {
   const [productData, setProductData] = useState([])
 
   useEffect(() => {
-    console.log(dbJson)
     setProductData(dbJson.productData)
   }, [])
+
   return (
     <React.Fragment>
       <Routes>
@@ -71,9 +59,9 @@ const App = () => {
               exact={true}
             />
           ))}
+          <Route path="/home" element={<Home data={productData} />} />
+          <Route path="/home/product/details" element={<Details data={productData} />} />
         </Route>
-      <Route path="/home" element={<Home data={productData} />} />
-      <Route path="/home/product/details" element={<Details data={productData} />} />
       </Routes>
     </React.Fragment>
   )
@@ -83,10 +71,8 @@ App.propTypes = {
   layout: PropTypes.any,
 }
 
-const mapStateToProps = state => {
-  return {
-    layout: state.Layout,
-  }
-}
+const mapStateToProps = state => ({
+  layout: state.Layout,
+})
 
 export default connect(mapStateToProps, null)(App)
