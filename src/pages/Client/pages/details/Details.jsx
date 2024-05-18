@@ -54,8 +54,7 @@ const Details = ({ categories, subcategories }) => {
         )
         if (matchingSubcategory) {
           const subcategoryId = matchingSubcategory.id
-          console.log("Selected subcategory ID:", subcategoryId) 
-
+          console.log("Selected subcategory ID:", subcategoryId)
 
           // Fetch product details from API based on subcategory ID
           fetch(`http://127.0.0.1:8000/api/products`)
@@ -81,24 +80,27 @@ const Details = ({ categories, subcategories }) => {
         }
       })
       .catch(error => console.error("Error fetching subcategories:", error))
-    
   }, [subcategoryId])
-  
-  
+
   useEffect(() => {
-    // Fetch property categories from API
-    fetch("http://127.0.0.1:8000/api/ProprieteCategorie")
-      .then(response => response.json())
-      .then(data => {
-        const filteredCategories = data.data.filter(
-          category => category.propriete.some(prop => productDetails.propriete.find(p => p.id === prop.id))
-        );
-        setPropertyCategories(filteredCategories);
-      })
-      .catch(error =>
-        console.error("Error fetching property categories:", error)
-      );
-  }, [productDetails]); // Trigger effect when productDetails changes
+    if (productDetails) {
+      // Fetch property categories from API
+      fetch("http://127.0.0.1:8000/api/ProprieteCategorie")
+        .then(response => response.json())
+        .then(data => {
+          // Filter property categories to include only those with properties that match the product's properties
+          const filteredCategories = data.data.filter(category =>
+            category.propriete.some(prop =>
+              productDetails.propriete.find(p => p.id === prop.id)
+            )
+          )
+          setPropertyCategories(filteredCategories)
+        })
+        .catch(error =>
+          console.error("Error fetching property categories:", error)
+        )
+    }
+  }, [productDetails])
 
   useEffect(() => {
     // Recalculate total price whenever activeProperties changes
@@ -296,34 +298,42 @@ const Details = ({ categories, subcategories }) => {
                         >
                           {subcategory.name}
                           {openSubcategory === index ? (
-                            <KeyboardArrowUpIcon className="category-icon" />
+                            <KeyboardArrowUpIcon />
                           ) : (
-                            <KeyboardArrowDownIcon className="category-icon" />
+                            <KeyboardArrowDownIcon />
                           )}
                         </h6>
-
                         <Collapse in={openSubcategory === index}>
                           <Row>
-                            {subcategory.propriete.map(property => (
-                              <Col key={property.id} md={3}>
-                                <div
-                                  className={`propriete-button ${
-                                    activeProperties[subcategory.id] ===
-                                    property.id
-                                      ? "active"
-                                      : ""
-                                  }`}
-                                  onClick={() =>
-                                    handlePropertyClick(
-                                      property,
-                                      subcategory.id
+                            {openSubcategory === index && (
+                              <div className="properties">
+                                {subcategory.propriete
+                                  .filter(prop =>
+                                    productDetails.propriete.find(
+                                      p => p.id === prop.id
                                     )
-                                  }
-                                >
-                                  {property.name}
-                                </div>
-                              </Col>
-                            ))}
+                                  )
+                                  .map(property => (
+                                    <div
+                                      key={property.id}
+                                      onClick={() =>
+                                        handlePropertyClick(
+                                          property,
+                                          subcategory.id
+                                        )
+                                      }
+                                      className={`propriete-button ${
+                                        activeProperties[subcategory.id] ===
+                                        property.id
+                                          ? "active"
+                                          : ""
+                                      }`}
+                                    >
+                                      {property.name}
+                                    </div>
+                                  ))}
+                              </div>
+                            )}
                           </Row>
                         </Collapse>
                       </div>
