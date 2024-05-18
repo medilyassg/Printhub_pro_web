@@ -22,7 +22,7 @@ const Pages404 = () => {
                           <h1 className="text-dark display-1 mt-4">404!</h1>
                           <h4 className="mb-4">Sorry, page not found</h4>
                           <p className="mb-5">It will be as simple as Occidental in fact, it will be Occidental to an English person</p>
-                          <Link className="btn btn-primary mb-5 waves-effect waves-light" to="/"><i className="mdi mdi-home"></i> Back to Dashboard</Link>
+                          <Link className="btn btn-primary mb-5 waves-effect waves-light" to="/"><i className="mdi mdi-home"></i> Back to Homepage</Link>
                         </div>
                       </Col>
                       <Col lg={5} className="mx-auto">

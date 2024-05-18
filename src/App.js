@@ -72,8 +72,8 @@ const App = () => {
             />
           ))}
         </Route>
-      <Route path="/home" element={<Home data={productData} />} />
-      <Route path="/home/product/details" element={<Details data={productData} />} />
+      <Route path="/" element={<Home data={productData} />} />
+      <Route path="product/details" element={<Details data={productData} />} />
       </Routes>
     </React.Fragment>
   )

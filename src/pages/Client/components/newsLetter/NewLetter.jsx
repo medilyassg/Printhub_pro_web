@@ -9,7 +9,7 @@ const NewLetter = () => {
           <EmailOutlined />
         </span>
         <input type="text" placeholder="Your Email Address..." />
-        <Button className="bg-g">Subscribe</Button>
+        <Button className="bg-primary">Subscribe</Button>
       </div>
     </>
   );

@@ -72,7 +72,7 @@
   padding: 8px 15px !important;
 }
 .nav nav .dropDown_Menu li button:hover {
-  background: #bce3c9 !important;
+  background:  rgba(98, 109, 212, 0.392) !important;
 }
 nav ul {
   padding: 0px;
@@ -94,7 +94,7 @@ width: 100%;
   padding: 15px 25px !important;
 }
 .nav nav ul li button:hover {
-  background: #bce3c9;
+  background:  rgba(98, 109, 212, 0.392);
   color: white !important;
 }
 

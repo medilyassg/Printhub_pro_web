@@ -23,9 +23,9 @@ const Navbar = props => {
         <div className="container-fluid ">
           <div className="row position-relative">
             <div className="col-sm-3 part1 d-flex align-items-center">
-              <Button className="bg-g text-white catTab Nav-Cat-Res-Hide">
+              <Button className="bg-primary text-white catTab Nav-Cat-Res-Hide">
                 <Link
-                  to={"/404"}
+                  to={"/pages-404"}
                   style={{ textDecoration: "none", color: "white" }}
                 >
                   <GridView />
@@ -167,7 +167,7 @@ const Navbar = props => {
                                   to={`/cat/${item.cat_name.toLowerCase()}`}
                                   style={{ textDecoration: "none" }}
                                 >
-                                  <h4 className="text-g text-capitalize">
+                                  <h4 className="text-primary text-capitalize">
                                     {item.cat_name}
                                   </h4>
                                 </Link>
@@ -195,7 +195,7 @@ const Navbar = props => {
                         {/* mega menu col 1 starts */}
 
                         <div className="col">
-                          <h4 className="text-g">Fruites & Vegetabels</h4>
+                          <h4 className="text-primary">Fruites & Vegetabels</h4>
                           <ul className="mt-3 mb-0">
                             <li>
                               <Link to="">Meat & Poultry</Link>
@@ -222,7 +222,7 @@ const Navbar = props => {
                         {/* mega menu col 2 starts */}
 
                         <div className="col">
-                          <h4 className="text-g">Breakfast & Dairy</h4>
+                          <h4 className="text-primary">Breakfast & Dairy</h4>
                           <ul className="mt-3 mb-0">
                             <li>
                               <Link to="">Meat & Poultry</Link>
@@ -249,7 +249,7 @@ const Navbar = props => {
                         {/* mega menu col 3 starts */}
 
                         <div className="col">
-                          <h4 className="text-g">Meat & Seafood</h4>
+                          <h4 className="text-primary">Meat & Seafood</h4>
                           <ul className="mt-3 mb-0">
                             <li>
                               <Link to="">Meat & Poultry</Link>
@@ -284,7 +284,7 @@ const Navbar = props => {
 
                   {/* Blog start */}
 
-                  <li className="list-inline-item">
+                  {/* <li className="list-inline-item">
                     <Button>
                       <Link>Blog</Link>
                       <KeyboardArrowDown />
@@ -298,7 +298,7 @@ const Navbar = props => {
                         </li>
                       </ul>
                     </div>
-                  </li>
+                  </li> */}
 
                   {/* blog ends */}
 
@@ -327,12 +327,12 @@ const Navbar = props => {
                         </li>
                         <li>
                           <Button>
-                            <Link to={"/about"}>Login</Link>
+                            <Link to={"/login"}>Login</Link>
                           </Button>
                         </li>
                         <li>
                           <Button>
-                            <Link to={"/about"}>Register</Link>
+                            <Link to={"/register"}>Register</Link>
                           </Button>
                         </li>
                         <li>
@@ -383,7 +383,7 @@ const Navbar = props => {
                   <HeadphonesOutlined />
                 </span>
                 <div className="info ml-3">
-                  <h3 className="text-g mb-0">305-2095951</h3>
+                  <h3 className="text-primary mb-0">305-2095951</h3>
                   <p className="mb-0">24/7 Support Center </p>
                 </div>
               </div>

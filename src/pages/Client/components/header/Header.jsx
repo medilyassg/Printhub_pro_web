@@ -67,17 +67,24 @@ const Header = (props) => {
     }
   };
   const HeaderRef = useRef();
-
   useEffect(() => {
-    window.addEventListener("scroll", () => {
-      let position = window.pageYOffset;
-      if (position > 70) {
-        HeaderRef.current.classList.add("fixed");
-      } else {
-        HeaderRef.current.classList.remove("fixed");
+    const handleScroll = () => {
+      if (HeaderRef.current) {
+        const position = window.pageYOffset;
+        if (position > 70) {
+          HeaderRef.current.classList.add("fixed");
+        } else {
+          HeaderRef.current.classList.remove("fixed");
+        }
       }
-    });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
+
   const [isopenSearch, setOpenSearch] = useState(false);
   const InputSearchRef = useRef();
   const doOpenSearch = () => {
@@ -166,8 +173,8 @@ const Header = (props) => {
               {/* headerSearch End */}
 
               <div className="col-sm-5 d-flex align-items-center ResPart3">
-                <div className="ml-auto d-flex align-items-center">
-                  <div className="countryWrapper w-100">
+                <div className="ml-4 d-flex align-items-center">
+                  <div className="countryWrapper w-100 mx-5">
                     <SelectDrop
                       data={countryList}
                       placeholder={"Your Location"}
@@ -181,18 +188,8 @@ const Header = (props) => {
                       <li className="list-inline-items">
                         <span>
                           {" "}
-                          <img src={IconCopare} />
-                          <span className="badge bg-success rounded-circle">
-                            3
-                          </span>
-                          Compare
-                        </span>
-                      </li>
-                      <li className="list-inline-items">
-                        <span>
-                          {" "}
                           <img src={Iconheart} />
-                          <span className="badge bg-success rounded-circle">
+                          <span className="badge bg-primary rounded-circle">
                             5
                           </span>
                           WishList
@@ -202,7 +199,7 @@ const Header = (props) => {
                         <span>
                           {" "}
                           <img src={IconCart} />
-                          <span className="badge bg-success rounded-circle">
+                          <span className="badge bg-primary rounded-circle">
                             2
                           </span>
                           Cart

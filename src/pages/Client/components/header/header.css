@@ -91,41 +91,51 @@ header .headerSearch .search .searchIcon {
   opacity: 0.7;
 }
 .countryWrapper {
-  width: 180px !important;
+  width: 190px !important;
   border: 1px solid #bce3c9;
   height: 45px;
   display: flex;
   align-items: center;
-  padding-left: 10px;
+  padding: 0px 10px;
   border-radius: 7px;
 }
 .selectDrop {
   width: 100%;
 }
-header .headerTabs {
-  padding-left: 35px;
-}
-header .headerTabs li span {
-  display: inline-block;
-  font-size: 14px;
-  cursor: pointer;
-}
 header .headerTabs li {
   display: inline-block;
-  margin-right: 18px;
+  margin-right: 10px;
   position: relative;
 }
-header .headerTabs li img {
-  margin-right: 2px;
-  vertical-align: middle;
+.headerTabs {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-header .headerTabs li span.badge {
-  width: 25px;
-  height: 25px;
-  font-weight: 400;
+
+.headerTabs .list-inline-items {
+  margin-right: 9px; /* Adjust the spacing between items as needed */
+  display: flex;
+  align-items: center;
+}
+
+.headerTabs .list-inline-items span {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.headerTabs .list-inline-items img {
+  margin-right: 1px; /* Adjust the spacing between icon and text */
+}
+
+.headerTabs .badge {
   position: absolute;
-  top: -16px;
-  left: 10px;
+  top: -13px;  /* Adjust the position of the badge */
+  right: -1px; /* Adjust the position of the badge */
 }
 .accountDropDownMenu {
   position: absolute;
