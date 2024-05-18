@@ -24,13 +24,10 @@ import { Modal, ModalBody, ModalHeader } from "reactstrap"
 const Details = ({ data }) => {
   const [productDetails, setProductDetails] = useState(null)
   const [urlImg, setUrlImg] = useState(img1)
-  // const [isActive, setIsActive] = useState(2)
-  const [inputRef, setInputRef] = useState(1)
   const [propertyCategories, setPropertyCategories] = useState([])
   const [openSubcategory, setOpenSubcategory] = useState(null)
-  const [activeTab, setActiveTab] = useState(2)
   const [activeProperties, setActiveProperties] = useState({})
-
+  const [totalPrice, setTotalPrice] = useState(0)
   const [modal_center, setmodal_center] = useState(false)
   const [modal_panier, setModalPanier] = useState(false)
 
@@ -42,6 +39,7 @@ const Details = ({ data }) => {
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
   }
+
   const tog_center = () => {
     setmodal_center(!modal_center)
     removeBodyCss()
@@ -70,7 +68,24 @@ const Details = ({ data }) => {
       )
   }, [])
 
-  var settings = {
+  useEffect(() => {
+    // Recalculate total price whenever activeProperties changes
+    const selectedProperties = propertyCategories
+      .map(category =>
+        category.propriete.find(
+          prop => prop.id === activeProperties[category.id]
+        )
+      )
+      .filter(prop => prop !== undefined)
+
+    const newTotalPrice = selectedProperties.reduce(
+      (sum, prop) => sum + parseFloat(prop.price),
+      parseFloat(productDetails?.price_unit || 0)
+    )
+    setTotalPrice(newTotalPrice)
+  }, [activeProperties, propertyCategories, productDetails])
+
+  const settings = {
     dots: false,
     infinite: false,
     speed: 200,
@@ -81,9 +96,6 @@ const Details = ({ data }) => {
     autoplay: true,
     autoplaySpeed: 1000,
   }
-
-  const plusOne = () => setInputRef(prev => prev + 1)
-  const minusOne = () => setInputRef(prev => prev - 1)
 
   if (!productDetails) {
     return <div>Loading...</div>
@@ -98,6 +110,7 @@ const Details = ({ data }) => {
   const toggleSubcategory = index => {
     setOpenSubcategory(openSubcategory === index ? null : index)
   }
+
   const handlePropertyClick = (property, categoryId) => {
     setActiveProperties(prevState => ({
       ...prevState,
@@ -163,11 +176,11 @@ const Details = ({ data }) => {
                   ))}
                   <tr>
                     <td>Price Unit</td>
-                    <td >${price_unit}</td>
+                    <td>${price_unit}</td>
                   </tr>
                   <tr>
                     <td>Price Total</td>
-                    <td>${(price_unit * 1.26).toFixed(2)}</td>
+                    <td>${totalPrice.toFixed(2)}</td>
                   </tr>
                 </tbody>
               </table>
@@ -184,6 +197,7 @@ const Details = ({ data }) => {
                 centered
                 size="lg"
               >
+                <ModalHeader className="mt-0" toggle={tog_center}></ModalHeader>
                 <ModalBody>
                   <div className="row">
                     <div className="col-md-6 p-3 border rounded mb-3">
@@ -214,7 +228,12 @@ const Details = ({ data }) => {
                       </h5>
                       <p>If you don't have an account</p>
                       <Button className="btn btn-secondary w-100">
-                        Create an account
+                        <Link
+                          to="/register"
+                          className="text-white text-decoration-none"
+                        >
+                          Create an account
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -250,7 +269,6 @@ const Details = ({ data }) => {
                   style={{ backgroundColor: "#eee" }}
                 />
                 <button
-                  className="btn btn-outline-light"
                   type="button"
                   onClick={plusOne}
                 >
@@ -305,10 +323,9 @@ const Details = ({ data }) => {
               </Row>
               <hr />
               <div className="price-section">
-                <div className="price-unit ">Prix unitaire ${price_unit}</div>
+                <div className="price-unit">Prix unitaire ${price_unit}</div>
                 <div className="price-total">
-                  Total ( Economisez 34.95 Dhs ) $
-                  {(price_unit * 1.26).toFixed(2)}
+                  Total ( Economisez 34.95 Dhs ) ${totalPrice.toFixed(2)}
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">
