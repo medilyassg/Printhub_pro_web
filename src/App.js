@@ -29,32 +29,30 @@ const App = () => {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubCategories] = useState([])
   useEffect(() => {
-    fetchCategories();
-    fetchSubCategories();
-  }, []);
+    fetchCategories()
+    fetchSubCategories()
+  }, [])
 
   const fetchCategories = async () => {
     try {
-      const response = await get("http://127.0.0.1:8000/api/categories");
+      const response = await get("http://127.0.0.1:8000/api/categories")
 
-      const data = await response.data;
-      setCategories(data);
+      const data = await response.data
+      setCategories(data)
     } catch (error) {
       console.log(error)
-
     }
-  };
+  }
   const fetchSubCategories = async () => {
     try {
-      const response = await get("http://127.0.0.1:8000/api/subcategories");
+      const response = await get("http://127.0.0.1:8000/api/subcategories")
 
-      const data = await response.data;
-      setSubCategories(data);
+      const data = await response.data
+      setSubCategories(data)
     } catch (error) {
       console.log(error)
-
     }
-  };
+  }
   return (
     <React.Fragment>
       <Routes>
@@ -78,11 +76,19 @@ const App = () => {
               exact={true}
             />
           ))}
-          <Route path="/home" element={<Home data={productData} />} />
-          <Route path="/home/product/details" element={<Details data={productData} />} />
         </Route>
-      <Route path="/" element={<Home categories={categories} subcategories={subcategories}/>} />
-      <Route path="product/details" element={<Details categories={categories} subcategories={subcategories} />} />
+        <Route
+          path="/"
+          element={
+            <Home categories={categories} subcategories={subcategories} />
+          }
+        />
+        <Route
+          path="product/details"
+          element={
+            <Details categories={categories} subcategories={subcategories} />
+          }
+        />
       </Routes>
     </React.Fragment>
   )

@@ -122,8 +122,6 @@ const Details = ({ data }) => {
     <>
       <Header categories={props.categories} subcategories={props.subcategories} />
     
-      <Header data={data} />
-
       <section className="detailPage">
         <div className="container detailsContainer pt-3 pb-3">
           <div className="row">
