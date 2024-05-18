@@ -84,7 +84,7 @@ const App = () => {
           }
         />
         <Route
-          path="product/details"
+          path="/cat/:categoryId/:subcategoryId"
           element={
             <Details categories={categories} subcategories={subcategories} />
           }

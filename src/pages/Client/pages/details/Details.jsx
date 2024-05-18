@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react"
 import PropTypes from "prop-types"
-import { Link } from "react-router-dom"
-import "./Details.css" // Create Details.css file for styles
+import { Link, useParams } from "react-router-dom" // Import useParams
+import "./Details.css"
 import Rating from "@mui/material/Rating"
 import "react-inner-image-zoom/lib/InnerImageZoom/styles.css"
 import InnerImageZoom from "react-inner-image-zoom"
@@ -9,19 +9,16 @@ import Slider from "react-slick"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { Button, Row, Col, Collapse } from "react-bootstrap"
-
-// Components
 import Header from "pages/Client/components/header/Header"
-
-// Static images for slider
+import { Modal, ModalBody, ModalHeader } from "reactstrap"
 import img1 from "../../images/popular/product-8-1.jpg"
 import img2 from "../../images/popular/product-4-1.jpg"
 import img3 from "../../images/popular/product-2-1.jpg"
 import img4 from "../../images/popular/product-9-1.jpg"
 import img5 from "../../images/popular/product-7-1.jpg"
-import { Modal, ModalBody, ModalHeader } from "reactstrap"
 
-const Details = ({ data }) => {
+const Details = ({ categories, subcategories }) => {
+  const { subcategoryId } = useParams()
   const [productDetails, setProductDetails] = useState(null)
   const [urlImg, setUrlImg] = useState(img1)
   const [propertyCategories, setPropertyCategories] = useState([])
@@ -48,25 +45,60 @@ const Details = ({ data }) => {
   const sliderRef = useRef()
 
   useEffect(() => {
-    // Fetch product details from API
-    fetch("http://127.0.0.1:8000/api/products/53")
+    // Fetch subcategories from API
+    fetch("http://127.0.0.1:8000/api/subcategories")
       .then(response => response.json())
-      .then(data => setProductDetails(data.data))
-      .catch(error => console.error("Error fetching product details:", error))
+      .then(data => {
+        const matchingSubcategory = data.data.find(
+          subcategory => subcategory.nom === subcategoryId
+        )
+        if (matchingSubcategory) {
+          const subcategoryId = matchingSubcategory.id
+          console.log("Selected subcategory ID:", subcategoryId) 
 
+
+          // Fetch product details from API based on subcategory ID
+          fetch(`http://127.0.0.1:8000/api/products`)
+            .then(response => response.json())
+            .then(data => {
+              const filteredProducts = data.data.filter(
+                product => product.subCategory.id === parseInt(subcategoryId)
+              )
+              if (filteredProducts.length > 0) {
+                setProductDetails(filteredProducts[0])
+              } else {
+                // No product found for the selected subcategory
+                setProductDetails(null)
+              }
+            })
+            .catch(error =>
+              console.error("Error fetching product details:", error)
+            )
+        } else {
+          // Subcategory not found
+          console.error("Subcategory not found:", subcategoryId)
+          setProductDetails(null)
+        }
+      })
+      .catch(error => console.error("Error fetching subcategories:", error))
+    
+  }, [subcategoryId])
+  
+  
+  useEffect(() => {
     // Fetch property categories from API
     fetch("http://127.0.0.1:8000/api/ProprieteCategorie")
       .then(response => response.json())
       .then(data => {
         const filteredCategories = data.data.filter(
-          category => category.propriete.length > 0
-        )
-        setPropertyCategories(filteredCategories)
+          category => category.propriete.some(prop => productDetails.propriete.find(p => p.id === prop.id))
+        );
+        setPropertyCategories(filteredCategories);
       })
       .catch(error =>
         console.error("Error fetching property categories:", error)
-      )
-  }, [])
+      );
+  }, [productDetails]); // Trigger effect when productDetails changes
 
   useEffect(() => {
     // Recalculate total price whenever activeProperties changes
@@ -120,8 +152,7 @@ const Details = ({ data }) => {
 
   return (
     <>
-      <Header categories={props.categories} subcategories={props.subcategories} />
-    
+      <Header categories={categories} subcategories={subcategories} />
       <section className="detailPage">
         <div className="container detailsContainer pt-3 pb-3">
           <div className="row">
@@ -154,7 +185,7 @@ const Details = ({ data }) => {
                     />
                   </div>
                 ))}
-              </Slider>
+              </Slider>{" "}
               <table className="table property-table mt-3">
                 <tbody>
                   {propertyCategories.map((category, index) => (
@@ -254,27 +285,6 @@ const Details = ({ data }) => {
                 <span className="text-light"> (30 Reviews)</span>
               </div>
               <p>{description}</p>
-              {/* <div className="input-group mb-3" style={{ maxWidth: "240px" }}>
-                <button
-                  className="btn btn-outline-light"
-                  type="button"
-                  onClick={minusOne}
-                >
-                  -
-                </button>
-                <input
-                  type="text"
-                  className="form-control text-center"
-                  value={inputRef}
-                  style={{ backgroundColor: "#eee" }}
-                />
-                <button
-                  type="button"
-                  onClick={plusOne}
-                >
-                  +
-                </button>
-              </div> */}
               <Row>
                 <Col md={12}>
                   <div className="propriete-container">
@@ -382,7 +392,8 @@ const Details = ({ data }) => {
 }
 
 Details.propTypes = {
-  data: PropTypes.object.isRequired,
+  categories: PropTypes.array.isRequired,
+  subcategories: PropTypes.array.isRequired,
 }
 
 export default Details
