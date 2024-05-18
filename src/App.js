@@ -2,7 +2,6 @@ import PropTypes from "prop-types"
 import React, { useEffect, useState } from "react"
 import { Routes, Route } from "react-router-dom"
 import { connect } from "react-redux"
-import "./App.css"
 
 // Import Routes all
 import { userRoutes, authRoutes, clientRoutes } from "./routes/allRoutes"
@@ -21,9 +20,9 @@ import "./assets/scss/theme.scss"
 
 import fakeBackend from "./helpers/AuthType/fakeBackend"
 
-import dbJson from "./db.json"
 import Home from "pages/Client/pages/home/Home"
 import Details from "pages/Client/pages/details/Details"
+import { get } from "helpers/api_helper"
 // Activating fake backend
 fakeBackend()
 
@@ -42,12 +41,35 @@ fakeBackend()
 // initFirebaseBackend(firebaseConfig)
 
 const App = () => {
-  const [productData, setProductData] = useState([])
-
+  const [categories, setCategories] = useState([])
+  const [subcategories, setSubCategories] = useState([])
   useEffect(() => {
-    console.log(dbJson)
-    setProductData(dbJson.productData)
-  }, [])
+    fetchCategories();
+    fetchSubCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/categories");
+
+      const data = await response.data;
+      setCategories(data);
+    } catch (error) {
+      console.log(error)
+
+    }
+  };
+  const fetchSubCategories = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/subcategories");
+
+      const data = await response.data;
+      setSubCategories(data);
+    } catch (error) {
+      console.log(error)
+
+    }
+  };
   return (
     <React.Fragment>
       <Routes>
@@ -72,8 +94,8 @@ const App = () => {
             />
           ))}
         </Route>
-      <Route path="/" element={<Home data={productData} />} />
-      <Route path="product/details" element={<Details data={productData} />} />
+      <Route path="/" element={<Home categories={categories} subcategories={subcategories}/>} />
+      <Route path="product/details" element={<Details data={categories} />} />
       </Routes>
     </React.Fragment>
   )

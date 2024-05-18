@@ -45,77 +45,47 @@ const Navbar = props => {
                   </li>
 
                   {/* Conductions of nav 3 elements groceries , electronic & fashion starts */}
-                  {navData.length !== 0 &&
-                    navData.map((item, index) => {
+                  {props.categories.length !== 0 &&
+                    props.categories.map((category, index) => {
+                      const categorySubcategories = props.subcategories.filter(
+                        subcategory => subcategory.categorie_id === category.id
+                      )
+
                       return (
                         <li className="list-inline-item" key={index}>
                           <Button>
-                            <Link to={`/cat/${item.cat_name?.toLowerCase()}`}>
-                              {item.cat_name}
+                            <Link to={`/cat/${category.nom?.toLowerCase()}`}>
+                              {category.nom}
                             </Link>
                             <KeyboardArrowDown />
                           </Button>
 
-                          {/* dropdown starts */}
-
-                          {item.items.length !== 0 && (
+                          {/* Dropdown starts */}
+                          {categorySubcategories.length !== 0 && (
                             <div className="dropDown_Menu">
                               <ul>
-                                {item.items.map((item_, index_) => {
-                                  return (
-                                    <li key={index_}>
+                                {categorySubcategories.map(
+                                  (subcategory, subIndex) => (
+                                    <li key={subIndex}>
                                       <Button>
                                         <Link
-                                          to={`/cat/${item.cat_name?.toLowerCase()}/${item_.cat_name
+                                          to={`/cat/${category.nom?.toLowerCase()}/${subcategory.nom
                                             .replace(/\s/g, "-")
                                             .toLowerCase()}`}
                                         >
-                                          {item_.cat_name}
+                                          {subcategory.nom}
                                         </Link>
                                       </Button>
                                     </li>
                                   )
-                                })}
+                                )}
                               </ul>
                             </div>
                           )}
-
-                          {/* dropdown ends */}
+                          {/* Dropdown ends */}
                         </li>
                       )
                     })}
-
-                  {/* Conductions of nav 3 elements groceries , electronic & fashion ends */}
-
-                  {/* <li className="list-inline-item">
-                    <Button>
-                      <Link to={"/about"}>About</Link>
-                    </Button>
-                  </li> */}
-
-                  {/* Vendor Li start */}
-                  {/* <li className="list-inline-item">
-                    <Button>
-                      <Link>Vendor</Link>
-                      <KeyboardArrowDown />
-                    </Button>
-
-                    <div className="dropDown_Menu">
-                      <ul>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>About</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Contact</Link>
-                          </Button>
-                        </li>
-                      </ul>
-                    </div>
-                  </li> */}
-                  {/* vendor li ends */}
 
                   <li className="list-inline-item">
                     <Button>
@@ -151,7 +121,7 @@ const Navbar = props => {
 
                   {/* Mega Menu starts */}
 
-                  <li className="list-inline-item position-static">
+                  {/* <li className="list-inline-item position-static">
                     <Button>
                       <Link>Mega Menu</Link>
                       <KeyboardArrowDown />
@@ -194,7 +164,7 @@ const Navbar = props => {
 
                         {/* mega menu col 1 starts */}
 
-                        <div className="col">
+                  {/* <div className="col">
                           <h4 className="text-primary">Fruites & Vegetabels</h4>
                           <ul className="mt-3 mb-0">
                             <li>
@@ -216,11 +186,11 @@ const Navbar = props => {
                               <Link to="">Packges & Products</Link>
                             </li>
                           </ul>
-                        </div>
+                        </div> */}
 
-                        {/* mega menu col 1 ends */}
-                        {/* mega menu col 2 starts */}
-
+                  {/* mega menu col 1 ends */}
+                  {/* mega menu col 2 starts */}
+                  {/* 
                         <div className="col">
                           <h4 className="text-primary">Breakfast & Dairy</h4>
                           <ul className="mt-3 mb-0">
@@ -243,12 +213,12 @@ const Navbar = props => {
                               <Link to="">Packges & Products</Link>
                             </li>
                           </ul>
-                        </div>
+                        </div> */}
 
-                        {/* mega menu col 2 ends */}
-                        {/* mega menu col 3 starts */}
+                  {/* mega menu col 2 ends */}
+                  {/* mega menu col 3 starts */}
 
-                        <div className="col">
+                  {/* <div className="col">
                           <h4 className="text-primary">Meat & Seafood</h4>
                           <ul className="mt-3 mb-0">
                             <li>
@@ -270,16 +240,16 @@ const Navbar = props => {
                               <Link to="">Packges & Products</Link>
                             </li>
                           </ul>
-                        </div>
+                        </div> */}
 
-                        {/* mega menu col 3 ends */}
+                  {/* mega menu col 3 ends */}
 
-                        {/* <div className="col">
+                  {/* <div className="col">
                           <img src={MegaImgt} className="mt-3 mb-0" />
                         </div> */}
-                      </div>
+                  {/* </div>
                     </div>
-                  </li>
+                  </li> */}
                   {/* mega menu ends */}
 
                   {/* Blog start */}
@@ -301,73 +271,6 @@ const Navbar = props => {
                   </li> */}
 
                   {/* blog ends */}
-
-                  <li className="list-inline-item">
-                    <Button>
-                      <Link>Pages</Link>
-                      <KeyboardArrowDown />
-                    </Button>
-
-                    <div className="dropDown_Menu">
-                      <ul>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>About</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Contact</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>My Account</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/login"}>Login</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/register"}>Register</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Forget Passowrd</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Rest Password</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Privacy policy</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Purchase Guide</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Teams & Services</Link>
-                          </Button>
-                        </li>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>404 Pages</Link>
-                          </Button>
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
                   <li className="list-inline-item">
                     <Button>
                       <Link>Contact</Link>

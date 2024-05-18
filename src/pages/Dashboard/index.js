@@ -18,7 +18,7 @@ import { withTranslation } from "react-i18next"
 
 const Dashboard = props => {
   
-  document.title = "Dashboard | Veltrix - React Admin & Dashboard Template"
+  document.title = "Dashboard"
 
 
   const [menu, setMenu] = useState(false);

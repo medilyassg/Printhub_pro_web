@@ -33,7 +33,7 @@
   color: #fff !important;
 }
 .slick-arrow:hover {
-  background: #3bb77e !important;
+  background: rgb(98, 110, 212) !important;
   color: white !important;
 }
 
@@ -59,7 +59,7 @@
   font-size: 13px;
 }
 .slick-active button::before {
-  color: #3bb77e !important;
+  color: rgb(98, 110, 212) !important;
 }
 
 .home_slider-main .item {
