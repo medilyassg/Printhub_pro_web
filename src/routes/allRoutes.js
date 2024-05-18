@@ -23,6 +23,8 @@ import Costumerindex from "pages/users/customers";
 import RegisterIndex from "pages/Authentication/RegisterIndex";
 import OrderIndex from "pages/Orders/Order";
 import PropertyCategoryindex from "pages/proprietsCategories";
+import ClientOrderIndex from "pages/clientPages/orders";
+import ClientAddressesIndex from "pages/clientPages/addresses.js";
 
 
 const userRoutes = [
@@ -36,6 +38,8 @@ const userRoutes = [
   { path: "/properties", component: <Propertyindex /> },
   { path: "/orders", component: <OrderIndex /> },
   { path: "/propriets-categories", component: <PropertyCategoryindex /> },
+  { path: "/account/orders", component: <ClientOrderIndex /> },
+  { path: "/account/addresses", component: <ClientAddressesIndex /> },
 
   // //profile
   { path: "/profile", component: <UserProfile /> },

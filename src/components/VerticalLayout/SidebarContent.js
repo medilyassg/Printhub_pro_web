@@ -15,7 +15,7 @@ import usePermissions from "helpers/permissions";
 
 const SidebarContent = props => {
   const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
-
+  const [user, setUser] = useState()
   const location = useLocation();
   const ref = useRef();
   const path = location.pathname;
@@ -24,7 +24,10 @@ const SidebarContent = props => {
   useEffect(() => {
     new MetisMenu("#side-menu");
     checkUserPermissions();
-
+    if (localStorage.getItem("authUser")) {
+      const obj = JSON.parse(localStorage.getItem("authUser"));
+      setUser(obj.user)
+    }
   }, []);
 
   useEffect(() => {
@@ -41,7 +44,7 @@ const SidebarContent = props => {
     let matchingMenuItem = null;
     const ul = document.getElementById("side-menu");
     const items = ul.getElementsByTagName("a");
-
+    removeActivation(items)
     for (let i = 0; i < items.length; ++i) {
       if (fullPath === items[i].pathname) {
         matchingMenuItem = items[i];
@@ -57,7 +60,6 @@ const SidebarContent = props => {
     item.classList.add("active");
     const parent = item.parentElement;
     const parent2El = parent.childNodes[1];
-
     if (parent2El && parent2El.id !== "side-menu") {
       parent2El.classList.add("mm-show");
     }
@@ -101,7 +103,7 @@ const SidebarContent = props => {
       }
       if (parent) {
         const parent2El =
-          parent.childNodes && parent.childNodes.lenght && parent.childNodes[1]
+          parent.childNodes && parent.childNodes.length && parent.childNodes[1]
             ? parent.childNodes[1]
             : null;
         if (parent2El && parent2El.id !== "side-menu") {
@@ -145,117 +147,141 @@ const SidebarContent = props => {
 
   return (
     <React.Fragment>
+
       <SimpleBar style={{ maxHeight: "100%" }} ref={ref}>
         <div id="sidebar-menu">
-          <ul className="metismenu list-unstyled" id="side-menu">
-            <li className="menu-title">{props.t("Main")} </li>
-            <li>
-              <Link to="/dashboard" className="waves-effect">
-                <i className="ti-home"></i>
-                <span className="badge rounded-pill bg-primary float-end">1</span>
-                <span>{props.t("Dashboard")}</span>
-              </Link>
-            </li>
+          {user && user.customer ?
+            <ul className="metismenu list-unstyled" id="side-menu">
+              <li>
+              <Link to="/profile" className="waves-effect">
+                  <i className="ti-user"></i>
+                  <span>{props.t("Profile")}</span>
+                </Link>
+                <Link to="/account/orders" className="waves-effect">
+                  <i className="ti-shopping-cart"></i>
+                  <span>{props.t("Orders")}</span>
+                </Link>
+                  <Link to="/account/addresses" className="waves-effect">
+                    <i className="ti-location-pin"></i>
+                    <span>{props.t("Addresses")}</span>
+                  </Link>
 
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-user"></i>
-                <span>{props.t("User Management")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                {hasPermissions.browseUsers && (
+              </li>
+               
+            </ul>
 
+            :
+            <ul className="metismenu list-unstyled" id="side-menu">
+
+              <li className="menu-title">{props.t("Main")} </li>
+              <li>
+                <Link to="/dashboard" className="waves-effect">
+                  <i className="ti-home"></i>
+                  <span className="badge rounded-pill bg-primary float-end">1</span>
+                  <span>{props.t("Dashboard")}</span>
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/#" className="has-arrow waves-effect">
+                  <i className="ti-user"></i>
+                  <span>{props.t("User Management")}</span>
+                </Link>
+                <ul className="sub-menu" aria-expanded="false">
+                  {hasPermissions.browseUsers && (
+
+                    <li>
+                      <Link to="/users">{props.t("Users")}</Link>
+                    </li>
+                  )}
+                  {hasPermissions.browseRoles && (
+
+                    <li>
+                      <Link to="/roles">{props.t("Roles")} </Link>
+                    </li>
+                  )}
+
+                  {hasPermissions.browseCustomers && (
+
+                    <li>
+                      <Link to="/costumers">{props.t("Costumers")} </Link>
+                    </li>
+                  )}
+
+                </ul>
+              </li>
+
+              <li>
+                <Link to="/#" className="has-arrow waves-effect">
+                  <i className="ti-folder"></i>
+                  <span>{props.t("Manage Categories")}</span>
+                </Link>
+                <ul className="sub-menu" aria-expanded="false">
+                  {hasPermissions.browseCategory && (
+
+                    <li>
+                      <Link to="/categories">{props.t("Category")} </Link>
+                    </li>
+                  )}
+                  {hasPermissions.browseSubCategory && (
+
+                    <li>
+                      <Link to="/sub-categories">{props.t("Sub-Category")} </Link>
+                    </li>
+                  )}
                   <li>
-                    <Link to="/users">{props.t("Users")}</Link>
                   </li>
-                )}
-                {hasPermissions.browseRoles && (
+                </ul>
+              </li>
+              <li>
+                <Link to="/#" className="has-arrow waves-effect">
+                  <i className="ti-shopping-cart"></i>
+                  <span>{props.t("Product Management")}</span>
+                </Link>
+                <ul className="sub-menu" aria-expanded="false">
+                  {hasPermissions.browseProduct && (
 
+                    <li>
+                      <Link to="/products">{props.t("Product")} </Link>
+                    </li>
+                  )}
+                  {hasPermissions.browseProperty && (
+
+                    <li>
+                      <Link to="/properties">{props.t("Attributs")} </Link>
+                    </li>
+                  )}
                   <li>
-                    <Link to="/roles">{props.t("Roles")} </Link>
+                    <Link to="/propriets-categories">{props.t("Attributs category")} </Link>
                   </li>
-                )}
-                
-                {hasPermissions.browseCustomers && (
+                </ul>
+              </li>
+              <li>
+                <Link to="/#" className="has-arrow waves-effect">
+                  <i className="ti-receipt"></i>
+                  <span>{props.t("Orders Management")}</span>
+                </Link>
+                <ul className="sub-menu" aria-expanded="false">
+                  {hasPermissions.browseProduct && (
 
-                  <li>
-                    <Link to="/costumers">{props.t("Costumers")} </Link>
-                  </li>
-                )}
-
-              </ul>
-            </li>
-
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-folder"></i>
-                <span>{props.t("Manage Categories")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                {hasPermissions.browseCategory && (
-
-                  <li>
-                    <Link to="/categories">{props.t("Category")} </Link>
-                  </li>
-                )}
-                {hasPermissions.browseSubCategory && (
-
-                  <li>
-                    <Link to="/sub-categories">{props.t("Sub-Category")} </Link>
-                  </li>
-                )}
-                <li>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-shopping-cart"></i>
-                <span>{props.t("Product Management")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                {hasPermissions.browseProduct && (
-
-                  <li>
-                    <Link to="/products">{props.t("Product")} </Link>
-                  </li>
-                )}
-                {hasPermissions.browseProperty && (
-
-                  <li>
-                    <Link to="/properties">{props.t("Attributs")} </Link>
-                  </li>
-                )}
-                <li>
-                  <Link to="/propriets-categories">{props.t("Attributs category")} </Link>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <Link to="/#" className="has-arrow waves-effect">
-                <i className="ti-receipt"></i>
-                <span>{props.t("Orders Management")}</span>
-              </Link>
-              <ul className="sub-menu" aria-expanded="false">
-                {hasPermissions.browseProduct && (
-
-                  <li>
-                    <Link to="/orders" >{props.t("Orders")}</Link>
-                  </li>
-                )}
+                    <li>
+                      <Link to="/orders" >{props.t("Orders")}</Link>
+                    </li>
+                  )}
 
 
-              </ul>
-            </li>
+                </ul>
+              </li>
+
+
+
+            </ul>
+
+          }
 
 
 
 
-
-
-
-
-          </ul>
         </div>
       </SimpleBar>
     </React.Fragment>

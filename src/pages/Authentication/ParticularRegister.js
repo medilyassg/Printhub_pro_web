@@ -111,7 +111,7 @@ const ParticularRegister = props => {
       try {
         const response = await post('http://127.0.0.1:8000/api/register',{
           ...values,
-          addresses: [{name:values.address1,type:"nobe"}, {name:values.address2,type:"none"}],
+          addresses: [{line:values.address1}, {line:values.address2}],
           customer_type:"particular",
       });
         if (response.data.user) {
