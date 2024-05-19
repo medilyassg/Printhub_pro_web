@@ -61,7 +61,7 @@ const Navbar = props => {
                                         category.id
                                       }`}
                                     >
-                                      {category.nom}
+                                      {subcategory.nom}
                                     </Link>
                                   </li>
                                 </ul>
