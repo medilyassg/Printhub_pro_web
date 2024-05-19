@@ -171,3 +171,12 @@ header .headerTabs li {
   opacity: 0.7;
   margin-right: 7px !important;
 }
+.clickable-item {
+  cursor: pointer;
+  color: inherit;
+}
+
+.clickable-item:hover {
+  text-decoration: underline;
+}
+
