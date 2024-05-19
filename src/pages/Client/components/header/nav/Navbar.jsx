@@ -8,36 +8,69 @@ import {
 } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import MegaImgt from "../../../images/360_F_712724773_cFHfl8fvajfRJntpVHI2o4kI3ram9ZbE.jpg"
+import SubcategoryCard from "../../SubcategoryCard/SubcategoryCard "
 
 const Navbar = props => {
-  const [navData, setnavData] = useState([])
+  const [navData, setNavData] = useState([])
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null)
 
   useEffect(() => {
-    // console.log(props.data);
-    setnavData(props.data)
+    setNavData(props.data)
     window.scrollTo(0, 0)
   }, [])
+
+  const handleCategoryClick = categoryId => {
+    setSelectedCategoryId(categoryId)
+    console.log("Category ID:", categoryId)
+  }
+
   return (
     <>
       <div className="nav d-flex align-items-center">
         <div className="container-fluid ">
           <div className="row position-relative">
-            <div className="col-sm-3 part1 d-flex align-items-center">
-              <Button className="bg-primary text-white catTab Nav-Cat-Res-Hide">
-                <Link
-                  to={"/pages-404"}
-                  style={{ textDecoration: "none", color: "white" }}
-                >
-                  <GridView />
-                  &nbsp; Browes All Cateogories
-                  <KeyboardArrowDown />
-                </Link>
-              </Button>
-            </div>
-
-            <div className="col-sm-7 part2 position-static">
+            <div className="col part2 position-static">
               <nav>
                 <ul className="list list-inline mb-0">
+                  <li className="list-inline-item position-static">
+                    <Button>
+                      <Link>Tous les produits</Link>
+                      <KeyboardArrowDown />
+                    </Button>
+                    <div className="dropDown_Menu megaMenu w-100">
+                      <div className="row">
+                        {/* Mapping categories */}
+                        {props.categories.map(category => (
+                          <div className="col" key={category.id}>
+                            <Link
+                              to={`/cat/${category.nom?.toLowerCase()}`}
+                              categoryId={category.id}
+                            >
+                              <h4 className="text-g text-capitalize">
+                                {category.nom}
+                              </h4>
+                            </Link>
+                            {/* Mapping subcategories */}
+                            {props.subcategories
+                              .filter(sub => sub.categorie_id === category.id)
+                              .map(subcategory => (
+                                <ul key={subcategory.id} className="mt-4 mb-0">
+                                  <li>
+                                    <Link
+                                      to={`/cat/${category.nom?.toLowerCase()}?categoryId=${
+                                        category.id
+                                      }`}
+                                    >
+                                      {subcategory.nom}
+                                    </Link>
+                                  </li>
+                                </ul>
+                              ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </li>
                   <li className="list-inline-item">
                     <Button>
                       <Link to={"/"}>Home</Link>
@@ -119,157 +152,6 @@ const Navbar = props => {
                     </div>
                   </li>
 
-                  {/* Mega Menu starts */}
-
-                  {/* <li className="list-inline-item position-static">
-                    <Button>
-                      <Link>Mega Menu</Link>
-                      <KeyboardArrowDown />
-                    </Button>
-                    <div className="dropDown_Menu megaMenu w-100">
-                      <div className="row">
-                        {props.data.length !== 0 &&
-                          props.data.map((item, index) => {
-                            // console.log(item,'this is my nav props.data');
-                            return (
-                              <div className="col">
-                                <Link
-                                  to={`/cat/${item.cat_name.toLowerCase()}`}
-                                  style={{ textDecoration: "none" }}
-                                >
-                                  <h4 className="text-primary text-capitalize">
-                                    {item.cat_name}
-                                  </h4>
-                                </Link>
-                                {item.items.length !== 0 && (
-                                  <ul className="mt-4 mb-0">
-                                    {item.items.map((item_, index) => {
-                                      return (
-                                        <li>
-                                          <Link
-                                            to={`/cat/${item.cat_name.toLowerCase()}/${item_.cat_name
-                                              .replace(/\s/g, "-")
-                                              .toLowerCase()}`}
-                                          >
-                                            {item_.cat_name}
-                                          </Link>
-                                        </li>
-                                      )
-                                    })}
-                                  </ul>
-                                )}
-                              </div>
-                            )
-                          })}
-
-                        {/* mega menu col 1 starts */}
-
-                  {/* <div className="col">
-                          <h4 className="text-primary">Fruites & Vegetabels</h4>
-                          <ul className="mt-3 mb-0">
-                            <li>
-                              <Link to="">Meat & Poultry</Link>
-                            </li>
-                            <li>
-                              <Link to="">Fresh Vegetables</Link>
-                            </li>
-                            <li>
-                              <Link to="">Herbs & Seasonings </Link>
-                            </li>
-                            <li>
-                              <Link to="">Cuts & Sprouts</Link>
-                            </li>
-                            <li>
-                              <Link to="">Exotis Fruits & Veggies</Link>
-                            </li>
-                            <li>
-                              <Link to="">Packges & Products</Link>
-                            </li>
-                          </ul>
-                        </div> */}
-
-                  {/* mega menu col 1 ends */}
-                  {/* mega menu col 2 starts */}
-                  {/* 
-                        <div className="col">
-                          <h4 className="text-primary">Breakfast & Dairy</h4>
-                          <ul className="mt-3 mb-0">
-                            <li>
-                              <Link to="">Meat & Poultry</Link>
-                            </li>
-                            <li>
-                              <Link to="">Fresh Vegetables</Link>
-                            </li>
-                            <li>
-                              <Link to="">Herbs & Seasonings </Link>
-                            </li>
-                            <li>
-                              <Link to="">Cuts & Sprouts</Link>
-                            </li>
-                            <li>
-                              <Link to="">Exotis Fruits & Veggies</Link>
-                            </li>
-                            <li>
-                              <Link to="">Packges & Products</Link>
-                            </li>
-                          </ul>
-                        </div> */}
-
-                  {/* mega menu col 2 ends */}
-                  {/* mega menu col 3 starts */}
-
-                  {/* <div className="col">
-                          <h4 className="text-primary">Meat & Seafood</h4>
-                          <ul className="mt-3 mb-0">
-                            <li>
-                              <Link to="">Meat & Poultry</Link>
-                            </li>
-                            <li>
-                              <Link to="">Fresh Vegetables</Link>
-                            </li>
-                            <li>
-                              <Link to="">Herbs & Seasonings </Link>
-                            </li>
-                            <li>
-                              <Link to="">Cuts & Sprouts</Link>
-                            </li>
-                            <li>
-                              <Link to="">Exotis Fruits & Veggies</Link>
-                            </li>
-                            <li>
-                              <Link to="">Packges & Products</Link>
-                            </li>
-                          </ul>
-                        </div> */}
-
-                  {/* mega menu col 3 ends */}
-
-                  {/* <div className="col">
-                          <img src={MegaImgt} className="mt-3 mb-0" />
-                        </div> */}
-                  {/* </div>
-                    </div>
-                  </li> */}
-                  {/* mega menu ends */}
-
-                  {/* Blog start */}
-
-                  {/* <li className="list-inline-item">
-                    <Button>
-                      <Link>Blog</Link>
-                      <KeyboardArrowDown />
-                    </Button>
-                    <div className="dropDown_Menu">
-                      <ul>
-                        <li>
-                          <Button>
-                            <Link to={"/about"}>Blogs</Link>
-                          </Button>
-                        </li>
-                      </ul>
-                    </div>
-                  </li> */}
-
                   {/* blog ends */}
                   <li className="list-inline-item">
                     <Button>
@@ -279,21 +161,12 @@ const Navbar = props => {
                 </ul>
               </nav>
             </div>
-
-            {/* <div className="col-sm-2 part3 d-flex aligin-items-center">
-              <div className="phNu d-flex aligin-items-center">
-                <span>
-                  <HeadphonesOutlined />
-                </span>
-                <div className="info ml-3">
-                  <h3 className="text-primary mb-0">305-2095951</h3>
-                  <p className="mb-0">24/7 Support Center </p>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>
+      {selectedCategoryId && (
+        <SubcategoryCard categoryId={selectedCategoryId} />
+      )}
     </>
   )
 }

@@ -22,6 +22,7 @@ import fakeBackend from "./helpers/AuthType/fakeBackend"
 import Home from "pages/Client/pages/home/Home"
 import Details from "pages/Client/pages/details/Details"
 import { get } from "helpers/api_helper"
+import SubcategoryCard from "pages/Client/components/SubcategoryCard/SubcategoryCard "
 // Activating fake backend
 fakeBackend()
 
@@ -87,6 +88,12 @@ const App = () => {
           path="/cat/:categoryId/:subcategoryId"
           element={
             <Details categories={categories} subcategories={subcategories} />
+          }
+        />
+        <Route
+          path="/cat/:categoryId"
+          element={
+            <SubcategoryCard categories={categories} subcategories={subcategories} />
           }
         />
       </Routes>
