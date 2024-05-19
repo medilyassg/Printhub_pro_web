@@ -305,35 +305,32 @@ const Details = ({ categories, subcategories }) => {
                         </h6>
                         <Collapse in={openSubcategory === index}>
                           <Row>
-                            {openSubcategory === index && (
-                              <div className="properties">
-                                {subcategory.propriete
-                                  .filter(prop =>
-                                    productDetails.propriete.find(
-                                      p => p.id === prop.id
-                                    )
-                                  )
-                                  .map(property => (
-                                    <div
-                                      key={property.id}
-                                      onClick={() =>
-                                        handlePropertyClick(
-                                          property,
-                                          subcategory.id
-                                        )
-                                      }
-                                      className={`propriete-button ${
-                                        activeProperties[subcategory.id] ===
-                                        property.id
-                                          ? "active"
-                                          : ""
-                                      }`}
-                                    >
-                                      {property.name}
-                                    </div>
-                                  ))}
-                              </div>
-                            )}
+                            {subcategory.propriete
+                              .filter(prop =>
+                                productDetails.propriete.find(
+                                  p => p.id === prop.id
+                                )
+                              )
+                              .map(property => (
+                                <Col key={property.id} md={3}>
+                                  <div
+                                    onClick={() =>
+                                      handlePropertyClick(
+                                        property,
+                                        subcategory.id
+                                      )
+                                    }
+                                    className={`propriete-button ${
+                                      activeProperties[subcategory.id] ===
+                                      property.id
+                                        ? "active"
+                                        : ""
+                                    }`}
+                                  >
+                                    {property.name}
+                                  </div>
+                                </Col>
+                              ))}
                           </Row>
                         </Collapse>
                       </div>
@@ -341,6 +338,7 @@ const Details = ({ categories, subcategories }) => {
                   </div>
                 </Col>
               </Row>
+
               <hr />
               <div className="price-section">
                 <div className="price-unit">Prix unitaire ${price_unit}</div>
