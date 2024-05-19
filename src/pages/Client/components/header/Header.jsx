@@ -83,7 +83,7 @@ const Header = props => {
   console.log(isAuthenticated)
   return (
     <>
-      <div className="headerWrapper" ref={HeaderRef}>
+ <div className="headerWrapper" ref={HeaderRef}>
         <header>
           <div className="container-fluid">
             <div className="row">
@@ -115,9 +115,7 @@ const Header = props => {
                   <li className="list-inline-items">
                     <span>
                       <img src={IconCart} />
-                      <Button className="badge bg-primary rounded-circle">
-                        2
-                      </Button>
+                      <Button className="badge bg-primary rounded-circle">2</Button>
                       Cart
                     </span>
                   </li>
@@ -159,8 +157,7 @@ const Header = props => {
               </div>
             </div>
           </div>
-        </header>{" "}
-        <Navbar
+        </header>        <Navbar
           categories={props.categories}
           subcategories={props.subcategories}
         />
