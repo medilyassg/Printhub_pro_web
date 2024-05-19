@@ -100,7 +100,7 @@ const ProductTable = props => {
       design_price: product.design_price,
       price_unit: product.price_unit,
       quantity: product.quantity,
-      subCategory : product.subCategory.nom,
+      subCategory : product.subCategory ?  product.subCategory.nom : "",
       actions: (
         <div className="flex">
                     {hasPermissions.updateProduct && 

@@ -38,7 +38,9 @@ const Productindex = () => {
 
   const handleSave = async values => {
     try {
-      const response = await post("http://127.0.0.1:8000/api/products", values)
+      const response = await post("http://127.0.0.1:8000/api/products", values,{headers: {
+        'Content-Type': 'multipart/form-data',
+      }})
       setError("")
       setmodal_add(false)
       fetchProducts()
@@ -49,10 +51,9 @@ const Productindex = () => {
   }
   const handleEdit = async (id, values) => {
     try {
-      const response = await put(`http://127.0.0.1:8000/api/products/${id}`, {
-        ...values,
-        id: id,
-      })
+      const response = await put(`http://127.0.0.1:8000/api/products/${id}`, {...values, id: id},{headers: {
+        'Content-Type': 'multipart/form-data',
+      }})
 
       setError("")
       fetchProducts()
