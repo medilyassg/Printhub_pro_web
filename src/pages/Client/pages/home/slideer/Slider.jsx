@@ -1,10 +1,11 @@
-import React from "react";
-import "./slider.css";
-import Slider from "react-slick";
-import sliderimg1 from "../../../images/slider-1.png";
-import sliderimg2 from "../../../images/slider-2.png";
-import NewLetter from "../../../components/newsLetter/NewLetter";
-import '../../../components/newsLetter/newletter.css'
+import React from "react"
+import "./slider.css"
+import Slider from "react-slick"
+import sliderimg1 from "../../../images/slider-22.png"
+import sliderimg2 from "../../../images/slider-6.png"
+import { EmailOutlined } from "@mui/icons-material"
+import { Button } from "reactstrap"
+
 const HomeSlider = () => {
   var settings = {
     dots: true,
@@ -16,38 +17,37 @@ const HomeSlider = () => {
     arrows: true,
     autoplay: true,
     autoplaySpeed: 2000,
-  };
+  }
   return (
-    <>
-      <section className="homeSlider">
-        <div className="container-fluid position-relative">
-          <Slider {...settings} className="home_slider-main">
-            <div className="item">
-              <img src={sliderimg1} className="w-100" />
-              <div className="info">
-                <h2 className="mb-4">
-                  Don't Miss amazing <br />
-                  impression deals
-                </h2>
-                <p>Sign up for the Daily newsLetter</p>
-              </div>
+    <section className="homeSlider py-5">
+      <div className="container-fluid position-relative">
+        <Slider {...settings} className="home_slider-main">
+          <div className="item position-relative">
+            <img src={sliderimg1} className="w-100" alt="Slider 1" />
+            <div className="info text-end position-absolute top-50 end-0 translate-middle-y p-5">
+              <h2 className="mb-4 display-4 fw-bold">
+                Best Deals <br />
+                Big Discounts
+              </h2>
+              <p className="fs-4 text-muted">Save up to 50% off on your first order.</p>
+              <Button color="primary" className="mt-3 ">Shop Now</Button>
             </div>
-            <div className="item">
-              <img src={sliderimg2} className="w-100" />
-              <div className="info">
-                <h2 className="mb-4">
-                  Best Deals <br />
-                  Big Discounts
-                </h2>
-                <p>Save upto 50% off on your first Order.</p>
-              </div>
+          </div>
+          <div className="item position-relative">
+            <img src={sliderimg2} className="w-100" alt="Slider 2" />
+            <div className="info text-start position-absolute top-50 start-0 translate-middle-y p-5">
+              <h2 className="mb-4 display-4 fw-bold">
+                Best Deals <br />
+                Big Discounts
+              </h2>
+              <p className="fs-4 text-muted">Save up to 50% off on your first order.</p>
+              <Button color="primary" className="mt-4">Shop Now</Button>
             </div>
-          </Slider>
-          <NewLetter/>
-        </div>
-      </section>
-    </>
-  );
-};
+          </div>
+        </Slider>
+      </div>
+    </section>
+  )
+}
 
-export default HomeSlider;
+export default HomeSlider
