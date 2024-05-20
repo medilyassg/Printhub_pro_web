@@ -1,0 +1,22 @@
+.subcategory-card {
+    border-radius: 14px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.08), 0 0 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.8s cubic-bezier(0.155, 1.105, 0.295, 1.12),
+        box-shadow 0.8s,
+        -webkit-transform 0.8s cubic-bezier(0.155, 1.105, 0.295, 1.12);
+}
+
+.subcategory-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+}
+
+.commander-btn {
+    opacity: 0;
+    transition: opacity 1s ease-in-out 0.8s;
+    /* Add a delay for the opacity transition */
+}
+
+.subcategory-card:hover .commander-btn {
+    opacity: 1;
+}

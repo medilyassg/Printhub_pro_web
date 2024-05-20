@@ -34,42 +34,51 @@ const Navbar = props => {
                 <ul className="list list-inline mb-0">
                   <li className="list-inline-item position-static">
                     <Button>
-                      <Link>Tous les produits</Link>
+                      <Link to="/cat/tous-les-produits">Tous les produits</Link>
                       <KeyboardArrowDown />
                     </Button>
-                    <div className="dropDown_Menu megaMenu w-100">
-                      <div className="row">
-                        {/* Mapping categories */}
-                        {props.categories.map(category => (
-                          <div className="col" key={category.id}>
-                            <Link
-                              to={`/cat/${category.nom?.toLowerCase()}`}
-                              categoryId={category.id}
-                            >
-                              <h4 className="text-g text-capitalize">
-                                {category.nom}
-                              </h4>
-                            </Link>
-                            {/* Mapping subcategories */}
-                            {props.subcategories
-                              .filter(sub => sub.categorie_id === category.id)
-                              .map(subcategory => (
-                                <ul key={subcategory.id} className="mt-4 mb-0">
-                                  <li>
-                                    <Link
-                                      to={`/cat/${category.nom?.toLowerCase()}?categoryId=${
-                                        category.id
-                                      }`}
-                                    >
-                                      {subcategory.nom}
-                                    </Link>
-                                  </li>
-                                </ul>
-                              ))}
-                          </div>
-                        ))}
+                    {/* Mega menu starts */}
+                    {selectedCategoryId === "tous-les-produits" && (
+                      <div className="dropDown_Menu megaMenu w-100">
+                        <div className="row">
+                          {/* Mapping categories */}
+                          {props.categories.map(category => (
+                            <div className="col" key={category.id}>
+                              <Link
+                                to={`/cat/${category.nom?.toLowerCase()}`}
+                                categoryId={category.id}
+                              >
+                                <h4 className="text-g text-capitalize">
+                                  {category.nom}
+                                </h4>
+                              </Link>
+                              {/* Mapping subcategories */}
+                              {props.subcategories
+                                .filter(sub => sub.categorie_id === category.id)
+                                .map(subcategory => (
+                                  <ul
+                                    key={subcategory.id}
+                                    className="mt-4 mb-0"
+                                  >
+                                    <li>
+                                      <Link
+                                        to={`/cat/${category.nom?.toLowerCase()}/${String(
+                                          subcategory.id
+                                        )
+                                          .replace(/\s/g, "-")
+                                          .toLowerCase()}`}
+                                      >
+                                        {subcategory.nom}
+                                      </Link>
+                                    </li>
+                                  </ul>
+                                ))}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                    )}
+                    {/* Mega menu ends */}
                   </li>
                   <li className="list-inline-item">
                     <Button>
@@ -102,7 +111,9 @@ const Navbar = props => {
                                     <li key={subIndex}>
                                       <Button>
                                         <Link
-                                          to={`/cat/${category.nom?.toLowerCase()}/${subcategory.nom
+                                          to={`/cat/${category.nom?.toLowerCase()}/${String(
+                                            subcategory.id
+                                          )
                                             .replace(/\s/g, "-")
                                             .toLowerCase()}`}
                                         >
