@@ -20,7 +20,7 @@ const Home = (props) => {
   document.title = "Home";
   return (
     <>
-      <Header categories={props.categories} subcategories={props.subcategories}/>
+      <Header categories={props.categories} subcategories={props.subcategories}  cartitems={props.cartitems}/>
       <HomeSlider />
       <Banner />
     <Footer />

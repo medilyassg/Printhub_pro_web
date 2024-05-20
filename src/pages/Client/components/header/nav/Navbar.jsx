@@ -10,6 +10,7 @@ import { Link } from "react-router-dom"
 import MegaImgt from "../../../images/360_F_712724773_cFHfl8fvajfRJntpVHI2o4kI3ram9ZbE.jpg"
 import SubcategoryCard from "../../SubcategoryCard/SubcategoryCard "
 
+
 const Navbar = props => {
   const [navData, setNavData] = useState([])
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)

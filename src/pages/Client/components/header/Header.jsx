@@ -9,31 +9,43 @@ import IconCopare from "../../images/icon-compare.svg"
 import Iconheart from "../../images/icon-heart.svg"
 import IconCart from "../../images/icon-cart.svg"
 import IconAccount from "../../images/icon-user.svg"
-import { Button } from "reactstrap"
+import { Button, CardImg } from "reactstrap"
 import MenuIcon from "@mui/icons-material/Menu"
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined"
 import {
-  ArrowBack,
-  FavoriteBorderOutlined,
   LoginOutlined,
   MapOutlined,
   Person2Outlined,
-  SearchOffOutlined,
-  SettingsAccessibility,
 } from "@mui/icons-material"
 import { ClickAwayListener } from "@mui/base/ClickAwayListener"
 import Navbar from "./nav/Navbar"
 import { Link } from "react-router-dom"
+import img3 from "../../../../assets/images/small/img-3.jpg"
+
+import {
+  Card,
+  CardBody,
+  Offcanvas,
+  OffcanvasHeader,
+  OffcanvasBody,
+} from "reactstrap"
+import { get } from "helpers/api_helper"
 
 const Header = props => {
+  const [open, setOpen] = useState(false)
+  const [isRight, setIsRight] = useState(false)
+  const [products, setProducts] = useState([])
+  const HeaderRef = useRef()
+  const [openDropDown, setOpenDropDown] = useState(false)
+  const countryList = []
+  const toggleRightCanvas = () => {
+    setIsRight(!isRight)
+  }
   const [windowWidth, setwindowWidth] = useState(window.innerWidth)
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    fetchproducts()
   }, [])
-
-  const [openDropDown, setOpenDropDown] = useState(false)
-  const countryList = []
 
   useEffect(() => {
     getCountry("https://countriesnow.space/api/v0.1/countries/")
@@ -43,9 +55,7 @@ const Header = props => {
       await axios.get(url).then(res => {
         if (res !== null) {
           res.data.data.map((item, index) => {
-            // console.log(res.data.data);
             countryList.push(item.country)
-            // console.log(item.country);
           })
         }
       })
@@ -53,7 +63,16 @@ const Header = props => {
       console.log(error)
     }
   }
-  const HeaderRef = useRef()
+  const fetchproducts = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/products")
+
+      const data = await response.data
+      setProducts(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     const handleScroll = () => {
       if (HeaderRef.current) {
@@ -77,13 +96,12 @@ const Header = props => {
   const doOpenSearch = () => {
     setOpenSearch(true)
     InputSearchRef.current.focus()
-    // console.log('doopenserch working')
   }
   const isAuthenticated = localStorage.getItem("authUser") !== null
   console.log(isAuthenticated)
   return (
     <>
- <div className="headerWrapper" ref={HeaderRef}>
+      <div className="headerWrapper" ref={HeaderRef}>
         <header>
           <div className="container-fluid">
             <div className="row">
@@ -112,44 +130,98 @@ const Header = props => {
 
               <div className="col d-flex align-items-center justify-content-end">
                 <ul className="list list-inline mb-0 headerTabs">
-                  <li className="list-inline-items">
-                    <span>
-                      <img src={IconCart} />
-                      <Button className="badge bg-primary rounded-circle">2</Button>
-                      Cart
-                    </span>
-                  </li>
                   {isAuthenticated ? (
-                    <li className="list-inline-items">
-                      <span onClick={() => setOpenDropDown(!openDropDown)}>
-                        <img src={IconAccount} />
-                        Account
-                      </span>
-                      {openDropDown !== false && (
-                        <ul className="accountDropDownMenu">
-                          <>
+                    <>
+                      <li className="list-inline-items">
+                        <Link className="text-dark" onClick={toggleRightCanvas}>
+                          <img src={IconCart} alt="Cart Icon" />
+                          Cart
+                        </Link>
+                      </li>
+                      <Offcanvas
+                        isOpen={isRight}
+                        direction="end"
+                        toggle={toggleRightCanvas}
+                      >
+                        <OffcanvasHeader toggle={toggleRightCanvas}>
+                          Your Cart
+                        </OffcanvasHeader>
+                        <OffcanvasBody>
+                          {props.cartitems?.map(item =>
+                            item.cart_items?.map(cart =>
+                              products.map(
+                                product =>
+                                  product.id === cart.product_id && (
+                                    <Card key={cart.id}>
+                                      <CardImg
+                                        top
+                                        className="img-fluid w-75"
+                                        src={img3}
+                                        alt="Product Image"
+                                      />
+                                      <CardBody>
+                                        <h4>Product details</h4>
+                                        <p className="card-text">
+                                          <div>Name: {product.name}</div>
+                                          <div>Slug: {product.slug}</div>
+                                          <div>
+                                            Price Unit: {product.price_unit}
+                                          </div>
+                                          <div>
+                                            Quantity ordered: {cart.quantity}
+                                          </div>
+                                        </p>
+                                      </CardBody>
+                                    </Card>
+                                  )
+                              )
+                            )
+                          )}
+                        </OffcanvasBody>
+                        <Link
+                          to="#"
+                          className="btn btn-primary waves-effect waves-light m-4"
+                        >
+                          Commander
+                        </Link>
+                      </Offcanvas>
+                      <li className="list-inline-items">
+                        <span onClick={() => setOpenDropDown(!openDropDown)}>
+                          <img src={IconAccount} alt="Account Icon" />
+                          Account
+                        </span>
+                        {openDropDown && (
+                          <ul className="accountDropDownMenu">
                             <li>
                               <Button className="align-items-center">
                                 <Link to="/profile" className="text-dark">
+                                  <Person2Outlined />
                                   Profile
                                 </Link>
-                              </Button>{" "}
+                              </Button>
                             </li>
                             <li>
                               <Button className="align-items-center">
-                                <a href="#" className="text-dark">
+                                <Link
+                                  to="/account/orders"
+                                  className="text-dark"
+                                >
+                                  <MapOutlined />
                                   Order Tracking
-                                </a>
-                              </Button>{" "}
+                                </Link>
+                              </Button>
                             </li>
-                          </>
-                        </ul>
-                      )}
-                    </li>
+                          </ul>
+                        )}
+                      </li>
+                    </>
                   ) : (
                     <li className="list-inline-items">
                       <Link to="/login">
-                        <span className="text-dark">Login</span>
+                        <span className="text-dark fs-5">
+                          <LoginOutlined />
+                          Login
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -157,7 +229,8 @@ const Header = props => {
               </div>
             </div>
           </div>
-        </header>        <Navbar
+        </header>{" "}
+        <Navbar
           categories={props.categories}
           subcategories={props.subcategories}
         />

@@ -16,8 +16,11 @@ import img2 from "../../images/popular/product-4-1.jpg"
 import img3 from "../../images/popular/product-2-1.jpg"
 import img4 from "../../images/popular/product-9-1.jpg"
 import img5 from "../../images/popular/product-7-1.jpg"
+import { post } from "helpers/api_helper"
+import useSweetAlert from "helpers/notifications"
 
-const Details = ({ categories, subcategories }) => {
+
+const Details = ({ categories, subcategories ,cartitems}) => {
   const { subcategoryId } = useParams()
   const [productDetails, setProductDetails] = useState(null)
   const [urlImg, setUrlImg] = useState(img1)
@@ -27,10 +30,11 @@ const Details = ({ categories, subcategories }) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const [modal_center, setmodal_center] = useState(false)
   const [modal_panier, setModalPanier] = useState(false)
+  const { showSuccessAlert, showErrorAlert } = useSweetAlert()  
+
 
   const tog_panier = () => {
     setModalPanier(!modal_panier)
-    removeBodyCss()
   }
 
   const removeBodyCss = () => {
@@ -44,6 +48,34 @@ const Details = ({ categories, subcategories }) => {
 
   const sliderRef = useRef()
 
+  const addToCart = async () => {
+    if (!cartitems || cartitems.length === 0) {
+      console.error('No cart items available');
+      return;
+    }
+    const cartId = cartitems[0]?.id;
+    const customerId = cartitems[0]?.customer_id;
+  
+    const data = {
+      customer_id: customerId,
+      cart_items: [
+        {
+          cart_id: cartId,
+          product_id: productDetails.id,
+          quantity: productDetails.quantity,
+          price: productDetails.price_unit,
+          total: productDetails.price_unit * productDetails.quantity,
+        },
+      ],
+    };
+    try {
+      const response = await post("http://127.0.0.1:8000/api/carts", data);
+      setModalPanier(false)
+      showSuccessAlert("Add new Item to cart ", response.message)
+    } catch (error) {
+      showErrorAlert("Add New Item to cart ", error.response.data.message)
+    }
+  }
   useEffect(() => {
     // Fetch subcategories from API
     fetch("http://127.0.0.1:8000/api/subcategories")
@@ -82,25 +114,28 @@ const Details = ({ categories, subcategories }) => {
       .catch(error => console.error("Error fetching subcategories:", error))
   }, [subcategoryId])
 
+  const fetchPropertyCategories = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/ProprieteCategorie");
+      const data = await response.data;
+
+      // Filter property categories to include only those with properties that match the product's properties
+      const filteredCategories = data.data.filter(category =>
+        category.propriete.some(prop =>
+          productDetails.propriete.find(p => p.id === prop.id)
+        )
+      );
+      setPropertyCategories(filteredCategories);
+    } catch (error) {
+      console.error("Error fetching property categories:", error);
+    }
+  };
+
   useEffect(() => {
     if (productDetails) {
-      // Fetch property categories from API
-      fetch("http://127.0.0.1:8000/api/ProprieteCategorie")
-        .then(response => response.json())
-        .then(data => {
-          // Filter property categories to include only those with properties that match the product's properties
-          const filteredCategories = data.data.filter(category =>
-            category.propriete.some(prop =>
-              productDetails.propriete.find(p => p.id === prop.id)
-            )
-          )
-          setPropertyCategories(filteredCategories)
-        })
-        .catch(error =>
-          console.error("Error fetching property categories:", error)
-        )
+      fetchPropertyCategories();
     }
-  }, [productDetails])
+  }, [productDetails]);
 
   useEffect(() => {
     // Recalculate total price whenever activeProperties changes
@@ -151,10 +186,11 @@ const Details = ({ categories, subcategories }) => {
       [categoryId]: property.id,
     }))
   }
-
+  const isAuthenticated = localStorage.getItem("authUser") !== null
+  console.log(productDetails)
   return (
     <>
-      <Header categories={categories} subcategories={subcategories} />
+      <Header categories={categories} subcategories={subcategories} cartitems={cartitems}/>
       <section className="detailPage">
         <div className="container detailsContainer pt-3 pb-3">
           <div className="row">
@@ -347,7 +383,10 @@ const Details = ({ categories, subcategories }) => {
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">
-                <Button className="themeBtn" onClick={tog_panier}>
+                <Button
+                  className="themeBtn"
+                  onClick={tog_panier}
+                >
                   ajouter au panier
                 </Button>
                 <Modal
@@ -361,32 +400,52 @@ const Details = ({ categories, subcategories }) => {
                   </ModalHeader>
                   <ModalBody>
                     <div className="row">
-                      <div className="col-md-6 p-3 border rounded mb-3">
-                        <div className="d-flex align-items-center mb-3">
-                          <i className="bi bi-upload me-2"></i>
-                          <span>Importer mon fichier</span>
-                        </div>
-                        <p className="mb-0">
-                          Votre fichier d'impression est déjà prêt et respecte
-                          les conditions pour une impression optimale.
-                        </p>
-                        <Button className="btn btn-primary w-100 mt-3">
-                          Importer mon fichier
-                        </Button>
-                      </div>
-                      <div className="col-md-6 p-3 border rounded mb-3">
-                        <div className="d-flex align-items-center mb-3">
-                          <i className="bi bi-cart me-2"></i>
-                          <span>Ajouter au panier</span>
-                        </div>
-                        <p className="mb-0">
-                          Complétez votre commande et importez ou créez votre
-                          fichier au moment de la finalisation.
-                        </p>
-                        <Button className="btn btn-secondary w-100 mt-3">
-                          Ajouter au panier
-                        </Button>
-                      </div>
+                      {isAuthenticated ? (
+                        <>
+                          <div className="col-md-6 p-3 border rounded mb-3">
+                            <div className="d-flex align-items-center mb-3">
+                              <i className="bi bi-upload me-2"></i>
+                              <span>Importer mon fichier</span>
+                            </div>
+                            <p className="mb-0">
+                              Votre fichier d'impression est déjà prêt et
+                              respecte les conditions pour une impression
+                              optimale.
+                            </p>
+                            <Button className="btn btn-primary w-100 mt-3">
+                              Importer mon fichier
+                            </Button>
+                          </div>
+                          <div className="col-md-6 p-3 border rounded mb-3">
+                            <div className="d-flex align-items-center mb-3">
+                              <i className="bi bi-cart me-2"></i>
+                              <span>Ajouter au panier</span>
+                            </div>
+                            <p className="mb-0">
+                              Complétez votre commande et importez ou créez
+                              votre fichier au moment de la finalisation.
+                            </p>
+                            <Button className="btn btn-secondary w-100 mt-3"  onClick={addToCart}>
+                              Ajouter au panier
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="col-md-12 p-3 border rounded mb-3 d-flex align-items-center flex-column">
+                            <p className="mb-0">
+                              Vous devez être connecté pour ajouter des articles
+                              au panier.
+                            </p>
+                            <Button
+                              className="btn btn-primary w-50 mt-3"
+                              href="/login"
+                            >
+                              Se connecter
+                            </Button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </ModalBody>
                 </Modal>
