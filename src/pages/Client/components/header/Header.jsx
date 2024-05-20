@@ -179,37 +179,42 @@ const Header = props => {
                           Your Cart
                         </OffcanvasHeader>
                         <OffcanvasBody>
-                          {props.cartitems?.map(item =>
-                            item.cart_items?.map(cart =>
-                              products.map(
-                                product =>
-                                  product.id === cart.product_id && (
-                                    <Card key={cart.id}>
-                                      <CardImg
-                                        top
-                                        className="img-fluid w-75"
-                                        src={img3}
-                                        alt="Product Image"
-                                      />
-                                      <CardBody>
-                                        <h4>Product details</h4>
-                                        <p className="card-text">
-                                          <div>Name: {product.name}</div>
-                                          <div>Slug: {product.slug}</div>
-                                          <div>
-                                            Price Unit: {product.price_unit}
-                                          </div>
-                                          <div>
-                                            Quantity ordered: {cart.quantity}
-                                          </div>
-                                        </p>
-                                      </CardBody>
-                                    </Card>
-                                  )
+                          {props.cartitems && props.cartitems.length > 0 ? (
+                            props.cartitems.map(item =>
+                              item.cart_items?.map(cart =>
+                                products.map(
+                                  product =>
+                                    product.id === cart.product_id && (
+                                      <Card key={cart.id}>
+                                        <CardImg
+                                          top
+                                          className="img-fluid w-75"
+                                          src={img3}
+                                          alt="Product Image"
+                                        />
+                                        <CardBody>
+                                          <h4>Product details</h4>
+                                          <p className="card-text">
+                                            <div>Name: {product.name}</div>
+                                            <div>Slug: {product.slug}</div>
+                                            <div>
+                                              Price Unit: {product.price_unit}
+                                            </div>
+                                            <div>
+                                              Quantity ordered: {cart.quantity}
+                                            </div>
+                                          </p>
+                                        </CardBody>
+                                      </Card>
+                                    )
+                                )
                               )
                             )
+                          ) : (
+                            <p>Your cart is empty</p>
                           )}
                         </OffcanvasBody>
+
                         <Link
                           className="btn btn-primary waves-effect waves-light m-4"
                           onClick={handleOrder}

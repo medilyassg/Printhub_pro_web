@@ -38,7 +38,7 @@ const OrderTable = (props) => {
         removeBodyCss();
     };
 
-
+console.log(props.orders);
     const data = {
         columns: [
             {
@@ -127,8 +127,8 @@ const OrderTable = (props) => {
                     <ModalHeader className="mt-0" toggle={tog_product}>View Products</ModalHeader>
                     <ModalBody>
                         {console.log(selectedOrder)}
-                        {selectedOrder && selectedOrder.products && selectedOrder.products.length > 0 ? (
-                            selectedOrder.products.map(product => <ProductView product={product} />)
+                        {selectedOrder && selectedOrder.order_products && selectedOrder.order_products.length > 0 ? (
+                            selectedOrder.order_products.map(product => (<ProductView product={product} />))
                         ) : (
                             <p>No products found for this order</p>
                         )}
