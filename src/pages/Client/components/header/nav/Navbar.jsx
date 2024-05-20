@@ -38,46 +38,41 @@ const Navbar = props => {
                       <KeyboardArrowDown />
                     </Button>
                     {/* Mega menu starts */}
-                    {selectedCategoryId === "tous-les-produits" && (
-                      <div className="dropDown_Menu megaMenu w-100">
-                        <div className="row">
-                          {/* Mapping categories */}
-                          {props.categories.map(category => (
-                            <div className="col" key={category.id}>
-                              <Link
-                                to={`/cat/${category.nom?.toLowerCase()}`}
-                                categoryId={category.id}
-                              >
-                                <h4 className="text-g text-capitalize">
-                                  {category.nom}
-                                </h4>
-                              </Link>
-                              {/* Mapping subcategories */}
-                              {props.subcategories
-                                .filter(sub => sub.categorie_id === category.id)
-                                .map(subcategory => (
-                                  <ul
-                                    key={subcategory.id}
-                                    className="mt-4 mb-0"
-                                  >
-                                    <li>
-                                      <Link
-                                        to={`/cat/${category.nom?.toLowerCase()}/${String(
-                                          subcategory.id
-                                        )
-                                          .replace(/\s/g, "-")
-                                          .toLowerCase()}`}
-                                      >
-                                        {subcategory.nom}
-                                      </Link>
-                                    </li>
-                                  </ul>
-                                ))}
-                            </div>
-                          ))}
-                        </div>
+                    <div className="dropDown_Menu megaMenu w-100">
+                      <div className="row">
+                        {/* Mapping categories */}
+                        {props.categories.map(category => (
+                          <div className="col" key={category.id}>
+                            <Link
+                              to={`/cat/${category.nom?.toLowerCase()}`}
+                              categoryId={category.id}
+                            >
+                              <h4 className="text-g text-capitalize">
+                                {category.nom}
+                              </h4>
+                            </Link>
+                            {/* Mapping subcategories */}
+                            {props.subcategories
+                              .filter(sub => sub.categorie_id === category.id)
+                              .map(subcategory => (
+                                <ul key={subcategory.id} className="mt-4 mb-0">
+                                  <li>
+                                    <Link
+                                      to={`/cat/${category.nom?.toLowerCase()}/${String(
+                                        subcategory.id
+                                      )
+                                        .replace(/\s/g, "-")
+                                        .toLowerCase()}`}
+                                    >
+                                      {subcategory.nom}
+                                    </Link>
+                                  </li>
+                                </ul>
+                              ))}
+                          </div>
+                        ))}
                       </div>
-                    )}
+                    </div>
                     {/* Mega menu ends */}
                   </li>
                   <li className="list-inline-item">
