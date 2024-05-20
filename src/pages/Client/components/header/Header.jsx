@@ -115,7 +115,7 @@ const Header = props => {
                   <li className="list-inline-items">
                     <span>
                       <img src={IconCart} />
-                      <Button className="badge bg-primary rounded-circle">2</Button>
+                      {/* <Button className="badge bg-primary rounded-circle">2</Button> */}
                       Cart
                     </span>
                   </li>
