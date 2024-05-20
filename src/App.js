@@ -94,13 +94,13 @@ const App = () => {
         <Route
           path="/"
           element={
-            <Home categories={categories} subcategories={subcategories} cartitems={cartitems}/>
+            <Home categories={categories} subcategories={subcategories} cartitems={cartitems} fetchCartItems={fetchCartItems}/>
           }
         />
         <Route
           path="/cat/:categoryId/:subcategoryId"
           element={
-            <Details categories={categories} subcategories={subcategories}  cartitems={cartitems}/>
+            <Details categories={categories} subcategories={subcategories}  cartitems={cartitems}  fetchCartItems={fetchCartItems}/>
           }
         />
         <Route

@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import Logo from "../../images/logo.svg"
 import searchIcon from "../../images/search.png"
 import "./header.css"
-import SelectDrop from "../selectDrop/SelectDrop"
 import axios from "axios"
-import LocationOnIcon from "@mui/icons-material/LocationOn"
-import IconCopare from "../../images/icon-compare.svg"
-import Iconheart from "../../images/icon-heart.svg"
 import IconCart from "../../images/icon-cart.svg"
 import IconAccount from "../../images/icon-user.svg"
 import { Button, CardImg } from "reactstrap"
@@ -28,14 +24,17 @@ import {
   OffcanvasHeader,
   OffcanvasBody,
 } from "reactstrap"
-import { get } from "helpers/api_helper"
+import { get, post } from "helpers/api_helper"
+import useSweetAlert from "helpers/notifications"
 
 const Header = props => {
-  const [open, setOpen] = useState(false)
   const [isRight, setIsRight] = useState(false)
   const [products, setProducts] = useState([])
   const HeaderRef = useRef()
   const [openDropDown, setOpenDropDown] = useState(false)
+  const [isopenSearch, setOpenSearch] = useState(false)
+  const InputSearchRef = useRef()
+  const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const countryList = []
   const toggleRightCanvas = () => {
     setIsRight(!isRight)
@@ -91,14 +90,47 @@ const Header = props => {
     }
   }, [])
 
-  const [isopenSearch, setOpenSearch] = useState(false)
-  const InputSearchRef = useRef()
   const doOpenSearch = () => {
     setOpenSearch(true)
     InputSearchRef.current.focus()
   }
+  const handleOrder = async () => {
+    const customerId = props.cartitems[0]?.customer_id
+    const cartId = props.cartitems[0]?.id
+
+    if (!customerId || !cartId) {
+      showErrorAlert("Order Created", error.response.data.message)
+      return
+    }
+    const orderData = {
+      customer_id: customerId,
+      cart_id: cartId,
+      status: "accepted",
+      progress: "Processing",
+      products: [],
+    }
+
+    if (props.cartitems && Array.isArray(props.cartitems)) {
+      orderData.products = props.cartitems.flatMap(cartItem =>
+        cartItem.cart_items.map(item => ({
+          product_id: item.product_id,
+          price: item.price,
+          quantity: item.quantity,
+          total: item.price * item.quantity,
+        }))
+      )
+    }
+    try {
+      const response = await post("http://127.0.0.1:8000/api/orders", orderData)
+      showSuccessAlert("Order Created", response.message)
+      props.fetchCartItems()
+    } catch (error) {
+      showErrorAlert("Order Created", error.response.message)
+    }
+    console.log(orderData)
+  }
   const isAuthenticated = localStorage.getItem("authUser") !== null
-  console.log(isAuthenticated)
+
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>
@@ -179,8 +211,8 @@ const Header = props => {
                           )}
                         </OffcanvasBody>
                         <Link
-                          to="#"
                           className="btn btn-primary waves-effect waves-light m-4"
+                          onClick={handleOrder}
                         >
                           Commander
                         </Link>

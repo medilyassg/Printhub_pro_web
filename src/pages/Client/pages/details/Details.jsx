@@ -19,8 +19,7 @@ import img5 from "../../images/popular/product-7-1.jpg"
 import { post } from "helpers/api_helper"
 import useSweetAlert from "helpers/notifications"
 
-
-const Details = ({ categories, subcategories ,cartitems}) => {
+const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const { subcategoryId } = useParams()
   const [productDetails, setProductDetails] = useState(null)
   const [urlImg, setUrlImg] = useState(img1)
@@ -30,8 +29,7 @@ const Details = ({ categories, subcategories ,cartitems}) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const [modal_center, setmodal_center] = useState(false)
   const [modal_panier, setModalPanier] = useState(false)
-  const { showSuccessAlert, showErrorAlert } = useSweetAlert()  
-
+  const { showSuccessAlert, showErrorAlert } = useSweetAlert()
 
   const tog_panier = () => {
     setModalPanier(!modal_panier)
@@ -48,33 +46,48 @@ const Details = ({ categories, subcategories ,cartitems}) => {
 
   const sliderRef = useRef()
 
-  const addToCart = async () => {
-    if (!cartitems || cartitems.length === 0) {
-      console.error('No cart items available');
-      return;
+  const [user, setUser] = useState(null)
+  const [customerId, setCustomerId] = useState(null)
+
+  useEffect(() => {
+    const authUser = localStorage.getItem("authUser")
+    if (authUser) {
+      const userObj = JSON.parse(authUser)
+      setUser(userObj.user)
+      if (userObj.user.customer) {
+        setCustomerId(userObj.user.customer.id) // assuming user_id is the correct field
+      }
     }
-    const cartId = cartitems[0]?.id;
-    const customerId = cartitems[0]?.customer_id;
-  
+  }, [])
+  console.log(user, customerId)
+  const addToCart = async () => {
+    if (!customerId) {
+      showErrorAlert("Add New Item to Cart", "Customer ID not found")
+      return
+    }
+
     const data = {
       customer_id: customerId,
       cart_items: [
         {
-          cart_id: cartId,
           product_id: productDetails.id,
           quantity: productDetails.quantity,
           price: productDetails.price_unit,
           total: productDetails.price_unit * productDetails.quantity,
         },
       ],
-    };
-    try {
-      const response = await post("http://127.0.0.1:8000/api/carts", data);
-      setModalPanier(false)
-      showSuccessAlert("Add new Item to cart ", response.message)
-    } catch (error) {
-      showErrorAlert("Add New Item to cart ", error.response.data.message)
     }
+
+    try {
+      const response = await post("http://127.0.0.1:8000/api/carts", data)
+      setModalPanier(false)
+      showSuccessAlert("Add new Item to cart ", response.data.message)
+      fetchCartItems()
+    } catch (error) {
+      setModalPanier(false)
+      showErrorAlert("Add New Item to Cart", error.response.data.message)
+    }
+    console.log(data)
   }
   useEffect(() => {
     // Fetch subcategories from API
@@ -116,26 +129,26 @@ const Details = ({ categories, subcategories ,cartitems}) => {
 
   const fetchPropertyCategories = async () => {
     try {
-      const response = await get("http://127.0.0.1:8000/api/ProprieteCategorie");
-      const data = await response.data;
+      const response = await get("http://127.0.0.1:8000/api/ProprieteCategorie")
+      const data = await response.data
 
       // Filter property categories to include only those with properties that match the product's properties
       const filteredCategories = data.data.filter(category =>
         category.propriete.some(prop =>
           productDetails.propriete.find(p => p.id === prop.id)
         )
-      );
-      setPropertyCategories(filteredCategories);
+      )
+      setPropertyCategories(filteredCategories)
     } catch (error) {
-      console.error("Error fetching property categories:", error);
+      console.error("Error fetching property categories:", error)
     }
-  };
+  }
 
   useEffect(() => {
     if (productDetails) {
-      fetchPropertyCategories();
+      fetchPropertyCategories()
     }
-  }, [productDetails]);
+  }, [productDetails])
 
   useEffect(() => {
     // Recalculate total price whenever activeProperties changes
@@ -190,7 +203,11 @@ const Details = ({ categories, subcategories ,cartitems}) => {
   console.log(productDetails)
   return (
     <>
-      <Header categories={categories} subcategories={subcategories} cartitems={cartitems}/>
+      <Header
+        categories={categories}
+        subcategories={subcategories}
+        cartitems={cartitems}
+      />
       <section className="detailPage">
         <div className="container detailsContainer pt-3 pb-3">
           <div className="row">
@@ -383,10 +400,7 @@ const Details = ({ categories, subcategories ,cartitems}) => {
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">
-                <Button
-                  className="themeBtn"
-                  onClick={tog_panier}
-                >
+                <Button className="themeBtn" onClick={tog_panier}>
                   ajouter au panier
                 </Button>
                 <Modal
@@ -425,7 +439,10 @@ const Details = ({ categories, subcategories ,cartitems}) => {
                               Complétez votre commande et importez ou créez
                               votre fichier au moment de la finalisation.
                             </p>
-                            <Button className="btn btn-secondary w-100 mt-3"  onClick={addToCart}>
+                            <Button
+                              className="btn btn-secondary w-100 mt-3"
+                              onClick={addToCart}
+                            >
                               Ajouter au panier
                             </Button>
                           </div>
