@@ -15,12 +15,14 @@ import img5 from "../../images/popular/product-7-1.jpg";
 const SubcategoryCard = ({ categories, subcategories }) => {
   const { categoryId } = useParams();
   const [filteredSubcategories, setFilteredSubcategories] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
     if (categoryId === "tous-les-produits") {
       setFilteredSubcategories(
         subcategories.filter(subcategory => subcategory.nom !== "")
       );
+      setCategoryName("Tous les produits");
     } else {
       const selectedCategory = categories.find(
         category => category.nom.toLowerCase() === categoryId.toLowerCase()
@@ -32,6 +34,7 @@ const SubcategoryCard = ({ categories, subcategories }) => {
             subcategory.nom !== ""
         );
         setFilteredSubcategories(filtered);
+        setCategoryName(selectedCategory.nom);
       }
     }
   }, [categories, subcategories, categoryId]);
@@ -97,11 +100,26 @@ const SubcategoryCard = ({ categories, subcategories }) => {
       <Header categories={categories} subcategories={subcategories} />
 
       <div className="container mt-5">
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item">
+              <Link to="/cat/tous-les-produits">Tous les produits</Link>
+            </li>
+            {categoryId !== "tous-les-produits" && (
+              <>
+                <li className="breadcrumb-item">
+                  <Link to={`/cat/${categoryId}`}>{categoryName}</Link>
+                </li>
+              </>
+            )}
+          </ol>
+        </nav>
+
         <h2
           className="text-center mb-4 text-primary"
           style={{ fontFamily: "Montserrat, sans-serif" }}
         >
-          Tous les produits
+          {categoryName}
         </h2>
         <div className="row row-cols-1 row-cols-md-4">
           {renderSubcategoryCards()}
