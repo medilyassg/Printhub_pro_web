@@ -51,9 +51,10 @@ const Productindex = () => {
   }
   const handleEdit = async (id, values) => {
     try {
-      const response = await put(`http://127.0.0.1:8000/api/products/${id}`, {...values, id: id},{headers: {
-        'Content-Type': 'multipart/form-data',
-      }})
+      const response = await put(`http://127.0.0.1:8000/api/products/${id}`, {
+        ...values,
+        id: id,
+      })
 
       setError("")
       fetchProducts()

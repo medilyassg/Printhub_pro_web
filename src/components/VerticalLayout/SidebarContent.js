@@ -271,6 +271,12 @@ const SidebarContent = props => {
 
 
                 </ul>
+                <li>
+                <Link to="/settings" className=" waves-effect">
+                  <i className="ti-settings"></i>
+                  <span>{props.t("Settings")}</span>
+                </Link>
+                  </li>
               </li>
 
 

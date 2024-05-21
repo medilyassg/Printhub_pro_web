@@ -25,9 +25,7 @@ import OrderIndex from "pages/Orders/Order";
 import PropertyCategoryindex from "pages/proprietsCategories";
 import ClientOrderIndex from "pages/clientPages/orders";
 import ClientAddressesIndex from "pages/clientPages/addresses.js";
-// import { Client } from "pages/Client/client";
-import Navbar from "pages/Client/components/header/nav/Navbar";
-import Header from "pages/Client/components/header/Header";
+import SettingsIndex from "pages/settings/index.js";
 
 
 const userRoutes = [
@@ -40,6 +38,7 @@ const userRoutes = [
   { path: "/products", component: <Productindex /> },
   { path: "/properties", component: <Propertyindex /> },
   { path: "/orders", component: <OrderIndex /> },
+  { path: "/settings", component: <SettingsIndex /> },
   { path: "/propriets-categories", component: <PropertyCategoryindex /> },
   { path: "/account/orders", component: <ClientOrderIndex /> },
   { path: "/account/addresses", component: <ClientAddressesIndex /> },

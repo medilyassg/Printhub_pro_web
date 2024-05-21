@@ -93,7 +93,13 @@ const ProductTable = props => {
     ],
     rows: props.products.map(product => ({
       id: product.id,
-      images: product.images,
+      images: (
+        <div>
+        {product.images &&
+        <img style={{ maxWidth: '100px', maxHeight: '100px' }} src={`http://127.0.0.1:8000/storage/${JSON.parse(product.images)[0]}`} alt={`Product Image `} />
+        }
+        </div>
+        ),
       name: product.name,
       slug: product.slug,
       description: product.description,
