@@ -45,42 +45,31 @@ const Details = ({ categories, subcategories }) => {
   const sliderRef = useRef()
 
   useEffect(() => {
-    // Fetch subcategories from API
-    fetch("http://127.0.0.1:8000/api/subcategories")
-      .then(response => response.json())
-      .then(data => {
-        const matchingSubcategory = data.data.find(
-          subcategory => subcategory.nom === subcategoryId
+    if (subcategoryId) {
+      // Fetch all products from API
+      fetch(`http://127.0.0.1:8000/api/products`)
+        .then(response => response.json())
+        .then(data => {
+          const filteredProducts = data.data.filter(
+            product => product.subCategory.id === parseInt(subcategoryId)
+          );
+          if (filteredProducts.length > 0) {
+            // Assuming you want the first product in the list
+            setProductDetails(filteredProducts[0]);
+          } else {
+            // No product found for the selected subcategory
+            setProductDetails(null);
+          }
+        })
+        .catch(error =>
+          console.error("Error fetching products:", error)
         )
-        if (matchingSubcategory) {
-          const subcategoryId = matchingSubcategory.id
-          console.log("Selected subcategory ID:", subcategoryId)
-
-          // Fetch product details from API based on subcategory ID
-          fetch(`http://127.0.0.1:8000/api/products`)
-            .then(response => response.json())
-            .then(data => {
-              const filteredProducts = data.data.filter(
-                product => product.subCategory.id === parseInt(subcategoryId)
-              )
-              if (filteredProducts.length > 0) {
-                setProductDetails(filteredProducts[0])
-              } else {
-                // No product found for the selected subcategory
-                setProductDetails(null)
-              }
-            })
-            .catch(error =>
-              console.error("Error fetching product details:", error)
-            )
-        } else {
-          // Subcategory not found
-          console.error("Subcategory not found:", subcategoryId)
-          setProductDetails(null)
-        }
-      })
-      .catch(error => console.error("Error fetching subcategories:", error))
-  }, [subcategoryId])
+    } else {
+      // No subcategory ID provided
+      setProductDetails(null)
+    }
+  }, [subcategoryId]);
+  
 
   useEffect(() => {
     if (productDetails) {

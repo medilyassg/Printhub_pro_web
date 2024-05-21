@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import Header from "pages/Client/components/header/Header"
 import Footer from "pages/Client/components/footer/Footer"
 import axios from "axios"
-import { Link } from "react-router-dom"
+import "./SubcategoryCard.css"
 
 // Importing images
 import img1 from "../../images/popular/product-8-1.jpg"
@@ -15,58 +15,29 @@ import img5 from "../../images/popular/product-7-1.jpg"
 const SubcategoryCard = ({ categories, subcategories }) => {
   const { categoryId } = useParams()
   const [filteredSubcategories, setFilteredSubcategories] = useState([])
+  const [categoryName, setCategoryName] = useState("")
 
   useEffect(() => {
-    // Filter subcategories based on the selected category name
-    const selectedCategory = categories.find(
-      category => category.nom.toLowerCase() === categoryId.toLowerCase()
-    )
-    if (selectedCategory) {
-      const filtered = subcategories.filter(
-        subcategory => subcategory.categorie_id === selectedCategory.id
+    if (categoryId === "tous-les-produits") {
+      setFilteredSubcategories(
+        subcategories.filter(subcategory => subcategory.nom !== "")
       )
-      setFilteredSubcategories(filtered)
+      setCategoryName("Tous les produits")
+    } else {
+      const selectedCategory = categories.find(
+        category => category.nom.toLowerCase() === categoryId.toLowerCase()
+      )
+      if (selectedCategory) {
+        const filtered = subcategories.filter(
+          subcategory =>
+            subcategory.categorie_id === selectedCategory.id &&
+            subcategory.nom !== ""
+        )
+        setFilteredSubcategories(filtered)
+        setCategoryName(selectedCategory.nom)
+      }
     }
   }, [categories, subcategories, categoryId])
-
-  // Rendering subcategory cards
-  const renderSubcategoryCards = () => {
-    return filteredSubcategories.map((subcategory, index) => (
-      <div className="col-md-3 mb-4 d-flex justify-content-center" key={index}>
-        <div className="card">
-          <Link to={`/cat/${categoryId}/${subcategory.nom.toLowerCase()}`}>
-            <img
-              src={getSubcategoryImage(index)}
-              alt={subcategory.nom}
-              className="card-img-top rounded"
-              style={{ borderRadius: "15px", fontSize: "larger" }}
-            />
-          </Link>
-          <div className="card-body">
-            <Link to={`/cat/${categoryId}/${subcategory.nom.toLowerCase()}`}>
-              <h5
-                className="card-title text-center text-primary"
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  color: "#525b6a",
-                }}
-              >
-                {subcategory.nom}
-              </h5>
-            </Link>
-            <Link to={`/cat/${categoryId}/${subcategory.nom.toLowerCase()}`}>
-              <button
-                className="btn btn-primary btn-block"
-                style={{ width: "100%", fontFamily: "Montserrat, sans-serif" }}
-              >
-                Commander
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    ))
-  }
 
   // Function to get subcategory image based on index
   const getSubcategoryImage = index => {
@@ -86,16 +57,73 @@ const SubcategoryCard = ({ categories, subcategories }) => {
     }
   }
 
+  // Rendering subcategory cards
+  const renderSubcategoryCards = () => {
+    return filteredSubcategories.map((subcategory, index) => (
+      <div className="col-md-3 mb-4 d-flex justify-content-center" key={index}>
+        <div className="card rounded subcategory-card">
+          <Link to={`/cat/${categoryId}/${subcategory.id}`}>
+            <img
+              src={getSubcategoryImage(index)}
+              alt={subcategory.nom}
+              className="card-img-top rounded"
+            />
+          </Link>
+          <div className="card-body">
+            <Link to={`/cat/${categoryId}/${subcategory.id}`}>
+              <h5
+                className="card-title text-center text-primary"
+                style={{
+                  fontFamily: "Montserrat, sans-serif",
+                  color: "#525b6a",
+                }}
+              >
+                {subcategory.nom}
+              </h5>
+            </Link>
+            <Link to={`/cat/${categoryId}/${subcategory.id}`}>
+              <button
+                className="btn btn-primary btn-block commander-btn"
+                style={{ width: "100%", fontFamily: "Montserrat, sans-serif" }}
+              >
+                <i className="dripicons-cart"></i> Commander
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    ))
+  }
+
   return (
     <>
       <Header categories={categories} subcategories={subcategories} />
 
       <div className="container mt-5">
+        <nav aria-label="breadcrumb">
+          <ol className="breadcrumb">
+            <li className="breadcrumb-item">
+              <Link to="/cat/tous-les-produits">Tous les produits</Link>
+            </li>
+            {categoryId !== "tous-les-produits" && (
+              <>
+                <li className="breadcrumb-item active" aria-current="page">
+                  {categoryName}
+                </li>
+              </>
+            )}
+          </ol>
+        </nav>
+
         <h2
-          className="text-center mb-4 text-primary"
-          style={{ fontFamily: "Montserrat, sans-serif" }}
+          className="text-center mb-4"
+          style={{
+            fontFamily: "Montserrat, sans-serif",
+            color: "#525b6a",
+            fontSize: "30px",
+          }}
         >
-          {categoryId}
+          {categoryName}
         </h2>
         <div className="row row-cols-1 row-cols-md-4">
           {renderSubcategoryCards()}

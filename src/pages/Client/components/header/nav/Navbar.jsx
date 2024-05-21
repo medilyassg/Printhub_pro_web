@@ -34,9 +34,10 @@ const Navbar = props => {
                 <ul className="list list-inline mb-0">
                   <li className="list-inline-item position-static">
                     <Button>
-                      <Link>Tous les produits</Link>
+                      <Link to="/cat/tous-les-produits">Tous les produits</Link>
                       <KeyboardArrowDown />
                     </Button>
+                    {/* Mega menu starts */}
                     <div className="dropDown_Menu megaMenu w-100">
                       <div className="row">
                         {/* Mapping categories */}
@@ -57,9 +58,11 @@ const Navbar = props => {
                                 <ul key={subcategory.id} className="mt-4 mb-0">
                                   <li>
                                     <Link
-                                      to={`/cat/${category.nom?.toLowerCase()}?categoryId=${
-                                        category.id
-                                      }`}
+                                      to={`/cat/${category.nom?.toLowerCase()}/${String(
+                                        subcategory.id
+                                      )
+                                        .replace(/\s/g, "-")
+                                        .toLowerCase()}`}
                                     >
                                       {subcategory.nom}
                                     </Link>
@@ -70,6 +73,7 @@ const Navbar = props => {
                         ))}
                       </div>
                     </div>
+                    {/* Mega menu ends */}
                   </li>
                   <li className="list-inline-item">
                     <Button>
@@ -102,7 +106,9 @@ const Navbar = props => {
                                     <li key={subIndex}>
                                       <Button>
                                         <Link
-                                          to={`/cat/${category.nom?.toLowerCase()}/${subcategory.nom
+                                          to={`/cat/${category.nom?.toLowerCase()}/${String(
+                                            subcategory.id
+                                          )
                                             .replace(/\s/g, "-")
                                             .toLowerCase()}`}
                                         >
@@ -120,7 +126,7 @@ const Navbar = props => {
                       )
                     })}
 
-                  <li className="list-inline-item">
+                  {/* <li className="list-inline-item">
                     <Button>
                       <Link>Shop</Link>
                       <KeyboardArrowDown />
@@ -150,14 +156,14 @@ const Navbar = props => {
                         </li>
                       </ul>
                     </div>
-                  </li>
+                  </li> */}
 
                   {/* blog ends */}
-                  <li className="list-inline-item">
+                  {/* <li className="list-inline-item">
                     <Button>
                       <Link>Contact</Link>
                     </Button>
-                  </li>
+                  </li> */}
                 </ul>
               </nav>
             </div>
