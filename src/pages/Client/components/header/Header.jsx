@@ -97,13 +97,18 @@ const Header = (props) => {
                 {searchResults.length > 0 && (
                   <div className="searchResults">
                     {searchResults.map((result) => (
-                      <div className="searchResult" key={result.id}>
+                      <div
+                        className={`searchResult ${
+                          result.categorie_id ? "subcategory" : "category"
+                        }`}
+                        key={result.id}
+                      >
                         <Link
                           to={`/cat/${
                             result.categorie_id
-                              ? result.categorie_id
+                              ? `${result.categorie_id}/${result.id}`
                               : result.nom.toLowerCase()
-                          }/${result.id}`}
+                          }`}
                         >
                           {result.nom}
                         </Link>
