@@ -59,7 +59,6 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       }
     }
   }, [])
-  console.log(user, customerId)
   const addToCart = async () => {
     if (!customerId) {
       showErrorAlert("Add New Item to Cart", "Customer ID not found")
@@ -200,13 +199,13 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     }))
   }
   const isAuthenticated = localStorage.getItem("authUser") !== null
-  console.log(productDetails)
   return (
     <>
       <Header
         categories={categories}
         subcategories={subcategories}
         cartitems={cartitems}
+        fetchCartItems={fetchCartItems}
       />
       <section className="detailPage">
         <div className="container detailsContainer pt-3 pb-3">

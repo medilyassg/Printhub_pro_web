@@ -24,7 +24,7 @@ import {
   OffcanvasHeader,
   OffcanvasBody,
 } from "reactstrap"
-import { get, post } from "helpers/api_helper"
+import { del, get, post } from "helpers/api_helper"
 import useSweetAlert from "helpers/notifications"
 
 const Header = props => {
@@ -123,14 +123,26 @@ const Header = props => {
     try {
       const response = await post("http://127.0.0.1:8000/api/orders", orderData)
       showSuccessAlert("Order Created", response.message)
+      setIsRight(false)
       props.fetchCartItems()
     } catch (error) {
       showErrorAlert("Order Created", error.response.message)
     }
-    console.log(orderData)
+  }
+  const handleDelete = async cardItemId => {
+    try {
+      const response = await del(
+        `http://127.0.0.1:8000/api/cart-items/${cardItemId}`
+      )
+      showSuccessAlert("Delete Item Cart ")
+      setIsRight(false)
+      props.fetchCartItems()
+    } catch (error) {
+      showErrorAlert("Delete Item Cart")
+    }
   }
   const isAuthenticated = localStorage.getItem("authUser") !== null
-
+  console.log(props.cartitems)
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>
@@ -179,20 +191,22 @@ const Header = props => {
                           Your Cart
                         </OffcanvasHeader>
                         <OffcanvasBody>
-                          {props.cartitems && props.cartitems.length > 0 ? (
-                            props.cartitems.map(item =>
-                              item.cart_items?.map(cart =>
-                                products.map(
-                                  product =>
-                                    product.id === cart.product_id && (
-                                      <Card key={cart.id}>
-                                        <CardImg
-                                          top
-                                          className="img-fluid w-75"
-                                          src={img3}
-                                          alt="Product Image"
-                                        />
-                                        <CardBody>
+                          {props.cartitems &&
+                          props.cartitems.length > 0 &&
+                          props.cartitems[0].cart_items.length > 0 ? (
+                            props.cartitems[0].cart_items.map(cart =>
+                              products.map(
+                                product =>
+                                  product.id === cart.product_id && (
+                                    <Card key={cart.id}>
+                                      <CardImg
+                                        top
+                                        className="img-fluid w-100"
+                                        src={img3}
+                                        alt="Product Image"
+                                      />
+                                      <CardBody className="d-flex justify-content-between align-items-start">
+                                        <div>
                                           <h4>Product details</h4>
                                           <p className="card-text">
                                             <div>Name: {product.name}</div>
@@ -204,10 +218,16 @@ const Header = props => {
                                               Quantity ordered: {cart.quantity}
                                             </div>
                                           </p>
-                                        </CardBody>
-                                      </Card>
-                                    )
-                                )
+                                        </div>
+                                        <Button
+                                          className="ml-auto btn-close"
+                                          onClick={() => handleDelete(cart.id)}
+                                        >
+                                          <i className="ti-close" />
+                                        </Button>
+                                      </CardBody>
+                                    </Card>
+                                  )
                               )
                             )
                           ) : (
