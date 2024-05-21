@@ -161,3 +161,52 @@ header .headerTabs li span.badge {
   opacity: 0.7;
   margin-right: 7px !important;
 }
+.searchResults {
+  position: absolute;
+  top: 80px;
+  left: 0;
+  width: 100%; /* Set width to 100% */
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 999;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (min-width: 768px) {
+  /* Adjust the width for larger screens */
+  .searchResults {
+    width: 31%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+
+.searchResult {
+  margin-bottom: 10px;
+}
+
+.searchResult:last-child {
+  margin-bottom: 0;
+}
+
+.searchResult a {
+  color: #333;
+  text-decoration: none;
+  display: block;
+  padding: 5px;
+}
+
+.searchResult a:hover {
+  background-color: #f0f0f0;
+}
+
+.searchResults > a {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+}

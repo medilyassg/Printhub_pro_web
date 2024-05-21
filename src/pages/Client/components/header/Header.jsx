@@ -1,89 +1,69 @@
-import React, { useEffect, useRef, useState } from "react"
-import Logo from "../../images/logo.svg"
-import searchIcon from "../../images/search.png"
-import "./header.css"
-import SelectDrop from "../selectDrop/SelectDrop"
-import axios from "axios"
-import LocationOnIcon from "@mui/icons-material/LocationOn"
-import IconCopare from "../../images/icon-compare.svg"
-import Iconheart from "../../images/icon-heart.svg"
-import IconCart from "../../images/icon-cart.svg"
-import IconAccount from "../../images/icon-user.svg"
-import { Button } from "reactstrap"
-import MenuIcon from "@mui/icons-material/Menu"
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined"
-import {
-  ArrowBack,
-  FavoriteBorderOutlined,
-  LoginOutlined,
-  MapOutlined,
-  Person2Outlined,
-  SearchOffOutlined,
-  SettingsAccessibility,
-} from "@mui/icons-material"
-import { ClickAwayListener } from "@mui/base/ClickAwayListener"
-import Navbar from "./nav/Navbar"
-import { Link } from "react-router-dom"
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import Logo from "../../images/logo.svg";
+import searchIcon from "../../images/search.png";
+import "./header.css";
+import Navbar from "./nav/Navbar";
+import IconCart from "../../images/icon-cart.svg";
+import IconAccount from "../../images/icon-user.svg";
+import { Button } from "reactstrap";
 
-const Header = props => {
-  const [windowWidth, setwindowWidth] = useState(window.innerWidth)
+const Header = (props) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [openDropDown, setOpenDropDown] = useState(false);
+  const [isopenSearch, setOpenSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const InputSearchRef = useRef();
+  const HeaderRef = useRef();
+  const isAuthenticated = localStorage.getItem("authUser") !== null;
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
-  const [openDropDown, setOpenDropDown] = useState(false)
-  const countryList = []
-
-  useEffect(() => {
-    getCountry("https://countriesnow.space/api/v0.1/countries/")
-  }, [])
-  const getCountry = async url => {
-    try {
-      await axios.get(url).then(res => {
-        if (res !== null) {
-          res.data.data.map((item, index) => {
-            // console.log(res.data.data);
-            countryList.push(item.country)
-            // console.log(item.country);
-          })
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const HeaderRef = useRef()
   useEffect(() => {
     const handleScroll = () => {
       if (HeaderRef.current) {
-        const position = window.pageYOffset
+        const position = window.pageYOffset;
         if (position > 70) {
-          HeaderRef.current.classList.add("fixed")
+          HeaderRef.current.classList.add("fixed");
         } else {
-          HeaderRef.current.classList.remove("fixed")
+          HeaderRef.current.classList.remove("fixed");
         }
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
-  const [isopenSearch, setOpenSearch] = useState(false)
-  const InputSearchRef = useRef()
-  const doOpenSearch = () => {
-    setOpenSearch(true)
-    InputSearchRef.current.focus()
-    // console.log('doopenserch working')
-  }
-  const isAuthenticated = localStorage.getItem("authUser") !== null
-  console.log(isAuthenticated)
+  useEffect(() => {
+    if (searchTerm) {
+      const results = [
+        ...props.categories.filter((category) =>
+          category.nom.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+        ...props.subcategories.filter((subcategory) =>
+          subcategory.nom.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+      ];
+      setSearchResults(results.slice(0, 5)); // Limiting to 5 search results
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchTerm, props.categories, props.subcategories]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <>
- <div className="headerWrapper" ref={HeaderRef}>
+      <div className="headerWrapper" ref={HeaderRef}>
         <header>
           <div className="container-fluid">
             <div className="row">
@@ -99,15 +79,38 @@ const Header = props => {
                     isopenSearch === true ? "open" : ""
                   }`}
                 >
-                  <img src={searchIcon} className="searchIcon cursor" />
+                  <img
+                    src={searchIcon}
+                    className="searchIcon cursor"
+                    onClick={() => setOpenSearch(true)}
+                  />
                   <div className="search">
                     <input
                       type="text"
                       placeholder="Search Your Items..."
                       ref={InputSearchRef}
+                      value={searchTerm}
+                      onChange={handleSearchChange}
                     />
                   </div>
                 </div>
+                {searchResults.length > 0 && (
+                  <div className="searchResults">
+                    {searchResults.map((result) => (
+                      <div className="searchResult" key={result.id}>
+                        <Link
+                          to={`/cat/${
+                            result.categorie_id
+                              ? result.categorie_id
+                              : result.nom.toLowerCase()
+                          }/${result.id}`}
+                        >
+                          {result.nom}
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="col d-flex align-items-center justify-content-end">
@@ -115,7 +118,6 @@ const Header = props => {
                   <li className="list-inline-items">
                     <span>
                       <img src={IconCart} />
-                      {/* <Button className="badge bg-primary rounded-circle">2</Button> */}
                       Cart
                     </span>
                   </li>
@@ -157,14 +159,15 @@ const Header = props => {
               </div>
             </div>
           </div>
-        </header>        <Navbar
+        </header>
+        <Navbar
           categories={props.categories}
           subcategories={props.subcategories}
         />
       </div>
       <div className="afterHeader"></div>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
