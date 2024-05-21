@@ -75,12 +75,7 @@ const Navbar = props => {
                     </div>
                     {/* Mega menu ends */}
                   </li>
-                  <li className="list-inline-item">
-                    <Button>
-                      <Link to={"/"}>Home</Link>
-                    </Button>
-                  </li>
-
+                  
                   {/* Conductions of nav 3 elements groceries , electronic & fashion starts */}
                   {props.categories.length !== 0 &&
                     props.categories.map((category, index) => {
