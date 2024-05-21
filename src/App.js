@@ -23,15 +23,18 @@ import Home from "pages/Client/pages/home/Home"
 import Details from "pages/Client/pages/details/Details"
 import { get } from "helpers/api_helper"
 import SubcategoryCard from "pages/Client/components/SubcategoryCard/SubcategoryCard "
+import { use } from "i18next"
 // Activating fake backend
 fakeBackend()
 
 const App = () => {
   const [categories, setCategories] = useState([])
   const [subcategories, setSubCategories] = useState([])
+  const [cartitems,setCartItems]=useState([])
   useEffect(() => {
     fetchCategories()
     fetchSubCategories()
+    fetchCartItems()
   }, [])
 
   const fetchCategories = async () => {
@@ -50,6 +53,16 @@ const App = () => {
 
       const data = await response.data
       setSubCategories(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const fetchCartItems = async () => {
+    try {
+      const response = await get("http://127.0.0.1:8000/api/carts")
+
+      const data = await response.data
+      setCartItems(data)
     } catch (error) {
       console.log(error)
     }
@@ -81,19 +94,19 @@ const App = () => {
         <Route
           path="/"
           element={
-            <Home categories={categories} subcategories={subcategories} />
+            <Home categories={categories} subcategories={subcategories} cartitems={cartitems} fetchCartItems={fetchCartItems}/>
           }
         />
         <Route
           path="/cat/:categoryId/:subcategoryId"
           element={
-            <Details categories={categories} subcategories={subcategories} />
+            <Details categories={categories} subcategories={subcategories}  cartitems={cartitems}  fetchCartItems={fetchCartItems}/>
           }
         />
         <Route
           path="/cat/:categoryId"
           element={
-            <SubcategoryCard categories={categories} subcategories={subcategories} />
+            <SubcategoryCard categories={categories} subcategories={subcategories}  cartitems={cartitems}/>
           }
         />
       </Routes>
