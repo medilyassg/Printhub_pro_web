@@ -214,7 +214,6 @@ const Header = props => {
                             <p>Your cart is empty</p>
                           )}
                         </OffcanvasBody>
-
                         <Link
                           className="btn btn-primary waves-effect waves-light m-4"
                           onClick={handleOrder}
