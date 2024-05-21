@@ -27,6 +27,7 @@ const Details = ({ categories, subcategories }) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const [modal_center, setmodal_center] = useState(false)
   const [modal_panier, setModalPanier] = useState(false)
+  const [selectedProperty, setSelectedProperty] = useState({});
 
   const tog_panier = () => {
     setModalPanier(!modal_panier)
@@ -106,6 +107,7 @@ const Details = ({ categories, subcategories }) => {
       parseFloat(productDetails?.price_unit || 0)
     )
     setTotalPrice(newTotalPrice)
+    console.log(selectedProperty);
   }, [activeProperties, propertyCategories, productDetails])
 
   const settings = {
@@ -138,8 +140,13 @@ const Details = ({ categories, subcategories }) => {
     setActiveProperties(prevState => ({
       ...prevState,
       [categoryId]: property.id,
-    }))
-  }
+    }));
+  
+    setSelectedProperty(prevState => ({
+      ...prevState,
+      [categoryId]: property,
+    }));
+  };
 
   return (
     <>
