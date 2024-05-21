@@ -126,7 +126,7 @@ const Navbar = props => {
                       )
                     })}
 
-                  <li className="list-inline-item">
+                  {/* <li className="list-inline-item">
                     <Button>
                       <Link>Shop</Link>
                       <KeyboardArrowDown />
@@ -156,14 +156,14 @@ const Navbar = props => {
                         </li>
                       </ul>
                     </div>
-                  </li>
+                  </li> */}
 
                   {/* blog ends */}
-                  <li className="list-inline-item">
+                  {/* <li className="list-inline-item">
                     <Button>
                       <Link>Contact</Link>
                     </Button>
-                  </li>
+                  </li> */}
                 </ul>
               </nav>
             </div>
