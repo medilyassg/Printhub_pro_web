@@ -12,12 +12,11 @@ import { Button, Row, Col, Collapse } from "react-bootstrap"
 import Header from "pages/Client/components/header/Header"
 import { Modal, ModalBody, ModalHeader } from "reactstrap"
 import img1 from "../../images/popular/product-8-1.jpg"
-import img2 from "../../images/popular/product-4-1.jpg"
-import img3 from "../../images/popular/product-2-1.jpg"
-import img4 from "../../images/popular/product-9-1.jpg"
-import img5 from "../../images/popular/product-7-1.jpg"
-import { post } from "helpers/api_helper"
+
+import { get, post } from "helpers/api_helper"
 import useSweetAlert from "helpers/notifications"
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import MyDocument from "./devis"
 
 const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const { subcategoryId } = useParams()
@@ -27,10 +26,8 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const [openSubcategory, setOpenSubcategory] = useState(null)
   const [activeProperties, setActiveProperties] = useState({})
   const [totalPrice, setTotalPrice] = useState(0)
-  const [modal_center, setmodal_center] = useState(false)
   const [modal_panier, setModalPanier] = useState(false)
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
-
   const tog_panier = () => {
     setModalPanier(!modal_panier)
   }
@@ -39,10 +36,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     document.body.classList.add("no_padding")
   }
 
-  const tog_center = () => {
-    setmodal_center(!modal_center)
-    removeBodyCss()
-  }
+  
 
   const sliderRef = useRef()
 
@@ -115,26 +109,52 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   }, [subcategoryId]);
   
 
-  const fetchPropertyCategories = async () => {
-    try {
-      const response = await get("http://127.0.0.1:8000/api/ProprieteCategorie")
-      const data = await response.data
+  
 
-      // Filter property categories to include only those with properties that match the product's properties
-      const filteredCategories = data.data.filter(category =>
-        category.propriete.some(prop =>
-          productDetails.propriete.find(p => p.id === prop.id)
+  useEffect(() => {
+    if (subcategoryId) {
+      // Fetch all products from API
+      fetch(`http://127.0.0.1:8000/api/products`)
+        .then(response => response.json())
+        .then(data => {
+          const filteredProducts = data.data.filter(
+            product => product.subCategory.id === parseInt(subcategoryId)
+          );
+          if (filteredProducts.length > 0) {
+            // Assuming you want the first product in the list
+            setProductDetails(filteredProducts[0]);
+          } else {
+            // No product found for the selected subcategory
+            setProductDetails(null);
+          }
+        })
+        .catch(error =>
+          console.error("Error fetching products:", error)
         )
-      )
-      setPropertyCategories(filteredCategories)
-    } catch (error) {
-      console.error("Error fetching property categories:", error)
+    } else {
+      // No subcategory ID provided
+      setProductDetails(null)
     }
-  }
+  }, [subcategoryId]);
+  
 
   useEffect(() => {
     if (productDetails) {
-      fetchPropertyCategories()
+      // Fetch property categories from API
+      fetch("http://127.0.0.1:8000/api/ProprieteCategorie")
+        .then(response => response.json())
+        .then(data => {
+          // Filter property categories to include only those with properties that match the product's properties
+          const filteredCategories = data.data.filter(category =>
+            category.propriete.some(prop =>
+              productDetails.propriete.find(p => p.id === prop.id)
+            )
+          )
+          setPropertyCategories(filteredCategories)
+        })
+        .catch(error =>
+          console.error("Error fetching property categories:", error)
+        )
     }
   }, [productDetails])
 
@@ -154,6 +174,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     )
     setTotalPrice(newTotalPrice)
   }, [activeProperties, propertyCategories, productDetails])
+
 
   const settings = {
     dots: false,
@@ -205,18 +226,18 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                 <InnerImageZoom
                   zoomType="hover"
                   zoomScale={2}
-                  src={urlImg}
+                  src={`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}`}
                   className="w-100"
                 />
               </div>
               <Slider {...settings} className="zoomSlider" ref={sliderRef}>
                 {[
-                  { src: img1, index: 0 },
-                  { src: img2, index: 1 },
-                  { src: img3, index: 2 },
-                  { src: img4, index: 3 },
-                  { src: img1, index: 4 },
-                  { src: img5, index: 5 },
+                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}`, index: 0 },
+                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[1]}`, index: 1 },
+                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[2]}`, index: 2 },
+                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[3]}`, index: 3 },
+                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[4]}`, index: 4 },
+                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[5]}`, index: 5 },
                 ].map(item => (
                   <div className="item" key={item.index}>
                     <img
@@ -258,61 +279,19 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   </tr>
                 </tbody>
               </table>
-              <Button
-                className="themeBtn"
+              {isAuthenticated && 
+                <PDFDownloadLink document={<MyDocument user={user} total={totalPrice} product={productDetails} />} fileName="devis.pdf" >
+                <Button
+                className="btn btn-primary "
                 style={{ width: "100%" }}
-                onClick={tog_center}
               >
-                Telecharger un devise
-              </Button>
-              <Modal
-                isOpen={modal_center}
-                toggle={tog_center}
-                centered
-                size="lg"
-              >
-                <ModalHeader className="mt-0" toggle={tog_center}></ModalHeader>
-                <ModalBody>
-                  <div className="row">
-                    <div className="col-md-6 p-3 border rounded mb-3">
-                      <h5 className="text-primary border-bottom pb-2">Login</h5>
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        className="form-control mb-2"
-                      />
-                      <input
-                        type="password"
-                        placeholder="Password"
-                        className="form-control mb-2"
-                      />
-                      <Button className="btn btn-primary mb-2 w-100">
-                        Login
-                      </Button>
-                      <Link
-                        to="/forgot-password"
-                        className="text-primary d-block mt-2"
-                      >
-                        Forgot password?
-                      </Link>
-                    </div>
-                    <div className="col-md-6 p-3 border rounded mb-3">
-                      <h5 className="text-primary border-bottom pb-2">
-                        Register
-                      </h5>
-                      <p>If you don't have an account</p>
-                      <Button className="btn btn-secondary w-100">
-                        <Link
-                          to="/register"
-                          className="text-white text-decoration-none"
-                        >
-                          Create an account
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                </ModalBody>
-              </Modal>
+                telechrger un devis
+            </Button>
+
+    </PDFDownloadLink>
+  }
+
+              
             </div>
 
             {/* product Info */}

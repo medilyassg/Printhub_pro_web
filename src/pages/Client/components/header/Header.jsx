@@ -1,30 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import Logo from "../../images/logo.svg";
-import searchIcon from "../../images/search.png";
-import "./header.css";
-import Navbar from "./nav/Navbar";
-import IconCart from "../../images/icon-cart.svg";
-import IconAccount from "../../images/icon-user.svg";
-import { Button } from "reactstrap";
-
-const Header = (props) => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [openDropDown, setOpenDropDown] = useState(false);
-  const [isopenSearch, setOpenSearch] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const InputSearchRef = useRef();
-  const HeaderRef = useRef();
-  const isAuthenticated = localStorage.getItem("authUser") !== null;
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-=======
 import React, { useEffect, useRef, useState } from "react"
 import Logo from "../../images/logo.svg"
 import searchIcon from "../../images/search.png"
@@ -99,47 +72,24 @@ const Header = props => {
       console.log(error)
     }
   }
->>>>>>> origin/ikhlas2
   useEffect(() => {
     const handleScroll = () => {
       if (HeaderRef.current) {
-        const position = window.pageYOffset;
+        const position = window.pageYOffset
         if (position > 70) {
-          HeaderRef.current.classList.add("fixed");
+          HeaderRef.current.classList.add("fixed")
         } else {
-          HeaderRef.current.classList.remove("fixed");
+          HeaderRef.current.classList.remove("fixed")
         }
       }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (searchTerm) {
-      const results = [
-        ...props.categories.filter((category) =>
-          category.nom.toLowerCase().includes(searchTerm.toLowerCase())
-        ),
-        ...props.subcategories.filter((subcategory) =>
-          subcategory.nom.toLowerCase().includes(searchTerm.toLowerCase())
-        ),
-      ];
-      setSearchResults(results.slice(0, 5)); // Limiting to 5 search results
-    } else {
-      setSearchResults([]);
     }
-  }, [searchTerm, props.categories, props.subcategories]);
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+    window.addEventListener("scroll", handleScroll)
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
-<<<<<<< HEAD
-=======
   const doOpenSearch = () => {
     setOpenSearch(true)
     InputSearchRef.current.focus()
@@ -193,7 +143,6 @@ const Header = props => {
   }
   const isAuthenticated = localStorage.getItem("authUser") !== null
   console.log(props.cartitems)
->>>>>>> origin/ikhlas2
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>
@@ -212,56 +161,19 @@ const Header = props => {
                     isopenSearch === true ? "open" : ""
                   }`}
                 >
-                  <img
-                    src={searchIcon}
-                    className="searchIcon cursor"
-                    onClick={() => setOpenSearch(true)}
-                  />
+                  <img src={searchIcon} className="searchIcon cursor" />
                   <div className="search">
                     <input
                       type="text"
                       placeholder="Search Your Items..."
                       ref={InputSearchRef}
-                      value={searchTerm}
-                      onChange={handleSearchChange}
                     />
                   </div>
                 </div>
-                {searchResults.length > 0 && (
-                  <div className="searchResults">
-                    {searchResults.map((result) => (
-                      <div
-                        className={`searchResult ${
-                          result.categorie_id ? "subcategory" : "category"
-                        }`}
-                        key={result.id}
-                      >
-                        <Link
-                          to={`/cat/${
-                            result.categorie_id
-                              ? `${result.categorie_id}/${result.id}`
-                              : result.nom.toLowerCase()
-                          }`}
-                        >
-                          {result.nom}
-                        </Link>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
               <div className="col d-flex align-items-center justify-content-end">
                 <ul className="list list-inline mb-0 headerTabs">
-<<<<<<< HEAD
-                  <li className="list-inline-items">
-                    <span>
-                      <img src={IconCart} />
-                      Cart
-                    </span>
-                  </li>
-=======
->>>>>>> origin/ikhlas2
                   {isAuthenticated ? (
                     <>
                       <li className="list-inline-items">
@@ -290,7 +202,7 @@ const Header = props => {
                                       <CardImg
                                         top
                                         className="img-fluid w-100"
-                                        src={img3}
+                                        src={`http://127.0.0.1:8000/storage/${JSON.parse(product.images)[0]}`}
                                         alt="Product Image"
                                       />
                                       <CardBody className="d-flex justify-content-between align-items-start">
@@ -373,11 +285,7 @@ const Header = props => {
               </div>
             </div>
           </div>
-<<<<<<< HEAD
-        </header>
-=======
         </header>{" "}
->>>>>>> origin/ikhlas2
         <Navbar
           categories={props.categories}
           subcategories={props.subcategories}
@@ -385,7 +293,7 @@ const Header = props => {
       </div>
       <div className="afterHeader"></div>
     </>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
