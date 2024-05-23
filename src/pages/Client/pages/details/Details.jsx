@@ -27,7 +27,7 @@ const Details = ({ categories, subcategories }) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const [modal_center, setmodal_center] = useState(false)
   const [modal_panier, setModalPanier] = useState(false)
-  const [selectedProperty, setSelectedProperty] = useState({});
+  const [selectedProperty, setSelectedProperty] = useState({})
 
   const tog_panier = () => {
     setModalPanier(!modal_panier)
@@ -53,24 +53,21 @@ const Details = ({ categories, subcategories }) => {
         .then(data => {
           const filteredProducts = data.data.filter(
             product => product.subCategory.id === parseInt(subcategoryId)
-          );
+          )
           if (filteredProducts.length > 0) {
             // Assuming you want the first product in the list
-            setProductDetails(filteredProducts[0]);
+            setProductDetails(filteredProducts[0])
           } else {
             // No product found for the selected subcategory
-            setProductDetails(null);
+            setProductDetails(null)
           }
         })
-        .catch(error =>
-          console.error("Error fetching products:", error)
-        )
+        .catch(error => console.error("Error fetching products:", error))
     } else {
       // No subcategory ID provided
       setProductDetails(null)
     }
-  }, [subcategoryId]);
-  
+  }, [subcategoryId])
 
   useEffect(() => {
     if (productDetails) {
@@ -107,7 +104,7 @@ const Details = ({ categories, subcategories }) => {
       parseFloat(productDetails?.price_unit || 0)
     )
     setTotalPrice(newTotalPrice)
-    console.log(selectedProperty);
+    console.log(selectedProperty)
   }, [activeProperties, propertyCategories, productDetails])
 
   const settings = {
@@ -136,17 +133,21 @@ const Details = ({ categories, subcategories }) => {
     setOpenSubcategory(openSubcategory === index ? null : index)
   }
 
-  const handlePropertyClick = (property, categoryId) => {
+  const handlePropertyClick = (property, categoryId, categoryName) => {
     setActiveProperties(prevState => ({
       ...prevState,
       [categoryId]: property.id,
-    }));
-  
+    }))
+
+    // Update selectedPropertiesForPDF
     setSelectedProperty(prevState => ({
       ...prevState,
-      [categoryId]: property,
-    }));
-  };
+      [categoryId]: {
+        category: categoryName,
+        property: property,
+      },
+    }))
+  }
 
   return (
     <>
@@ -300,34 +301,24 @@ const Details = ({ categories, subcategories }) => {
                           )}
                         </h6>
                         <Collapse in={openSubcategory === index}>
-                          <Row>
-                            {subcategory.propriete
-                              .filter(prop =>
-                                productDetails.propriete.find(
-                                  p => p.id === prop.id
-                                )
-                              )
-                              .map(property => (
-                                <Col key={property.id} md={3}>
-                                  <div
-                                    onClick={() =>
-                                      handlePropertyClick(
-                                        property,
-                                        subcategory.id
-                                      )
-                                    }
-                                    className={`propriete-button ${
-                                      activeProperties[subcategory.id] ===
-                                      property.id
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                  >
-                                    {property.name}
-                                  </div>
-                                </Col>
-                              ))}
-                          </Row>
+                          <div className="property-options">
+                            {subcategory.propriete.map(property => (
+                              <Button
+                                key={property.id}
+                                onClick={() =>
+                                  handlePropertyClick(property, subcategory.id)
+                                }
+                                variant={
+                                  activeProperties[subcategory.id] === property.id
+                                    ? "primary"
+                                    : "outline-primary"
+                                }
+                                className="m-1"
+                              >
+                                {property.name}
+                              </Button>
+                            ))}
+                          </div>
                         </Collapse>
                       </div>
                     ))}
