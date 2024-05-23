@@ -29,7 +29,7 @@ const ProductView = ({ product }) => {
                            <div>format: {product.format}</div> 
                            <div>impression: {product.impression}</div> 
                            <div>paper: {product.paper}</div> 
-                           <div>quantity ordered: {product.pivot.quantity}</div> 
+                           <div>quantity ordered: {product.quantity}</div> 
                         </p>
                     </CardBody>
                 </Card>

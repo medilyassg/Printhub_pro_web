@@ -269,7 +269,7 @@ const Header = props => {
                                       <CardImg
                                         top
                                         className="img-fluid w-100"
-                                        src={`http://127.0.0.1:8000/storage/${JSON.parse(product.images)[0]}`}
+                                        src={product.images ? `http://127.0.0.1:8000/storage/${JSON.parse(product.images)[0]}`: ""}
                                         alt="Product Image"
                                       />
                                       <CardBody className="d-flex justify-content-between align-items-start">
