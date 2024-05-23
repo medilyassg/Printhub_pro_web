@@ -194,7 +194,8 @@ const Header = props => {
             <div className="row">
               <div className="col d-flex align-items-center justify-content-start">
                 <Link to="/">
-                  <img src={Logo} style={{ height: "60px", width: "190px" }} />
+                  {/* <img src={Logo} style={{ height: "60px", width: "190px" }} /> */}
+                  printHub
                 </Link>
               </div>
 
