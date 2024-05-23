@@ -319,7 +319,7 @@ const EditForm = props => {
 
       <Button type="submit" color="primary">
         edit Product
-      </Button>
+      </Button> 
       <Button type="button" color="secondary" className="ms-2" onClick={props.handleCancel}>
         Cancel
       </Button>
