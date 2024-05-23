@@ -10,7 +10,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { Button, Row, Col, Collapse } from "react-bootstrap"
 import Header from "pages/Client/components/header/Header"
-import { Modal, ModalBody, ModalHeader } from "reactstrap"
+import { Modal, ModalBody, ModalHeader, Spinner } from "reactstrap"
 import img1 from "../../images/popular/product-8-1.jpg"
 
 import { get, post } from "helpers/api_helper"
@@ -166,8 +166,18 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   }
 
   if (!productDetails) {
-    return <div>Loading...</div>
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="text-center">
+          <Spinner animation="border" role="status" className="text-primary">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+          <p className="mt-2 text-primary">Loading...</p>
+        </div>
+      </div>
+    );
   }
+  
   const { name, description, price_unit, propriete } = productDetails
 
   const handleClickSlideImage = (index, imgUrl) => {
