@@ -4,8 +4,7 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css");
 
 body {
-  /* font-family: "Roboto", sans-serif; */
-  font-family: "Quicksand", sans-serif !important ;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-style: normal;
 }

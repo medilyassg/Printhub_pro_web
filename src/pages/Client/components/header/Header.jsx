@@ -36,6 +36,8 @@ const Header = props => {
   const InputSearchRef = useRef()
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const countryList = []
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const toggleRightCanvas = () => {
     setIsRight(!isRight)
   }
@@ -143,6 +145,47 @@ const Header = props => {
   }
   const isAuthenticated = localStorage.getItem("authUser") !== null
   console.log(props.cartitems)
+
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (HeaderRef.current) {
+        const position = window.pageYOffset;
+        if (position > 70) {
+          HeaderRef.current.classList.add("fixed");
+        } else {
+          HeaderRef.current.classList.remove("fixed");
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const results = [
+        ...props.categories.filter((category) =>
+          category.nom.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+        ...props.subcategories.filter((subcategory) =>
+          subcategory.nom.toLowerCase().includes(searchTerm.toLowerCase())
+        ),
+      ];
+      setSearchResults(results.slice(0, 5));
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchTerm, props.categories, props.subcategories]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>
@@ -161,16 +204,39 @@ const Header = props => {
                     isopenSearch === true ? "open" : ""
                   }`}
                 >
-                  <img src={searchIcon} className="searchIcon cursor" />
+                  <img
+                    src={searchIcon}
+                    className="searchIcon cursor"
+                    onClick={() => setOpenSearch(true)}
+                  />
                   <div className="search">
                     <input
                       type="text"
                       placeholder="Search Your Items..."
                       ref={InputSearchRef}
+                      value={searchTerm}
+                      onChange={handleSearchChange}
                     />
                   </div>
                 </div>
-              </div>
+                {searchResults.length > 0 && (
+                  <div className="searchResults">
+                    {searchResults.map((result) => (
+                      <div
+                        className={`searchResult ${result.categorie_id ? "subcategory" : "category"}`
+                      }
+                        key={result.id}
+                      >
+                        <Link
+                          to={`/cat/${result.categorie_id ? `${result.categorie_id}/${result.id}` : result.nom.toLowerCase()}`}
+                        >
+                          {result.nom}
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <div className="col d-flex align-items-center justify-content-end">
                 <ul className="list list-inline mb-0 headerTabs">
