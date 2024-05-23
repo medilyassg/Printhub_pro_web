@@ -28,6 +28,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const [totalPrice, setTotalPrice] = useState(0)
   const [modal_panier, setModalPanier] = useState(false)
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
+  const [selectedProperty, setSelectedProperty] = useState({})
   const tog_panier = () => {
     setModalPanier(!modal_panier)
   }
@@ -82,6 +83,10 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     }
     console.log(data)
   }
+ 
+  
+
+  
 
   useEffect(() => {
     if (subcategoryId) {
@@ -174,10 +179,19 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     setOpenSubcategory(openSubcategory === index ? null : index)
   }
 
-  const handlePropertyClick = (property, categoryId) => {
+  const handlePropertyClick = (property, categoryId, categoryName) => {
     setActiveProperties(prevState => ({
       ...prevState,
       [categoryId]: property.id,
+    }))
+
+    // Update selectedPropertiesForPDF
+    setSelectedProperty(prevState => ({
+      ...prevState,
+      [categoryId]: {
+        category: categoryName,
+        property: property,
+      },
     }))
   }
   const isAuthenticated = localStorage.getItem("authUser") !== null
@@ -198,18 +212,18 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                 <InnerImageZoom
                   zoomType="hover"
                   zoomScale={2}
-                  src={`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}`}
+                  src={productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}` : ''}
                   className="w-100"
                 />
               </div>
               <Slider {...settings} className="zoomSlider" ref={sliderRef}>
                 {[
-                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}`, index: 0 },
-                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[1]}`, index: 1 },
-                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[2]}`, index: 2 },
-                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[3]}`, index: 3 },
-                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[4]}`, index: 4 },
-                  { src: `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[5]}`, index: 5 },
+                  { src:productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}`:"", index: 0 },
+                  { src: productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[1]}`:"", index: 1 },
+                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[2]}`:"", index: 2 },
+                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[3]}`:"", index: 3 },
+                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[4]}`:"", index: 4 },
+                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[5]}`:"", index: 5 },
                 ].map(item => (
                   <div className="item" key={item.index}>
                     <img
@@ -252,7 +266,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                 </tbody>
               </table>
               {isAuthenticated && 
-                <PDFDownloadLink document={<MyDocument user={user} total={totalPrice} product={productDetails} />} fileName="devis.pdf" >
+                <PDFDownloadLink document={<MyDocument user={user} total={totalPrice} product={productDetails} properties={selectedProperty}/>} fileName="devis.pdf" >
                 <Button
                 className="btn btn-primary "
                 style={{ width: "100%" }}
@@ -296,34 +310,24 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                           )}
                         </h6>
                         <Collapse in={openSubcategory === index}>
-                          <Row>
-                            {subcategory.propriete
-                              .filter(prop =>
-                                productDetails.propriete.find(
-                                  p => p.id === prop.id
-                                )
-                              )
-                              .map(property => (
-                                <Col key={property.id} md={3}>
-                                  <div
-                                    onClick={() =>
-                                      handlePropertyClick(
-                                        property,
-                                        subcategory.id
-                                      )
-                                    }
-                                    className={`propriete-button ${
-                                      activeProperties[subcategory.id] ===
-                                      property.id
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                  >
-                                    {property.name}
-                                  </div>
-                                </Col>
-                              ))}
-                          </Row>
+                          <div className="property-options">
+                            {subcategory.propriete.map(property => (
+                              <Button
+                                key={property.id}
+                                onClick={() =>
+                                  handlePropertyClick(property, subcategory.id,subcategory.name)
+                                }
+                                variant={
+                                  activeProperties[subcategory.id] === property.id
+                                    ? "primary"
+                                    : "outline-primary"
+                                }
+                                className="m-1"
+                              >
+                                {property.name}
+                              </Button>
+                            ))}
+                          </div>
                         </Collapse>
                       </div>
                     ))}

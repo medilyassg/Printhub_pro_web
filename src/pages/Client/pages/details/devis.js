@@ -106,19 +106,16 @@ const MyDocument = (props) => {
 
       <View style={styles.section}>
         <Text style={styles.bold}>Description :</Text>
-        <div style={{margin:20}}>
-        <ListItem>Adaptation graphique : Non</ListItem>
-        <ListItem>Quantité : 3000</ListItem>
-        <ListItem>Vernis : Sans</ListItem>
-        <ListItem>Coin : Coins Carrés</ListItem>
-        <ListItem>Pelliculage : Sans</ListItem>
-        <ListItem>Impression : Recto</ListItem>
-        <ListItem>Papier : Biancoflash Premium White 350G</ListItem>
-        <ListItem>Épaisseur : Simple épaisseur</ListItem>
-        <ListItem>Tranche : Sans</ListItem>
-        <ListItem>Format : 21 x 10</ListItem>
-        </div>
-
+        {props.properties && 
+           
+           <div style={{ margin: 20 }}>
+           {Object.keys(props.properties).map((categoryId) => (
+             <ListItem key={categoryId}>
+               {props.properties[categoryId].category}: {props.properties[categoryId].property.name}
+             </ListItem>
+           ))}
+         </div>
+ }
       </View>
 
       <View style={styles.hr} />
