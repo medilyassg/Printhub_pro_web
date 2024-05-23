@@ -82,34 +82,6 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     }
     console.log(data)
   }
-  useEffect(() => {
-    if (subcategoryId) {
-      // Fetch all products from API
-      fetch(`http://127.0.0.1:8000/api/products`)
-        .then(response => response.json())
-        .then(data => {
-          const filteredProducts = data.data.filter(
-            product => product.subCategory.id === parseInt(subcategoryId)
-          );
-          if (filteredProducts.length > 0) {
-            // Assuming you want the first product in the list
-            setProductDetails(filteredProducts[0]);
-          } else {
-            // No product found for the selected subcategory
-            setProductDetails(null);
-          }
-        })
-        .catch(error =>
-          console.error("Error fetching products:", error)
-        )
-    } else {
-      // No subcategory ID provided
-      setProductDetails(null)
-    }
-  }, [subcategoryId]);
-  
-
-  
 
   useEffect(() => {
     if (subcategoryId) {
