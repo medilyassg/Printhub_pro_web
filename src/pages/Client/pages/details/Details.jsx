@@ -306,7 +306,7 @@ const Details = ({ categories, subcategories }) => {
                               <Button
                                 key={property.id}
                                 onClick={() =>
-                                  handlePropertyClick(property, subcategory.id)
+                                  handlePropertyClick(property, subcategory.id,subcategory.name)
                                 }
                                 variant={
                                   activeProperties[subcategory.id] === property.id
