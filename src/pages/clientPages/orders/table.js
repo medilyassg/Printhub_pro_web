@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { MDBDataTable } from "mdbreact";
-import { Row, Col, Input } from "reactstrap";
+import { Row, Col, Input, Badge } from "reactstrap";
 
 //Import Breadcrumb
 import "../../../assets/scss/datatables.scss";
@@ -38,7 +38,7 @@ const OrderTable = (props) => {
         removeBodyCss();
     };
 
-console.log(props.orders);
+    console.log(props.orders);
     const data = {
         columns: [
             {
@@ -73,26 +73,22 @@ console.log(props.orders);
         ],
         rows: props.orders?.map(order => ({
             id: order.id,
-            progress: order.progress,
-            status: (<Input
-                type="select"
-                name="status"
-                disabled
-                onChange={(e) => props.handleStatusChange(order.id, e.target.value)}
-                value={order.status}
+            progress: (<span className="badge rounded-pill bg-primary">
+                {order.progress}
+            </span>),
+            status: (<div className="d-flex align-items-center"
             >
-                {order.status === 'accepted' ? (
-                    <>
-                        <option value="accepted">Accepted</option>
-                        <option value="refused">Refused</option>
-                    </>
+                {order.status === 'refused' ? (
+                    <span className="badge rounded-pill bg-danger">
+                        {order.status}
+                    </span>
+
                 ) : (
-                    <>
-                        <option value="refused">Refused</option>
-                        <option value="accepted">Accepted</option>
-                    </>
+                    <span className="badge rounded-pill bg-success">
+                        {order.status}
+                    </span>
                 )}
-            </Input>),
+            </div>),
             time: new Date(order.created_at).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'short',
