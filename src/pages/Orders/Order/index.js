@@ -17,6 +17,7 @@ import usePermissions from "helpers/permissions";
 const OrderIndex = () => {
     const [modal_add, setmodal_add] = useState(false);
     const [orders, setOrders] = useState([])
+    const [progressOptions, setProgressOptions] = useState([]);
     const [error, setError] = useState('');
     const { showSuccessAlert, showErrorAlert } = useSweetAlert();
     const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
@@ -30,16 +31,26 @@ const OrderIndex = () => {
         removeBodyCss();
     };
     const handleEdit = async (id, value) => {
-        console.log('Form Values:', value);
         try {
             const response = await put(`http://127.0.0.1:8000/api/orders/${id}`, { status: value, id: id });
             showSuccessAlert('Update Order status ', response.message);
-
             setError('');
             fetchOrders();
 
         } catch (error) {
-            showErrorAlert('Update Order status ', error.response.data.message);
+            showErrorAlert('Update Order status ', error.response.message);
+
+        }
+    }
+    const handleEditProgress = async (id, value) => {
+        try {
+            const response = await put(`http://127.0.0.1:8000/api/orders/progress/${id}`, { progress: value, id: id });
+            showSuccessAlert('Update Order Progress ', response.message);
+            setError('');
+            fetchOrders();
+
+        } catch (error) {
+            showErrorAlert('Update Order Progress ', error.response.message);
 
         }
     }
@@ -51,10 +62,9 @@ const OrderIndex = () => {
     const fetchOrders = async () => {
         try {
             const response = await get("http://127.0.0.1:8000/api/orders");
-
-            const data = await response.orders;
-            setOrders(data);
-            console.log(orders)
+            console.log(response)
+            setOrders(response.orders.original.orders);
+            setProgressOptions(response.orders.original.progressOptions);
         } catch (error) {
             setError(error.response.data.message);
 
@@ -72,7 +82,7 @@ const OrderIndex = () => {
                         <Col className="col-12">
                             <Card>
                                 <CardBody>
-                                    <OrderTable orders={orders}  handleStatusChange={handleEdit} /> 
+                                    <OrderTable orders={orders} progressOptions={progressOptions} handleStatusChange={handleEdit} handleProgressChange={handleEditProgress} /> 
                                 </CardBody>
                             </Card>
                         </Col>

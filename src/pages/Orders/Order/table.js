@@ -73,7 +73,14 @@ const OrderTable = (props) => {
         ],
         rows: props.orders?.map(order => ({
             id: order.id,
-            progress: order.progress,
+            progress: (<Input
+                type="select"
+                name="progress"
+                value={order.progress}
+                onChange={(e)=>props.handleProgressChange(order.id,e.target.value)}
+            >
+                {props.progressOptions?.map(option => <option value={option}>{option}</option>)}
+            </Input>),
             status: (<Input
                 type="select"
                 name="status"
