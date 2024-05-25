@@ -118,17 +118,23 @@ const OrderTable = (props) => {
     return (
         <React.Fragment>
             <Col sm={6} md={4} xl={3}>
-
+                {console.log(props)}
                 <Modal isOpen={modal_products} toggle={tog_product} centered>
                     <ModalHeader className="mt-0" toggle={tog_product}>View Products</ModalHeader>
                     <ModalBody>
-                        {console.log(selectedOrder)}
-                        {selectedOrder && selectedOrder.order_products && selectedOrder.order_products.length > 0 ? (
-                            selectedOrder.order_products.map(product => (<ProductView product={product} />))
-                        ) : (
-                            <p>No products found for this order</p>
-                        )}
-                    </ModalBody>
+                    {selectedOrder && selectedOrder.order_products && selectedOrder.order_products.length > 0 ? (
+                        selectedOrder.order_products.map(orderProduct => {
+                            const productDetails = props.products.find(p => p.id === orderProduct.product_id);
+                            return productDetails ? (
+                                <ProductView key={orderProduct.id} product={orderProduct} productDetails={productDetails} />
+                            ) : (
+                                <p key={orderProduct.id}>Product details not found</p>
+                            );
+                        })
+                    ) : (
+                        <p>No products found for this order</p>
+                    )}
+                </ModalBody>
                 </Modal>
             </Col>
             <MDBDataTable responsive bordered data={data} />

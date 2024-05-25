@@ -16,10 +16,11 @@ import usePermissions from "helpers/permissions";
 
 const ClientOrderIndex = () => {
     const [orders, setOrders] = useState([])
+    const [products, setProducts] = useState([])
     const [error, setError] = useState('');
     const { showSuccessAlert, showErrorAlert } = useSweetAlert();
     const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
-    const [user,setUser]=useState()
+    const [user, setUser] = useState()
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };
@@ -43,44 +44,58 @@ const ClientOrderIndex = () => {
         if (localStorage.getItem("authUser")) {
             const obj = JSON.parse(localStorage.getItem("authUser"));
             setUser(obj.user)
-          }
-        
+        }
+
 
     }, []);
     useEffect(() => {
         fetchOrders();
         checkUserPermissions()
+        fetchProducts()
 
     }, [user]);
 
     const fetchOrders = async () => {
         try {
-            if(user){
+            if (user) {
                 const response = await get(`http://127.0.0.1:8000/api/orders/customer/${user.customer.id}`);
 
                 const data = await response.orders;
                 setOrders(data);
                 console.log(orders)
             }
-           
+
         } catch (error) {
             setError(error.response.data.message);
 
         }
     };
-    
+    const fetchProducts = async () => {
+        try {
+            const response = await get(`http://127.0.0.1:8000/api/products`);
+
+            const data = await response.data;
+            setProducts(data);
+            console.log(products)
+        }
+        catch (error) {
+            setError(error.response.data.message);
+
+        }
+    };
+
     document.title = "Orders Table";
     return (
         <React.Fragment>
             <div className="page-content">
                 <div className="container-fluid">
-                    <Breadcrumbs maintitle="Orders" title="order" breadcrumbItem="Order Table"/>
+                    <Breadcrumbs maintitle="Orders" title="order" breadcrumbItem="Order Table" />
 
                     <Row>
                         <Col className="col-12">
                             <Card>
                                 <CardBody>
-                                    <OrderTable orders={orders}  handleStatusChange={handleEdit} /> 
+                                    <OrderTable orders={orders} products={products} handleStatusChange={handleEdit} />
                                 </CardBody>
                             </Card>
                         </Col>
