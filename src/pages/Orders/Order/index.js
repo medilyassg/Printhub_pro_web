@@ -17,6 +17,7 @@ import usePermissions from "helpers/permissions";
 const OrderIndex = () => {
     const [modal_add, setmodal_add] = useState(false);
     const [orders, setOrders] = useState([])
+    const [products, setProducts] = useState([])
     const [progressOptions, setProgressOptions] = useState([]);
     const [error, setError] = useState('');
     const { showSuccessAlert, showErrorAlert } = useSweetAlert();
@@ -56,6 +57,7 @@ const OrderIndex = () => {
     }
     useEffect(() => {
         fetchOrders();
+        fetchProducts();
         checkUserPermissions()
     }, []);
 
@@ -66,6 +68,19 @@ const OrderIndex = () => {
             setOrders(response.orders.original.orders);
             setProgressOptions(response.orders.original.progressOptions);
         } catch (error) {
+            setError(error.response.data.message);
+
+        }
+    };
+    const fetchProducts = async () => {
+        try {
+            const response = await get(`http://127.0.0.1:8000/api/products`);
+
+            const data = await response.data;
+            setProducts(data);
+            console.log(products)
+        }
+        catch (error) {
             setError(error.response.data.message);
 
         }
@@ -82,7 +97,7 @@ const OrderIndex = () => {
                         <Col className="col-12">
                             <Card>
                                 <CardBody>
-                                    <OrderTable orders={orders} progressOptions={progressOptions} handleStatusChange={handleEdit} handleProgressChange={handleEditProgress} /> 
+                                    <OrderTable orders={orders} products={products} progressOptions={progressOptions} handleStatusChange={handleEdit} handleProgressChange={handleEditProgress} /> 
                                 </CardBody>
                             </Card>
                         </Col>
