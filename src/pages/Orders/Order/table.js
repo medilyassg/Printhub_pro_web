@@ -128,7 +128,6 @@ const OrderTable = (props) => {
     return (
         <React.Fragment>
             <Col sm={6} md={4} xl={3}>
-                {console.log(props)}
                 <Modal isOpen={modal_products} toggle={tog_product} centered>
                     <ModalHeader className="mt-0" toggle={tog_product}>View Products</ModalHeader>
                     <ModalBody>
