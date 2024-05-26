@@ -15,7 +15,7 @@ import img1 from "../../images/popular/product-8-1.jpg"
 
 import { get, post } from "helpers/api_helper"
 import useSweetAlert from "helpers/notifications"
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink } from "@react-pdf/renderer"
 import MyDocument from "./devis"
 
 const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
@@ -29,6 +29,14 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const [modal_panier, setModalPanier] = useState(false)
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const [selectedProperty, setSelectedProperty] = useState({})
+  const [quantity, setQuantity] = useState(1) // State to track quantity
+
+  const handleQuantityChange = e => {
+    const value = parseInt(e.target.value)
+    if (!isNaN(value) && value > 0) {
+      setQuantity(value)
+    }
+  }
   const tog_panier = () => {
     setModalPanier(!modal_panier)
   }
@@ -36,8 +44,6 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const removeBodyCss = () => {
     document.body.classList.add("no_padding")
   }
-
-  
 
   const sliderRef = useRef()
 
@@ -83,10 +89,6 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     }
     console.log(data)
   }
- 
-  
-
-  
 
   useEffect(() => {
     if (subcategoryId) {
@@ -96,24 +98,21 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
         .then(data => {
           const filteredProducts = data.data.filter(
             product => product.subCategory.id === parseInt(subcategoryId)
-          );
+          )
           if (filteredProducts.length > 0) {
             // Assuming you want the first product in the list
-            setProductDetails(filteredProducts[0]);
+            setProductDetails(filteredProducts[0])
           } else {
             // No product found for the selected subcategory
-            setProductDetails(null);
+            setProductDetails(null)
           }
         })
-        .catch(error =>
-          console.error("Error fetching products:", error)
-        )
+        .catch(error => console.error("Error fetching products:", error))
     } else {
       // No subcategory ID provided
       setProductDetails(null)
     }
-  }, [subcategoryId]);
-  
+  }, [subcategoryId])
 
   useEffect(() => {
     if (productDetails) {
@@ -152,7 +151,6 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     setTotalPrice(newTotalPrice)
   }, [activeProperties, propertyCategories, productDetails])
 
-
   const settings = {
     dots: false,
     infinite: false,
@@ -175,9 +173,9 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
           <p className="mt-2 text-primary">Loading...</p>
         </div>
       </div>
-    );
+    )
   }
-  
+
   const { name, description, price_unit, propriete } = productDetails
 
   const handleClickSlideImage = (index, imgUrl) => {
@@ -222,18 +220,66 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                 <InnerImageZoom
                   zoomType="hover"
                   zoomScale={2}
-                  src={productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}` : ''}
+                  src={
+                    productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[0]
+                        }`
+                      : ""
+                  }
                   className="w-100"
                 />
               </div>
               <Slider {...settings} className="zoomSlider" ref={sliderRef}>
                 {[
-                  { src:productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}`:"", index: 0 },
-                  { src: productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[1]}`:"", index: 1 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[2]}`:"", index: 2 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[3]}`:"", index: 3 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[4]}`:"", index: 4 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[5]}`:"", index: 5 },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[0]
+                        }`
+                      : "",
+                    index: 0,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[1]
+                        }`
+                      : "",
+                    index: 1,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[2]
+                        }`
+                      : "",
+                    index: 2,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[3]
+                        }`
+                      : "",
+                    index: 3,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[4]
+                        }`
+                      : "",
+                    index: 4,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[5]
+                        }`
+                      : "",
+                    index: 5,
+                  },
                 ].map(item => (
                   <div className="item" key={item.index}>
                     <img
@@ -266,28 +312,39 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                     </tr>
                   ))}
                   <tr>
+                    <td>Quantity</td>
+                    <td>{quantity}</td>
+                  </tr>
+                  <tr>
                     <td>Price Unit</td>
-                    <td>${price_unit}</td>
+                    <td>{price_unit} MAD</td>
                   </tr>
                   <tr>
                     <td>Price Total</td>
-                    <td>${totalPrice.toFixed(2)}</td>
+                    <td>{totalPrice.toFixed(2)} MAD</td>
                   </tr>
                 </tbody>
               </table>
-              {isAuthenticated && 
-                <PDFDownloadLink document={<MyDocument user={user} total={totalPrice} product={productDetails} properties={selectedProperty}/>} fileName="devis.pdf" >
-                <Button
-                className="btn btn-primary "
-                style={{ width: "100%" }}
-              >
-                telechrger un devis
-            </Button>
-
-    </PDFDownloadLink>
-  }
-
-              
+              {isAuthenticated && (
+                <PDFDownloadLink
+                  document={
+                    <MyDocument
+                      user={user}
+                      total={totalPrice}
+                      product={productDetails}
+                      properties={selectedProperty}
+                    />
+                  }
+                  fileName="devis.pdf"
+                >
+                  <Button
+                    className="btn btn-primary "
+                    style={{ width: "100%" }}
+                  >
+                    telechrger un devis
+                  </Button>
+                </PDFDownloadLink>
+              )}
             </div>
 
             {/* product Info */}
@@ -325,10 +382,15 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                               <Button
                                 key={property.id}
                                 onClick={() =>
-                                  handlePropertyClick(property, subcategory.id,subcategory.name)
+                                  handlePropertyClick(
+                                    property,
+                                    subcategory.id,
+                                    subcategory.name
+                                  )
                                 }
                                 variant={
-                                  activeProperties[subcategory.id] === property.id
+                                  activeProperties[subcategory.id] ===
+                                  property.id
                                     ? "primary"
                                     : "outline-primary"
                                 }
@@ -341,15 +403,30 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                         </Collapse>
                       </div>
                     ))}
+                    <div className="mb-3">
+                      <label htmlFor="quantity" className="form-label">
+                        Quantity:
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="quantity"
+                        value={quantity}
+                        onChange={handleQuantityChange}
+                      />
+                    </div>
                   </div>
                 </Col>
               </Row>
 
               <hr />
               <div className="price-section">
-                <div className="price-unit">Prix unitaire ${price_unit}</div>
+                <div className="price-unit">
+                  {" "}
+                  Prix unitaire {productDetails && productDetails.price_unit}MAD
+                </div>
                 <div className="price-total">
-                  Total ( Economisez 34.95 Dhs ) ${totalPrice.toFixed(2)}
+                  Total {totalPrice.toFixed(2)}MAD
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">

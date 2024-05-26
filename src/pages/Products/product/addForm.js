@@ -13,10 +13,13 @@ import {
   Card,
   CardBody,
   CardTitle,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap"
-import Dropzone from "react-dropzone";
-import { Link } from "react-router-dom";
-
+import Dropzone from "react-dropzone"
+import { Link } from "react-router-dom"
 import * as Yup from "yup"
 
 const AddForm = props => {
@@ -24,44 +27,21 @@ const AddForm = props => {
   const [categories, setCategories] = useState([])
   const [selectedProperties, setSelectedProperties] = useState([])
   const [openSubcategory, setOpenSubcategory] = useState(null)
-  const [selectedFiles, setselectedFiles] = useState([]);
-
-  function handleAcceptedFiles(files) { 
-    setselectedFiles(files);
-  }
-  console.log(selectedFiles)
-  /**
-   * Formats the size
-   */
-  function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
-  const toggleSubcategory = index => {
-    if (openSubcategory === index) {
-      setOpenSubcategory(null)
-    } else {
-      setOpenSubcategory(index)
-    }
-  }
+  const [selectedFiles, setSelectedFiles] = useState([])
+  const [rulesModalOpen, setRulesModalOpen] = useState(false)
+  const [quantityPriceRules, setQuantityPriceRules] = useState([])
 
   useEffect(() => {
-    const fetchcategories = async () => {
+    const fetchCategories = async () => {
       try {
         const response = await get("http://127.0.0.1:8000/api/subcategories")
-        const data = await response.data
-        setCategories(data)
+        setCategories(response.data)
       } catch (error) {
         console.error("Error fetching categories:", error)
       }
     }
 
-    fetchcategories()
+    fetchCategories()
   }, [])
 
   useEffect(() => {
@@ -70,8 +50,7 @@ const AddForm = props => {
         const response = await get(
           "http://127.0.0.1:8000/api/ProprieteCategorie"
         )
-        const data = await response.data
-        setSubcategories(data)
+        setSubcategories(response.data)
       } catch (error) {
         console.error("Error fetching subcategories:", error)
       }
@@ -81,13 +60,36 @@ const AddForm = props => {
   }, [])
 
   const handleCheckboxChange = prop => {
-    setSelectedProperties(propriete => {
-      if (!propriete.includes(prop.id)) {
-        return [...propriete, prop.id]
+    setSelectedProperties(prev => {
+      if (!prev.includes(prop.id)) {
+        return [...prev, prop.id]
       } else {
-        return propriete.filter(id => id !== prop.id)
+        return prev.filter(id => id !== prop.id)
       }
     })
+  }
+
+  const handleAcceptedFiles = files => {
+    const formattedFiles = files.map(file =>
+      Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        formattedSize: formatBytes(file.size),
+      })
+    )
+    setSelectedFiles(formattedFiles)
+  }
+
+  const formatBytes = (bytes, decimals = 2) => {
+    if (bytes === 0) return "0 Bytes"
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+  }
+
+  const toggleSubcategory = index => {
+    setOpenSubcategory(openSubcategory === index ? null : index)
   }
 
   const validationSchema = Yup.object({
@@ -99,6 +101,9 @@ const AddForm = props => {
     quantity: Yup.number().required("Please Enter Quantity"),
     sub_category_id: Yup.string().required("Please Select Sub Category"),
     quantity_type: Yup.string().required("Please Enter Quantity Type"),
+    quantity_price_rules: Yup.string().required(
+      "Please Select Quantity Price Rule"
+    ),
   })
 
   const validation = useFormik({
@@ -112,17 +117,43 @@ const AddForm = props => {
       sub_category_id: "",
       quantity_type: "",
       propriete: [],
+      quantity_price_rules: [],
     },
     validationSchema,
     onSubmit: values => {
-      const combinedValues = { ...values, propriete: selectedProperties
-      };
+      const { quantity_price_rules, ...otherValues } = values
+
+      const [quantity, operator, discount] = quantity_price_rules.split(" ")
+      const quantityPriceRules = {
+        quantity: parseFloat(quantity),
+        operator,
+        discount: parseFloat(discount),
+      }
+
+      const combinedValues = {
+        ...otherValues,
+        quantity_price_rules: quantityPriceRules,
+        propriete: selectedProperties,
+      }
+      console.log(combinedValues)
       selectedFiles.forEach((file, index) => {
-        combinedValues[`file${index}`]= file
-      });
+        combinedValues[`file${index}`] = file
+      })
       props.handleSave(combinedValues)
     },
   })
+
+  const handleAddRule = event => {
+    event.preventDefault()
+    const form = event.target
+    const newRule = {
+      operator: form.operator.value,
+      quantity: form.quantity.value,
+      discount: form.discount.value,
+    }
+    setQuantityPriceRules([...quantityPriceRules, newRule])
+    setRulesModalOpen(false)
+  }
 
   return (
     <Form onSubmit={validation.handleSubmit}>
@@ -130,7 +161,7 @@ const AddForm = props => {
         <Col md={6}>
           <div className="mb-3">
             <Label className="form-label">Name</Label>
-            <Input  
+            <Input
               type="text"
               className="form-control"
               name="name"
@@ -196,6 +227,7 @@ const AddForm = props => {
           </div>
         </Col>
       </Row>
+
       <Row>
         <Col md={6}>
           <div className="mb-3">
@@ -229,19 +261,21 @@ const AddForm = props => {
               }
             />
             <FormFeedback>{validation.errors.quantity}</FormFeedback>
-          </div>{" "}
+          </div>
         </Col>
       </Row>
+
       <Row>
         <Col md={6}>
           <div className="mb-3">
             <Label className="form-label">Quantity Type</Label>
             <Input
               type="text"
+              className="form-control"
               name="quantity_type"
               onChange={validation.handleChange}
               onBlur={validation.handleBlur}
-              value={validation.values.quantity_type}
+              value={validation.values.quantity_type || ""}
               invalid={
                 validation.touched.quantity_type &&
                 validation.errors.quantity_type
@@ -252,13 +286,50 @@ const AddForm = props => {
         </Col>
         <Col md={6}>
           <div className="mb-3">
+            <Label className="form-label">Quantity Price Rules</Label>
+            <Input
+              type="select"
+              name="quantity_price_rules"
+              onChange={validation.handleChange}
+              onBlur={validation.handleBlur}
+              value={validation.values.quantity_price_rules || ""}
+              invalid={
+                validation.touched.quantity_price_rules &&
+                validation.errors.quantity_price_rules
+              }
+            >
+              <option value="">Select a rule</option>
+              {quantityPriceRules.map((rule, index) => (
+                <option
+                  key={index}
+                  value={`${rule.quantity} ${rule.operator} ${rule.discount}`}
+                >
+                  {rule.quantity} {rule.operator} {rule.discount}
+                </option>
+              ))}
+            </Input>
+            <FormFeedback>
+              {validation.errors.quantity_price_rules}
+            </FormFeedback>
+            <Button
+              type="button"
+              color="secondary"
+              className="ms-2"
+              onClick={() => setRulesModalOpen(true)}
+            >
+              Add Rule
+            </Button>
+          </div>
+        </Col>
+        <Col md={6}>
+          <div className="mb-3">
             <Label className="form-label">Sub Category</Label>
             <Input
               type="select"
               name="sub_category_id"
-              value={validation.values.sub_category_id}
               onChange={validation.handleChange}
               onBlur={validation.handleBlur}
+              value={validation.values.sub_category_id || ""}
               invalid={
                 validation.touched.sub_category_id &&
                 validation.errors.sub_category_id
@@ -275,76 +346,68 @@ const AddForm = props => {
           </div>
         </Col>
       </Row>
-      <Row>
-            <Col className="col-12 ">
-              <Card>
-                <CardBody>
-                  <CardTitle className="h4">Images</CardTitle>
-                  
-                  <div >
-                    <Form>
-                      <Dropzone
-                        onDrop={acceptedFiles => {
-                          handleAcceptedFiles(acceptedFiles);
-                        }}
-                      >
-                        {({ getRootProps, getInputProps }) => (
-                          <div className="dropzone">
-                            <div
-                              className="dz-message needsclick"
-                              {...getRootProps()}
-                            >
-                              <input {...getInputProps()} />
-                              <div className="mb-3">
-                                <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
-                              </div>
-                              <h4>Drop files here or click to upload.</h4>
-                            </div>
-                          </div>
-                        )}
-                      </Dropzone>
-                      <div className="dropzone-previews mt-3" id="file-previews">
-                        {selectedFiles.map((f, i) => {
-                          return (
-                            <Card
-                              className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
-                              key={i + "-file"}
-                            >
-                              <div className="p-2">
-                                <Row className="align-items-center">
-                                  <Col className="col-auto">
-                                    <img
-                                      data-dz-thumbnail=""
-                                      height="80"
-                                      className="avatar-sm rounded bg-light"
-                                      alt={f.name}
-                                      src={f.preview}
-                                    />
-                                  </Col>
-                                  <Col>
-                                    <Link
-                                      to="#"
-                                      className="text-muted font-weight-bold"
-                                    >
-                                      {f.name}
-                                    </Link>
-                                    <p className="mb-0">
-                                      <strong>{f.formattedSize}</strong>
-                                    </p>
-                                  </Col>
-                                </Row>
-                              </div>
-                            </Card>
-                          );
-                        })}
-                      </div>
-                    </Form>
-                  </div>
 
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
+      <Row>
+        <Col className="col-12 ">
+          <Card>
+            <CardBody>
+              <CardTitle className="h4">Images</CardTitle>
+              <div>
+                <Dropzone onDrop={handleAcceptedFiles}>
+                  {({ getRootProps, getInputProps }) => (
+                    <div className="dropzone">
+                      <div
+                        className="dz-message needsclick"
+                        {...getRootProps()}
+                      >
+                        <input {...getInputProps()} />
+                        <div className="mb-3">
+                          <i className="mdi mdi-cloud-upload display-4 text-muted"></i>
+                        </div>
+                        <h4>Drop files here or click to upload.</h4>
+                      </div>
+                    </div>
+                  )}
+                </Dropzone>
+                <div className="dropzone-previews mt-3" id="file-previews">
+                  {selectedFiles.map((f, i) => (
+                    <Card
+                      className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete"
+                      key={i + "-file"}
+                    >
+                      <div className="p-2">
+                        <Row className="align-items-center">
+                          <Col className="col-auto">
+                            <img
+                              data-dz-thumbnail=""
+                              height="80"
+                              className="avatar-sm rounded bg-light"
+                              alt={f.name}
+                              src={f.preview}
+                            />
+                          </Col>
+                          <Col>
+                            <Link
+                              to="#"
+                              className="text-muted font-weight-bold"
+                            >
+                              {f.name}
+                            </Link>
+                            <p className="mb-0">
+                              <strong>{f.formattedSize}</strong>
+                            </p>
+                          </Col>
+                        </Row>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+
       <Row>
         <Col md={12}>
           <h5 className="mb-3 mt-4">Properties</h5>
@@ -358,7 +421,6 @@ const AddForm = props => {
                   {subcategory.name}{" "}
                   <i className="ion ion-md-arrow-dropdown"></i>
                 </h6>
-
                 <Collapse isOpen={openSubcategory === index}>
                   <Row>
                     {subcategory.propriete.map(property => (
@@ -389,7 +451,47 @@ const AddForm = props => {
         </Col>
       </Row>
 
-      
+      <Modal isOpen={rulesModalOpen} toggle={() => setRulesModalOpen(false)}>
+        <ModalHeader toggle={() => setRulesModalOpen(false)}>
+          Add Quantity Price Rule
+        </ModalHeader>
+        <ModalBody>
+          <Form onSubmit={handleAddRule}>
+            <Row>
+              <Col md={4}>
+                <div className="mb-3">
+                  <Label className="form-label">Comparison Operator</Label>
+                  <Input type="select" name="operator" required>
+                    <option value=">">Greater Than (&gt;)</option>
+                    <option value="<">Less Than (&lt;)</option>
+                    <option value="=">Equal To (=)</option>
+                  </Input>
+                </div>
+              </Col>
+              <Col md={4}>
+                <div className="mb-3">
+                  <Label className="form-label">Quantity</Label>
+                  <Input type="number" name="quantity" required />
+                </div>
+              </Col>
+              <Col md={4}>
+                <div className="mb-3">
+                  <Label className="form-label">Discount</Label>
+                  <Input type="text" name="discount" required />
+                </div>
+              </Col>
+            </Row>
+            <Button type="submit" color="primary">
+              Add Rule
+            </Button>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={() => setRulesModalOpen(false)}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
 
       <Button type="submit" color="primary">
         Add Product
