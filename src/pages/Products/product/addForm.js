@@ -21,6 +21,7 @@ import {
 import Dropzone from "react-dropzone"
 import { Link } from "react-router-dom"
 import * as Yup from "yup"
+import Select from "react-select";
 
 const AddForm = props => {
   const [subcategories, setSubcategories] = useState([])
@@ -29,7 +30,7 @@ const AddForm = props => {
   const [openSubcategory, setOpenSubcategory] = useState(null)
   const [selectedFiles, setSelectedFiles] = useState([])
   const [rulesModalOpen, setRulesModalOpen] = useState(false)
-  const [quantityPriceRules, setQuantityPriceRules] = useState([])
+  const [quantityPriceRules, setQuantityPriceRules] = useState({})
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -101,8 +102,10 @@ const AddForm = props => {
     quantity: Yup.number().required("Please Enter Quantity"),
     sub_category_id: Yup.string().required("Please Select Sub Category"),
     quantity_type: Yup.string().required("Please Enter Quantity Type"),
-    quantity_price_rules: Yup.string().required(
-      "Please Select Quantity Price Rule"
+    quantity_price_rules: Yup.object().test(
+      'has-rules',
+      'Please add at least one quantity price rule',
+      value => Object.keys(value).length > 0
     ),
   })
 
@@ -117,43 +120,49 @@ const AddForm = props => {
       sub_category_id: "",
       quantity_type: "",
       propriete: [],
-      quantity_price_rules: [],
+      quantity_price_rules: {},
     },
     validationSchema,
-    onSubmit: values => {
-      const { quantity_price_rules, ...otherValues } = values
-
-      const [quantity, operator, discount] = quantity_price_rules.split(" ")
-      const quantityPriceRules = {
-        quantity: parseFloat(quantity),
-        operator,
-        discount: parseFloat(discount),
-      }
-
+    onSubmit: (values) => {
       const combinedValues = {
-        ...otherValues,
-        quantity_price_rules: quantityPriceRules,
+        ...values,
         propriete: selectedProperties,
-      }
-      console.log(combinedValues)
+      };
+      console.log(combinedValues);
       selectedFiles.forEach((file, index) => {
-        combinedValues[`file${index}`] = file
-      })
-      props.handleSave(combinedValues)
+        combinedValues[`file${index}`] = file;
+      });
+      props.handleSave(combinedValues);
     },
-  })
+  });
 
-  const handleAddRule = event => {
-    event.preventDefault()
-    const form = event.target
+  const handleAddRule = (event) => {
+    event.preventDefault();
+    const form = event.target;
     const newRule = {
       operator: form.operator.value,
       quantity: form.quantity.value,
       discount: form.discount.value,
-    }
-    setQuantityPriceRules([...quantityPriceRules, newRule])
-    setRulesModalOpen(false)
-  }
+    };
+    const newRuleIndex = Object.keys(quantityPriceRules).length;
+    setQuantityPriceRules({ ...quantityPriceRules, [newRuleIndex]: newRule });
+    setRulesModalOpen(false);
+    validation.setFieldValue("quantity_price_rules", { ...quantityPriceRules, [newRuleIndex]: newRule });
+  };
+
+  const handleQuantityPriceRulesChange = (selectedOptions) => {
+    const newRules = {};
+    selectedOptions.forEach((option, index) => {
+      newRules[index] = option;
+    });
+    setQuantityPriceRules(newRules);
+    validation.setFieldValue("quantity_price_rules", newRules);
+  };
+
+  const quantityPriceRuleOptions = Object.values(quantityPriceRules).map((rule, index) => ({
+    value: rule,
+    label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
+  }));
 
   return (
     <Form onSubmit={validation.handleSubmit}>
@@ -287,30 +296,23 @@ const AddForm = props => {
         <Col md={6}>
           <div className="mb-3">
             <Label className="form-label">Quantity Price Rules</Label>
-            <Input
-              type="select"
+            <Select
               name="quantity_price_rules"
-              onChange={validation.handleChange}
-              onBlur={validation.handleBlur}
-              value={validation.values.quantity_price_rules || ""}
-              invalid={
-                validation.touched.quantity_price_rules &&
-                validation.errors.quantity_price_rules
-              }
-            >
-              <option value="">Select a rule</option>
-              {quantityPriceRules.map((rule, index) => (
-                <option
-                  key={index}
-                  value={`${rule.quantity} ${rule.operator} ${rule.discount}`}
-                >
-                  {rule.quantity} {rule.operator} {rule.discount}
-                </option>
-              ))}
-            </Input>
-            <FormFeedback>
-              {validation.errors.quantity_price_rules}
-            </FormFeedback>
+              isMulti
+              options={quantityPriceRuleOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={handleQuantityPriceRulesChange}
+              value={Object.values(quantityPriceRules).map((rule, index) => ({
+                value: rule,
+                label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
+              }))}
+            />
+            {validation.touched.quantity_price_rules && validation.errors.quantity_price_rules && (
+              <FormFeedback className="d-block">
+                {validation.errors.quantity_price_rules}
+              </FormFeedback>
+            )}
             <Button
               type="button"
               color="secondary"

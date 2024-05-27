@@ -52,16 +52,43 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   
     // Apply quantity price rules if applicable
     const { quantity_price_rules } = productDetails;
-    if (quantity_price_rules) {
-      const { quantity: ruleQuantity, operator, discount } = quantity_price_rules;
-      if (parseInt(quantity) < parseInt(ruleQuantity) && operator === "<") {
-        totalPrice = quantity * parseFloat(discount) + totalPrice;
-      }
+    if (quantity_price_rules && Array.isArray(quantity_price_rules)) {
+      quantity_price_rules.forEach(rule => {
+        const { quantity: ruleQuantity, operator, discount } = rule;
+        if (isValidQuantityOperator(operator, quantity, ruleQuantity)) {
+          totalPrice = applyQuantityRule(totalPrice, quantity, discount);
+        }
+      });
     }
   
     return totalPrice;
   };
   
+  const isValidQuantityOperator = (operator, quantity, ruleQuantity) => {
+    switch (operator) {
+      case ">":
+        return parseInt(quantity) > parseInt(ruleQuantity);
+      case "<":
+        return parseInt(quantity) < parseInt(ruleQuantity);
+      case "=":
+        return parseInt(quantity) === parseInt(ruleQuantity);
+      default:
+        return false;
+    }
+  };
+  
+  const applyQuantityRule = (totalPrice, quantity, discount) => {
+    // Apply the discount based on the operator
+    switch (discount.charAt(discount.length - 1)) {
+      case '%':
+        const discountPercentage = parseFloat(discount) / 100;
+        return totalPrice * (1 - discountPercentage);
+      default:
+        // Add the discounted amount to the total price
+        return totalPrice + parseFloat(discount) * quantity;
+    }
+  };
+    
 
   const handleQuantityChange = e => {
     const value = parseInt(e.target.value)
@@ -224,6 +251,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
         property: property,
       },
     }))
+    
   }
 
   const isAuthenticated = localStorage.getItem("authUser") !== null
