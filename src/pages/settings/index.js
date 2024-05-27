@@ -21,13 +21,13 @@ import { useFormik } from "formik";
 import { connect } from "react-redux";
 import withRouter from 'components/Common/withRouter';
 
-//Import Breadcrumb
+// Import Breadcrumb
 import Breadcrumb from "../../components/Common/Breadcrumb";
 
 // actions
 import { editProfile, resetProfileFlag } from "../../store/actions";
 import useSweetAlert from 'helpers/notifications';
-import { get, put } from 'helpers/api_helper';
+import { get, post, put } from 'helpers/api_helper';
 
 const SettingsIndex = props => {
     const { showSuccessAlert, showErrorAlert } = useSweetAlert();
@@ -63,16 +63,39 @@ const SettingsIndex = props => {
             industry_sector: CompanyInfo?.industry_sector || "",
             ice: CompanyInfo?.ice || "",
             tva: CompanyInfo?.tva || "",
+            logo: null,
+            printed_footer: null
         },
         validationSchema: Yup.object({
             company_name: Yup.string().required("Please Enter Company Name"),
             site: Yup.string().required("Please Enter Your Company Site"),
             email: Yup.string().required("Please Enter Your Email"),
             phone_number: Yup.string().required("Please Enter Your Phone Number"),
+            logo: Yup.mixed().required("Please upload a logo"),
+            printed_footer: Yup.mixed().required("Please upload a printed footer")
         }),
         onSubmit: async (values) => {
+            
+            const formData = new FormData();
+            formData['company_name']=values.company_name
+            formData['email']=values.email
+            formData['site']=values.site
+            formData['address']=values.address
+            formData['phone_number']=values.phone_number
+            formData['company_size']=values.company_size
+            formData['industry_sector']=values.industry_sector
+            formData['ice']=values.ice
+            formData['tva']=values.tva
+            formData['logo']=values.logo
+            formData['printed_footer']=values.printed_footer
+            formData['_method']='PUT'
+    
+    console.log(formData)
             try {
-                const response = await put(`http://127.0.0.1:8000/api/company-info/${idx}`, { ...values, id: idx });
+                const response = await post(`http://127.0.0.1:8000/api/company-info/${idx}`, formData,{headers: {
+                    'Content-Type': 'multipart/form-data',
+                    
+                  }});
                 setCompanyInfo(response);
                 showSuccessAlert('Edit Company Info', response.message);
             } catch (error) {
@@ -274,6 +297,38 @@ const SettingsIndex = props => {
                                                         <option value="Autre">Autre</option>
                                                     </Input>
                                                     <FormFeedback>{validation.errors.industry_sector}</FormFeedback>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col xs={12} sm={6} className="mb-3">
+                                                    <Label className="form-label" htmlFor="logo">Logo</Label>
+                                                    <Input
+                                                        type="file"
+                                                        name="logo"
+                                                        className="form-control"
+                                                        onChange={(event) => {
+                                                            validation.setFieldValue("logo", event.currentTarget.files[0]);
+                                                        }}
+                                                        invalid={validation.touched.logo && validation.errors.logo}
+                                                    />
+                                                    {validation.touched.logo && validation.errors.logo ? (
+                                                        <FormFeedback type="invalid">{validation.errors.logo}</FormFeedback>
+                                                    ) : null}
+                                                </Col>
+                                                <Col xs={12} sm={6} className="mb-3">
+                                                    <Label className="form-label" htmlFor="printed_footer">Printed Footer</Label>
+                                                    <Input
+                                                        type="file"
+                                                        name="printed_footer"
+                                                        className="form-control"
+                                                        onChange={(event) => {
+                                                            validation.setFieldValue("printed_footer", event.currentTarget.files[0]);
+                                                        }}
+                                                        invalid={validation.touched.printed_footer && validation.errors.printed_footer}
+                                                    />
+                                                    {validation.touched.printed_footer && validation.errors.printed_footer ? (
+                                                        <FormFeedback type="invalid">{validation.errors.printed_footer}</FormFeedback>
+                                                    ) : null}
                                                 </Col>
                                             </Row>
                                         </div>
