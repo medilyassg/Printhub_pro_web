@@ -43,8 +43,7 @@ img:focus {
 .btn-g:hover {
   background: #fdc040 !important;
 }
-.bg-g,
-.bg-success {
+.bg-g {
   background:  rgb(98, 110, 212) !important;
 }
 .text-org {

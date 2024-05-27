@@ -8,7 +8,7 @@ import "../../../assets/scss/datatables.scss";
 
 
 
-const ProductView = ({ product }) => {
+const ProductView = ({ product,productDetails }) => {
 
 
     const removeBodyCss = () => {
@@ -20,16 +20,20 @@ const ProductView = ({ product }) => {
 
     return (
         <React.Fragment>
-            <Col sm={6} md={4} xl={3}>
-                <Card>
-                    <CardImg top className="img-fluid" src={img3} alt="Veltrix" />
-                    <CardBody>
-                        <h4>Product details</h4>
+            <Col sm={6} md={12} xl={3}>
+            <Card className="d-flex flex-row">
+                    <CardImg
+                        top
+                        className="img-fluid w-25"
+                        src={productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}` : ""}
+                        alt="Product Image"
+                    />
+                    <CardBody className="w-75">
+                        <h4>{productDetails.name}</h4>
                         <p className="card-text">
-                           <div>format: {product.format}</div> 
-                           <div>impression: {product.impression}</div> 
-                           <div>paper: {product.paper}</div> 
-                           <div>quantity ordered: {product.quantity}</div> 
+                            <div>Slug: {productDetails.slug}</div>
+                            <div>Price: {product.price}</div>
+                            <div>Quantity ordered: {product.quantity}</div>
                         </p>
                     </CardBody>
                 </Card>
