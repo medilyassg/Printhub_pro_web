@@ -28,15 +28,15 @@ const EditForm = props => {
   const [quantityPriceRules, setQuantityPriceRules] = useState({});
 
   useEffect(() => {
-    if (props.product && props.product.subCategory) {
+    if (props.product?.subCategory) {
       setSelectedSubCat(props.product.subCategory.id);
     }
-    if (props.product && props.product.propriete) {
+    if (props.product?.propriete) {
       setSelectedProperties(
         props.product.propriete.map(property => property.id)
       );
     }
-    if (props.product && props.product.quantity_price_rules) {
+    if (props.product?.quantity_price_rules) {
       setQuantityPriceRules(props.product.quantity_price_rules);
     }
   }, [props.product]);
@@ -113,16 +113,16 @@ const EditForm = props => {
 
   const validation = useFormik({
     initialValues: {
-      name: props.product.name || "",
-      slug: props.product.slug || "",
-      description: props.product.description || "",
-      design_price: props.product.design_price || "",
-      price_unit: props.product.price_unit || "",
-      quantity: props.product.quantity || "",
-      quantity_type: props.product.quantity_type || "",
-      sub_category_id: props.product.subCategory.id,
+      name: props.product?.name || "",
+      slug: props.product?.slug || "",
+      description: props.product?.description || "",
+      design_price: props.product?.design_price || "",
+      price_unit: props.product?.price_unit || "",
+      quantity: props.product?.quantity || "",
+      quantity_type: props.product?.quantity_type || "",
+      sub_category_id: props.product?.subCategory?.id || "",
       propriete: [],
-      quantity_price_rules: {},
+      quantity_price_rules: props.product?.quantity_price_rules || {},
     },
     validationSchema,
     onSubmit: values => {
@@ -306,6 +306,7 @@ const EditForm = props => {
               value={Object.values(quantityPriceRules).map((rule, index) => ({
                 value: rule,
                 label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
+                key: `${rule.quantity}-${rule.operator}-${rule.discount}-${index}`, // Ensure unique keys
               }))}
             />
             {validation.touched.quantity_price_rules &&
