@@ -10,12 +10,12 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { Button, Row, Col, Collapse } from "react-bootstrap"
 import Header from "pages/Client/components/header/Header"
-import { Modal, ModalBody, ModalHeader, Spinner } from "reactstrap"
+import { Input, Label, Modal, ModalBody, ModalHeader, Spinner } from "reactstrap"
 import img1 from "../../images/popular/product-8-1.jpg"
 
 import { get, post } from "helpers/api_helper"
 import useSweetAlert from "helpers/notifications"
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink } from "@react-pdf/renderer"
 import MyDocument from "./devis"
 
 const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
@@ -29,18 +29,79 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const [modal_panier, setModalPanier] = useState(false)
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const [selectedProperty, setSelectedProperty] = useState({})
+  const [quantity, setQuantity] = useState()
+
+  const handleCalculatePrice = () => {
+    const updatedPrice = calculateTotalPrice(quantity)
+    setTotalPrice(parseFloat(updatedPrice.toFixed(2)))
+  }
+
+  const calculateTotalPrice = (quantity, selectedProperties) => {
+    let totalPrice = parseFloat(productDetails.price_unit || 0);
+    
+    // Add the prices of selected properties to the total price
+    for (const category of propertyCategories) {
+      const selectedPropertyId = activeProperties[category.id];
+      if (selectedPropertyId) {
+        const selectedProperty = category.propriete.find(prop => prop.id === selectedPropertyId);
+        if (selectedProperty) {
+          totalPrice += parseFloat(selectedProperty.price || 0);
+        }
+      }
+    }
+  
+    // Apply quantity price rules if applicable
+    const { quantity_price_rules } = productDetails;
+    if (quantity_price_rules && Array.isArray(quantity_price_rules)) {
+      quantity_price_rules.forEach(rule => {
+        const { quantity: ruleQuantity, operator, discount } = rule;
+        if (isValidQuantityOperator(operator, quantity, ruleQuantity)) {
+          totalPrice = applyQuantityRule(totalPrice, quantity, discount);
+        }
+      });
+    }
+  
+    return totalPrice;
+  };
+  
+  const isValidQuantityOperator = (operator, quantity, ruleQuantity) => {
+    switch (operator) {
+      case ">":
+        return parseInt(quantity) > parseInt(ruleQuantity);
+      case "<":
+        return parseInt(quantity) < parseInt(ruleQuantity);
+      case "=":
+        return parseInt(quantity) === parseInt(ruleQuantity);
+      default:
+        return false;
+    }
+  };
+  
+  const applyQuantityRule = (totalPrice, quantity, discount) => {
+    // Apply the discount based on the operator
+    switch (discount.charAt(discount.length - 1)) {
+      case '%':
+        const discountPercentage = parseFloat(discount) / 100;
+        return totalPrice * (1 - discountPercentage);
+      default:
+        // Add the discounted amount to the total price
+        return totalPrice + parseFloat(discount) * quantity;
+    }
+  };
+    
+
+  const handleQuantityChange = e => {
+    const value = parseInt(e.target.value)
+    if (!isNaN(value) && value > 0) {
+      setQuantity(value)
+    }
+  }
+
   const tog_panier = () => {
     setModalPanier(!modal_panier)
   }
 
-  const removeBodyCss = () => {
-    document.body.classList.add("no_padding")
-  }
-
-  
-
   const sliderRef = useRef()
-
   const [user, setUser] = useState(null)
   const [customerId, setCustomerId] = useState(null)
 
@@ -84,45 +145,32 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     }
     console.log(data)
   }
- 
-  
-
-  
 
   useEffect(() => {
     if (subcategoryId) {
-      // Fetch all products from API
       fetch(`http://127.0.0.1:8000/api/products`)
         .then(response => response.json())
         .then(data => {
           const filteredProducts = data.data.filter(
             product => product.subCategory.id === parseInt(subcategoryId)
-          );
+          )
           if (filteredProducts.length > 0) {
-            // Assuming you want the first product in the list
-            setProductDetails(filteredProducts[0]);
+            setProductDetails(filteredProducts[0])
           } else {
-            // No product found for the selected subcategory
-            setProductDetails(null);
+            setProductDetails(null)
           }
         })
-        .catch(error =>
-          console.error("Error fetching products:", error)
-        )
+        .catch(error => console.error("Error fetching products:", error))
     } else {
-      // No subcategory ID provided
       setProductDetails(null)
     }
-  }, [subcategoryId]);
-  
+  }, [subcategoryId])
 
   useEffect(() => {
     if (productDetails) {
-      // Fetch property categories from API
       fetch("http://127.0.0.1:8000/api/ProprieteCategorie")
         .then(response => response.json())
         .then(data => {
-          // Filter property categories to include only those with properties that match the product's properties
           const filteredCategories = data.data.filter(category =>
             category.propriete.some(prop =>
               productDetails.propriete.find(p => p.id === prop.id)
@@ -137,22 +185,22 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   }, [productDetails])
 
   useEffect(() => {
-    // Recalculate total price whenever activeProperties changes
-    const selectedProperties = propertyCategories
-      .map(category =>
-        category.propriete.find(
-          prop => prop.id === activeProperties[category.id]
+    if (productDetails) {
+      const selectedProperties = propertyCategories
+        .map(category =>
+          category.propriete.find(
+            prop => prop.id === activeProperties[category.id]
+          )
         )
+        .filter(prop => prop !== undefined)
+
+      const newTotalPrice = selectedProperties.reduce(
+        (sum, prop) => sum + parseFloat(prop.price),
+        parseFloat(productDetails.price_unit || 0)
       )
-      .filter(prop => prop !== undefined)
-
-    const newTotalPrice = selectedProperties.reduce(
-      (sum, prop) => sum + parseFloat(prop.price),
-      parseFloat(productDetails?.price_unit || 0)
-    )
-    setTotalPrice(newTotalPrice)
+      setTotalPrice(newTotalPrice || parseFloat(productDetails.price_unit || 0))
+    } 
   }, [activeProperties, propertyCategories, productDetails])
-
 
   const settings = {
     dots: false,
@@ -176,10 +224,11 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
           <p className="mt-2 text-primary">Loading...</p>
         </div>
       </div>
-    );
+    )
   }
-  
-  const { name, description, price_unit, propriete } = productDetails
+
+  const { name, description, price_unit, propriete, quantity_price_rules } =
+    productDetails
 
   const handleClickSlideImage = (index, imgUrl) => {
     sliderRef.current.slickGoTo(index)
@@ -196,7 +245,6 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       [categoryId]: property.id,
     }))
 
-    // Update selectedPropertiesForPDF
     setSelectedProperty(prevState => ({
       ...prevState,
       [categoryId]: {
@@ -204,9 +252,12 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
         property: property,
       },
     }))
+    
   }
   console.log(selectedProperty);
+
   const isAuthenticated = localStorage.getItem("authUser") !== null
+
   return (
     <>
       <Header
@@ -224,18 +275,66 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                 <InnerImageZoom
                   zoomType="hover"
                   zoomScale={2}
-                  src={productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}` : ''}
+                  src={
+                    productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[0]
+                        }`
+                      : ""
+                  }
                   className="w-100"
                 />
               </div>
               <Slider {...settings} className="zoomSlider" ref={sliderRef}>
                 {[
-                  { src:productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[0]}`:"", index: 0 },
-                  { src: productDetails.images ? `http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[1]}`:"", index: 1 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[2]}`:"", index: 2 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[3]}`:"", index: 3 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[4]}`:"", index: 4 },
-                  { src: productDetails.images ?`http://127.0.0.1:8000/storage/${JSON.parse(productDetails.images)[5]}`:"", index: 5 },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[0]
+                        }`
+                      : "",
+                    index: 0,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[1]
+                        }`
+                      : "",
+                    index: 1,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[2]
+                        }`
+                      : "",
+                    index: 2,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[3]
+                        }`
+                      : "",
+                    index: 3,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[4]
+                        }`
+                      : "",
+                    index: 4,
+                  },
+                  {
+                    src: productDetails.images
+                      ? `http://127.0.0.1:8000/storage/${
+                          JSON.parse(productDetails.images)[5]
+                        }`
+                      : "",
+                    index: 5,
+                  },
                 ].map(item => (
                   <div className="item" key={item.index}>
                     <img
@@ -268,28 +367,39 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                     </tr>
                   ))}
                   <tr>
+                    <td>Quantity</td>
+                    <td>{quantity}</td>
+                  </tr>
+                  <tr>
                     <td>Price Unit</td>
-                    <td>${price_unit}</td>
+                    <td>{price_unit} MAD</td>
                   </tr>
                   <tr>
                     <td>Price Total</td>
-                    <td>${totalPrice.toFixed(2)}</td>
+                    <td>{totalPrice.toFixed(2)} MAD</td>
                   </tr>
                 </tbody>
               </table>
-              {isAuthenticated && 
-                <PDFDownloadLink document={<MyDocument user={user} total={totalPrice} product={productDetails} properties={selectedProperty}/>} fileName="devis.pdf" >
-                <Button
-                className="btn btn-primary "
-                style={{ width: "100%" }}
-              >
-                telechrger un devis
-            </Button>
-
-    </PDFDownloadLink>
-  }
-
-              
+              {isAuthenticated && (
+                <PDFDownloadLink
+                  document={
+                    <MyDocument
+                      user={user}
+                      total={totalPrice.toFixed(2)}
+                      product={productDetails}
+                      properties={selectedProperty}
+                    />
+                  }
+                  fileName="devis.pdf"
+                >
+                  <Button
+                    className="btn btn-primary "
+                    style={{ width: "100%" }}
+                  >
+                    telechrger un devis
+                  </Button>
+                </PDFDownloadLink>
+              )}
             </div>
 
             {/* product Info */}
@@ -327,10 +437,15 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                               <Button
                                 key={property.id}
                                 onClick={() =>
-                                  handlePropertyClick(property, subcategory.id,subcategory.name)
+                                  handlePropertyClick(
+                                    property,
+                                    subcategory.id,
+                                    subcategory.name
+                                  )
                                 }
                                 variant={
-                                  activeProperties[subcategory.id] === property.id
+                                  activeProperties[subcategory.id] ===
+                                  property.id
                                     ? "primary"
                                     : "outline-primary"
                                 }
@@ -343,15 +458,39 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                         </Collapse>
                       </div>
                     ))}
+                    <Row>
+                      <div className="mb-3 d-flex align-items-center">
+                        <Label htmlFor="quantity" className="form-label me-2">
+                          Quantity:
+                        </Label>
+                        <Input
+                          type="number"
+                          className="form-control me-2"
+                          id="quantity"
+                          value={quantity}
+                          onChange={handleQuantityChange}
+                        />
+                        <Button
+                          onClick={handleCalculatePrice}
+                          className="btn btn-primary"
+                          style={{ cursor: "pointer" }}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </Row>
                   </div>
                 </Col>
               </Row>
 
               <hr />
               <div className="price-section">
-                <div className="price-unit">Prix unitaire ${price_unit}</div>
+                <div className="price-unit">
+                  {" "}
+                  Prix unitaire {productDetails && productDetails.price_unit}MAD
+                </div>
                 <div className="price-total">
-                  Total ( Economisez 34.95 Dhs ) ${totalPrice.toFixed(2)}
+                  Total {totalPrice.toFixed(2)} MAD
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">
