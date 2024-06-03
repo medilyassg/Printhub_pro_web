@@ -106,7 +106,6 @@ const MyDocument = (props) => {
       try {
         const response = await get("http://127.0.0.1:8000/api/company-info");
         const data = response[0];
-        console.log('Company Info:', data); // Log the response data
         setCompanyInfo(data);
       } catch (error) {
         console.error('Error fetching company info:', error);
