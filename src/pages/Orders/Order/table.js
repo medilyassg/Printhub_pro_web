@@ -73,7 +73,14 @@ const OrderTable = (props) => {
         ],
         rows: props.orders?.map(order => ({
             id: order.id,
-            progress: order.progress,
+            progress: (<Input
+                type="select"
+                name="progress"
+                value={order.progress}
+                onChange={(e) => props.handleProgressChange(order.id, e.target.value)}
+            >
+                {props.progressOptions?.map(option => <option value={option}>{option}</option>)}
+            </Input>),
             status: (<Input
                 type="select"
                 name="status"
@@ -121,13 +128,18 @@ const OrderTable = (props) => {
     return (
         <React.Fragment>
             <Col sm={6} md={4} xl={3}>
-
                 <Modal isOpen={modal_products} toggle={tog_product} centered>
                     <ModalHeader className="mt-0" toggle={tog_product}>View Products</ModalHeader>
                     <ModalBody>
-                        {console.log(selectedOrder)}
                         {selectedOrder && selectedOrder.order_products && selectedOrder.order_products.length > 0 ? (
-                            selectedOrder.order_products.map(product => <ProductView product={product} />)
+                            selectedOrder.order_products.map(orderProduct => {
+                                const productDetails = props.products.find(p => p.id === orderProduct.product_id);
+                                return productDetails ? (
+                                    <ProductView key={orderProduct.id} product={orderProduct} productDetails={productDetails} />
+                                ) : (
+                                    <p key={orderProduct.id}>Product details not found</p>
+                                );
+                            })
                         ) : (
                             <p>No products found for this order</p>
                         )}

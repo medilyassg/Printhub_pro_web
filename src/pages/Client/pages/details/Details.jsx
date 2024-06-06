@@ -114,7 +114,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       const userObj = JSON.parse(authUser)
       setUser(userObj.user)
       if (userObj.user.customer) {
-        setCustomerId(userObj.user.customer.id) // assuming user_id is the correct field
+        setCustomerId(userObj.user.customer.id) 
       }
     }
   }, [])
@@ -132,6 +132,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
           quantity: productDetails.quantity,
           price: productDetails.price_unit,
           total: productDetails.price_unit * productDetails.quantity,
+          details:selectedProperty
         },
       ],
     }
@@ -252,6 +253,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       },
     }))
   }
+  console.log(selectedProperty);
 
   const isAuthenticated = localStorage.getItem("authUser") !== null
 

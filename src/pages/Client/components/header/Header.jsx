@@ -119,6 +119,7 @@ const Header = props => {
           price: item.price,
           quantity: item.quantity,
           total: item.price * item.quantity,
+          details:JSON.parse(item.details),
         }))
       )
     }
@@ -144,9 +145,6 @@ const Header = props => {
     }
   }
   const isAuthenticated = localStorage.getItem("authUser") !== null
-  console.log(props.cartitems)
-
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -185,7 +183,7 @@ const Header = props => {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
-
+console.log(props.cartitems)
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { MDBDataTable } from "mdbreact";
-import { Row, Col, Input } from "reactstrap";
+import { Row, Col, Input, Badge } from "reactstrap";
 
 //Import Breadcrumb
 import "../../../assets/scss/datatables.scss";
@@ -38,7 +38,7 @@ const OrderTable = (props) => {
         removeBodyCss();
     };
 
-console.log(props.orders);
+    console.log(props.orders);
     const data = {
         columns: [
             {
@@ -73,26 +73,22 @@ console.log(props.orders);
         ],
         rows: props.orders?.map(order => ({
             id: order.id,
-            progress: order.progress,
-            status: (<Input
-                type="select"
-                name="status"
-                disabled
-                onChange={(e) => props.handleStatusChange(order.id, e.target.value)}
-                value={order.status}
+            progress: (<span className="badge rounded-pill bg-primary">
+                {order.progress}
+            </span>),
+            status: (<div className="d-flex align-items-center"
             >
-                {order.status === 'accepted' ? (
-                    <>
-                        <option value="accepted">Accepted</option>
-                        <option value="refused">Refused</option>
-                    </>
+                {order.status === 'refused' ? (
+                    <span className="badge rounded-pill bg-danger">
+                        {order.status}
+                    </span>
+
                 ) : (
-                    <>
-                        <option value="refused">Refused</option>
-                        <option value="accepted">Accepted</option>
-                    </>
+                    <span className="badge rounded-pill bg-success">
+                        {order.status}
+                    </span>
                 )}
-            </Input>),
+            </div>),
             time: new Date(order.created_at).toLocaleString('en-US', {
                 year: 'numeric',
                 month: 'short',
@@ -122,13 +118,18 @@ console.log(props.orders);
     return (
         <React.Fragment>
             <Col sm={6} md={4} xl={3}>
-
                 <Modal isOpen={modal_products} toggle={tog_product} centered>
                     <ModalHeader className="mt-0" toggle={tog_product}>View Products</ModalHeader>
                     <ModalBody>
-                        {console.log(selectedOrder)}
                         {selectedOrder && selectedOrder.order_products && selectedOrder.order_products.length > 0 ? (
-                            selectedOrder.order_products.map(product => (<ProductView product={product} />))
+                            selectedOrder.order_products.map(orderProduct => {
+                                const productDetails = props.products.find(p => p.id === orderProduct.product_id);
+                                return productDetails ? (
+                                    <ProductView key={orderProduct.id} product={orderProduct} productDetails={productDetails} />
+                                ) : (
+                                    <p key={orderProduct.id}>Product details not found</p>
+                                );
+                            })
                         ) : (
                             <p>No products found for this order</p>
                         )}
