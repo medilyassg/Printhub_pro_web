@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import Logo from "../../images/logo.svg"
+import Logo from "../../images/logo-png.png"
 import searchIcon from "../../images/search.png"
 import "./header.css"
 import axios from "axios"
@@ -36,8 +36,8 @@ const Header = props => {
   const InputSearchRef = useRef()
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const countryList = []
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("")
+  const [searchResults, setSearchResults] = useState([])
   const toggleRightCanvas = () => {
     setIsRight(!isRight)
   }
@@ -119,7 +119,7 @@ const Header = props => {
           price: item.price,
           quantity: item.quantity,
           total: item.price * item.quantity,
-          details:JSON.parse(item.details),
+          details: JSON.parse(item.details),
         }))
       )
     }
@@ -149,41 +149,41 @@ const Header = props => {
   useEffect(() => {
     const handleScroll = () => {
       if (HeaderRef.current) {
-        const position = window.pageYOffset;
+        const position = window.pageYOffset
         if (position > 70) {
-          HeaderRef.current.classList.add("fixed");
+          HeaderRef.current.classList.add("fixed")
         } else {
-          HeaderRef.current.classList.remove("fixed");
+          HeaderRef.current.classList.remove("fixed")
         }
       }
-    };
+    }
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll)
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   useEffect(() => {
     if (searchTerm) {
       const results = [
-        ...props.categories.filter((category) =>
+        ...props.categories.filter(category =>
           category.nom.toLowerCase().includes(searchTerm.toLowerCase())
         ),
-        ...props.subcategories.filter((subcategory) =>
+        ...props.subcategories.filter(subcategory =>
           subcategory.nom.toLowerCase().includes(searchTerm.toLowerCase())
         ),
-      ];
-      setSearchResults(results.slice(0, 5));
+      ]
+      setSearchResults(results.slice(0, 5))
     } else {
-      setSearchResults([]);
+      setSearchResults([])
     }
-  }, [searchTerm, props.categories, props.subcategories]);
+  }, [searchTerm, props.categories, props.subcategories])
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-console.log(props.cartitems)
+  const handleSearchChange = e => {
+    setSearchTerm(e.target.value)
+  }
+  console.log(props.cartitems)
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>
@@ -192,8 +192,12 @@ console.log(props.cartitems)
             <div className="row">
               <div className="col d-flex align-items-center justify-content-start">
                 <Link to="/">
-                  {/* <img src={Logo} style={{ height: "60px", width: "190px" }} /> */}
-                  printHub
+                  <img
+                    src={Logo}
+                    style={{ height: "26%", width: "26%" }}
+                    alt="Logo"
+                  />
+                  {/* printHub */}
                 </Link>
               </div>
 
@@ -220,14 +224,19 @@ console.log(props.cartitems)
                 </div>
                 {searchResults.length > 0 && (
                   <div className="searchResults">
-                    {searchResults.map((result) => (
+                    {searchResults.map(result => (
                       <div
-                        className={`searchResult ${result.categorie_id ? "subcategory" : "category"}`
-                      }
+                        className={`searchResult ${
+                          result.categorie_id ? "subcategory" : "category"
+                        }`}
                         key={result.id}
                       >
                         <Link
-                          to={`/cat/${result.categorie_id ? `${result.categorie_id}/${result.id}` : result.nom.toLowerCase()}`}
+                          to={`/cat/${
+                            result.categorie_id
+                              ? `${result.categorie_id}/${result.id}`
+                              : result.nom.toLowerCase()
+                          }`}
                         >
                           {result.nom}
                         </Link>
@@ -235,7 +244,8 @@ console.log(props.cartitems)
                     ))}
                   </div>
                 )}
-              </div>
+                          
+              </div>
 
               <div className="col d-flex align-items-center justify-content-end">
                 <ul className="list list-inline mb-0 headerTabs">
@@ -267,7 +277,13 @@ console.log(props.cartitems)
                                       <CardImg
                                         top
                                         className="img-fluid w-100"
-                                        src={product.images ? `http://127.0.0.1:8000/storage/${JSON.parse(product.images)[0]}`: ""}
+                                        src={
+                                          product.images
+                                            ? `http://127.0.0.1:8000/storage/${
+                                                JSON.parse(product.images)[0]
+                                              }`
+                                            : ""
+                                        }
                                         alt="Product Image"
                                       />
                                       <CardBody className="d-flex justify-content-between align-items-start">
