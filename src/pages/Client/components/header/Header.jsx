@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"
 
 import Logo from "../../images/logo.svg"
 import searchIcon from "../../images/search.png"
@@ -38,15 +38,15 @@ const Header = props => {
   const InputSearchRef = useRef()
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const countryList = []
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [total_amount,setTotalAmount]=useState();
+  const [searchTerm, setSearchTerm] = useState("")
+  const [searchResults, setSearchResults] = useState([])
+  const [total_amount, setTotalAmount] = useState()
   const toggleRightCanvas = () => {
     setIsRight(!isRight)
   }
   const [windowWidth, setwindowWidth] = useState(window.innerWidth)
-  const authUser = JSON.parse(localStorage.getItem('authUser'));
-  const navigate = useNavigate();
+  const authUser = JSON.parse(localStorage.getItem("authUser"))
+  const navigate = useNavigate()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -102,59 +102,70 @@ const Header = props => {
     InputSearchRef.current.focus()
   }
   const handleOrder = async () => {
-    const customerId = props.cartitems[0]?.customer_id;
-    const cartId = props.cartitems[0]?.id;
-    let total_amount = 12;
+    const customerId = props.cartitems[0]?.customer_id
+    const cartId = props.cartitems[0]?.id
+    let total_amount = 12
 
     if (!customerId || !cartId) {
-        showErrorAlert("Order Creation Error", "Missing customer or cart ID");
-        return;
+      showErrorAlert("Order Creation Error", "Missing customer or cart ID")
+      return
     }
 
     const orderData = {
-        customer_id: customerId,
-        cart_id: cartId,
-        status: "accepted",
-        progress: "Processing",
-        total_amount: total_amount, // Placeholder, will update later
-        products: [],
-        phone_number: authUser.user.phone_number || '',
-        email: authUser.user.email || '',
-        address: authUser.user.address && authUser.user.address[0] ? authUser.user.address[0].line : '',
-        city: authUser.user.address && authUser.user.address[0] ? authUser.user.address[0].city : '',
-        zip_code: authUser.user.address && authUser.user.address[0] ? authUser.user.address[0].zip : '',
-    };
+      customer_id: customerId,
+      cart_id: cartId,
+      status: "accepted",
+      progress: "Processing",
+      total_amount: total_amount, // Placeholder, will update later
+      products: [],
+      phone_number: authUser.user.phone_number || "",
+      email: authUser.user.email || "",
+      address:
+        authUser.user.address && authUser.user.address[0]
+          ? authUser.user.address[0].line
+          : "",
+      city:
+        authUser.user.address && authUser.user.address[0]
+          ? authUser.user.address[0].city
+          : "",
+      zip_code:
+        authUser.user.address && authUser.user.address[0]
+          ? authUser.user.address[0].zip
+          : "",
+    }
 
     if (props.cartitems && Array.isArray(props.cartitems)) {
-        orderData.products = props.cartitems.flatMap(cartItem =>
-            cartItem.cart_items.map(item => {
-                const itemTotal = item.price * item.quantity; // Calculate item total
-                total_amount += itemTotal;
-                console.log(`Item Total: ${itemTotal}, Cumulative Total Amount: ${total_amount}`); // Debug log
-                return {
-                    product_id: item.product_id,
-                    price: item.price,
-                    quantity: item.quantity,
-                    total: itemTotal,
-                    details: JSON.parse(item.details),
-                };
-            })
-        );
+      orderData.products = props.cartitems.flatMap(cartItem =>
+        cartItem.cart_items.map(item => {
+          const itemTotal = item.price * item.quantity // Calculate item total
+          total_amount += itemTotal
+          console.log(
+            `Item Total: ${itemTotal}, Cumulative Total Amount: ${total_amount}`
+          ) // Debug log
+          return {
+            product_id: item.product_id,
+            price: item.price,
+            quantity: item.quantity,
+            total: itemTotal,
+            details: JSON.parse(item.details),
+          }
+        })
+      )
     }
 
     // Update total_amount in orderData
-    orderData.total_amount = total_amount;
+    orderData.total_amount = total_amount
 
     try {
-        const response = await post("http://127.0.0.1:8000/api/orders", orderData);
-        setIsRight(false);
-        props.fetchCartItems();
-        // Navigate to the shipping page with the order ID
-        navigate(`/checkout/shipping/${response.id}`);
+      const response = await post("http://127.0.0.1:8000/api/orders", orderData)
+      setIsRight(false)
+      props.fetchCartItems()
+      // Navigate to the shipping page with the order ID
+      navigate(`/checkout/shipping/${response.id}`)
     } catch (error) {
-        showErrorAlert("Order Creation Error", error.response.message);
+      showErrorAlert("Order Creation Error", error.response.message)
     }
-};
+  }
 
   const handleDelete = async cardItemId => {
     try {
@@ -173,46 +184,46 @@ const Header = props => {
   useEffect(() => {
     const handleScroll = () => {
       if (HeaderRef.current) {
-        const position = window.pageYOffset;
+        const position = window.pageYOffset
         if (position > 70) {
-          HeaderRef.current.classList.add("fixed");
+          HeaderRef.current.classList.add("fixed")
         } else {
-          HeaderRef.current.classList.remove("fixed");
+          HeaderRef.current.classList.remove("fixed")
         }
       }
-    };
+    }
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll)
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   useEffect(() => {
     if (searchTerm) {
       const results = [
-        ...props.categories.filter((category) =>
+        ...props.categories.filter(category =>
           category.nom.toLowerCase().includes(searchTerm.toLowerCase())
         ),
-        ...props.subcategories.filter((subcategory) =>
+        ...props.subcategories.filter(subcategory =>
           subcategory.nom.toLowerCase().includes(searchTerm.toLowerCase())
         ),
-      ];
-      setSearchResults(results.slice(0, 5));
+      ]
+      setSearchResults(results.slice(0, 5))
     } else {
-      setSearchResults([]);
+      setSearchResults([])
     }
-  }, [searchTerm, props.categories, props.subcategories]);
+  }, [searchTerm, props.categories, props.subcategories])
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-console.log(props.cartitems)
+  const handleSearchChange = e => {
+    setSearchTerm(e.target.value)
+  }
+  console.log(props.cartitems)
   return (
     <>
       <div className="headerWrapper" ref={HeaderRef}>
         <header>
-          <div className="container-fluid" style={{padding:"15px 0"}}>
+          <div className="container-fluid" style={{ padding: "15px 0" }}>
             <div className="row">
               <div className="col d-flex align-items-center justify-content-start">
                 <Link to="/">
@@ -244,14 +255,19 @@ console.log(props.cartitems)
                 </div>
                 {searchResults.length > 0 && (
                   <div className="searchResults">
-                    {searchResults.map((result) => (
+                    {searchResults.map(result => (
                       <div
-                        className={`searchResult ${result.categorie_id ? "subcategory" : "category"}`
-                      }
+                        className={`searchResult ${
+                          result.categorie_id ? "subcategory" : "category"
+                        }`}
                         key={result.id}
                       >
                         <Link
-                          to={`/cat/${result.categorie_id ? `${result.categorie_id}/${result.id}` : result.nom.toLowerCase()}`}
+                          to={`/cat/${
+                            result.categorie_id
+                              ? `${result.categorie_id}/${result.id}`
+                              : result.nom.toLowerCase()
+                          }`}
                         >
                           {result.nom}
                         </Link>
@@ -259,7 +275,8 @@ console.log(props.cartitems)
                     ))}
                   </div>
                 )}
-              </div>
+                          
+              </div>
 
               <div className="col d-flex align-items-center justify-content-end">
                 <ul className="list list-inline mb-0 headerTabs">
@@ -287,25 +304,78 @@ console.log(props.cartitems)
                               products.map(
                                 product =>
                                   product.id === cart.product_id && (
-                                    <Card key={cart.id}>
-                                      <CardImg
-                                        top
-                                        className="img-fluid w-100"
-                                        src={product.images ? `http://127.0.0.1:8000/storage/${JSON.parse(product.images)[0]}`: ""}
-                                        alt="Product Image"
-                                      />
-                                      <CardBody className="d-flex justify-content-between align-items-start">
-                                        <div>
-                                          <h4>Product details</h4>
-                                          <p className="card-text">
-                                            <div>Name: {product.name}</div>
-                                            <div>Slug: {product.slug}</div>
-                                            <div>
-                                              Price Unit: {cart.price}
-                                            </div>
-                                            <div>
-                                              Quantity ordered: {cart.quantity}
-                                            </div>
+                                    <Card
+                                      key={cart.id}
+                                      className="mb-3"
+                                      style={{
+                                        border: "1px solid #e0e0e0",
+                                        borderRadius: "10px",
+                                        boxShadow:
+                                          "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                      }}
+                                    >
+                                      <CardBody
+                                        className="d-flex align-items-center"
+                                        style={{ padding: "10px" }}
+                                      >
+                                        <div
+                                          className="image-container"
+                                          style={{
+                                            flexShrink: 0,
+                                            marginRight: "15px",
+                                          }}
+                                        >
+                                          <CardImg
+                                            top
+                                            className="img-fluid"
+                                            src={
+                                              product.images
+                                                ? `http://127.0.0.1:8000/storage/${
+                                                    JSON.parse(
+                                                      product.images
+                                                    )[0]
+                                                  }`
+                                                : ""
+                                            }
+                                            alt="Product Image"
+                                            style={{
+                                              width: "100px",
+                                              height: "100px",
+                                              objectFit: "cover",
+                                              borderRadius: "10px",
+                                            }}
+                                          />
+                                        </div>
+                                        <div
+                                          className="info-container"
+                                          style={{ flexGrow: 1 }}
+                                        >
+                                          <h5
+                                            className="mb-2"
+                                            style={{ fontSize: "1rem" }}
+                                          >
+                                            {product.name}
+                                          </h5>
+                                          <p
+                                            className="mb-1"
+                                            style={{ fontSize: "0.9rem" }}
+                                          >
+                                            <strong>Slug:</strong>{" "}
+                                            {product.slug}
+                                          </p>
+                                          <p
+                                            className="mb-1"
+                                            style={{ fontSize: "0.9rem" }}
+                                          >
+                                            <strong>Price Unit:</strong>{" "}
+                                            {cart.price}
+                                          </p>
+                                          <p
+                                            className="mb-1"
+                                            style={{ fontSize: "0.9rem" }}
+                                          >
+                                            <strong>Quantity ordered:</strong>{" "}
+                                            {cart.quantity}
                                           </p>
                                         </div>
                                         <Button
@@ -330,6 +400,7 @@ console.log(props.cartitems)
                           Commander
                         </Link>
                       </Offcanvas>
+
                       <li className="list-inline-items">
                         <span onClick={() => setOpenDropDown(!openDropDown)}>
                           <img src={IconAccount} alt="Account Icon" />
