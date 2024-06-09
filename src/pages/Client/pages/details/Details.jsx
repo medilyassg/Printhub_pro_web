@@ -12,8 +12,8 @@ import { Button, Row, Col, Collapse } from "react-bootstrap"
 import Header from "pages/Client/components/header/Header"
 import { Input, Label, Modal, ModalBody, ModalHeader } from "reactstrap"
 import img1 from "../../images/popular/product-8-1.jpg"
-import { helix } from "ldrs"
-helix.register()
+import { tailspin } from 'ldrs'
+tailspin.register()
 
 import { get, post } from "helpers/api_helper"
 import useSweetAlert from "helpers/notifications"
@@ -114,7 +114,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       const userObj = JSON.parse(authUser)
       setUser(userObj.user)
       if (userObj.user.customer) {
-        setCustomerId(userObj.user.customer.id) 
+        setCustomerId(userObj.user.customer.id)
       }
     }
   }, [])
@@ -132,7 +132,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
           quantity: productDetails.quantity,
           price: productDetails.price_unit,
           total: productDetails.price_unit * productDetails.quantity,
-          details:selectedProperty
+          details: selectedProperty,
         },
       ],
     }
@@ -221,7 +221,12 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="text-center">
-          <l-helix size="113" speed="2.5" color="#626ed4"></l-helix>
+          <l-tailspin
+            size="40"
+            stroke="5"
+            speed="0.9"
+            color="black"
+          ></l-tailspin>{" "}
         </div>
       </div>
     )
@@ -253,7 +258,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       },
     }))
   }
-  console.log(selectedProperty);
+  console.log(selectedProperty)
 
   const isAuthenticated = localStorage.getItem("authUser") !== null
 

@@ -192,12 +192,12 @@ const Header = props => {
             <div className="row">
               <div className="col d-flex align-items-center justify-content-start">
                 <Link to="/">
-                  <img
+                  {/* <img
                     src={Logo}
-                    style={{ height: "26%", width: "26%" }}
+                    style={{ height: "20%", width: "20%" }}
                     alt="Logo"
-                  />
-                  {/* printHub */}
+                  /> */}
+                  printHub
                 </Link>
               </div>
 
