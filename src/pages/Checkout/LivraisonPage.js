@@ -90,6 +90,7 @@ const LivraisonPage = () => {
                     <Card>
                         <CardBody>
                             <h4>Information de Livraison</h4>
+                            <hr></hr>
                             <Form onSubmit={formik.handleSubmit}>
                                 <Row>
                                     <Col md={6}>
@@ -166,8 +167,9 @@ const LivraisonPage = () => {
                     <Card>
                         <CardBody>
                             <h4>Total TTC</h4>
-                            <p>{orderDetails.total_amount} MAD</p>
-                            <Button color="success" onClick={() => navigate(`/checkout/${orderId}`)}>Continuer</Button>
+                            <hr></hr>
+                            <h5>{orderDetails.total_amount} MAD</h5>
+                            <Button color="success mt-2" onClick={() => navigate(`/checkout/${orderId}`)}>Continuer</Button>
                         </CardBody>
                     </Card>
                 </Col>

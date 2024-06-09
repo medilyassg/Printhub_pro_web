@@ -58,7 +58,8 @@ const PaymentPage = () => {
                     margin-top:20px;
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
-                    gap:20px
+                    gap:20px;
+                    padding:5px
                 }
 
                 .payment-method-card {
@@ -106,6 +107,7 @@ const PaymentPage = () => {
                     <Card>
                         <CardBody>
                             <h4>Choose a payment method</h4>
+                            <hr></hr>
                             <Row className="payment-methods">
                                 <Col  className={`payment-method-card ${selectedPaymentMethod === 'paypal' ? 'selected' : ''}`} onClick={() => handlePaymentMethodSelect('paypal')}>
                                     <div>
@@ -129,8 +131,9 @@ const PaymentPage = () => {
                     <Card>
                         <CardBody>
                             <h4>Total TTC</h4>
-                            <p>{orderDetails.total_amount} MAD</p>
-                            <Button color="success" onClick={handleCheckout}>Continuer</Button>
+                            <hr></hr>
+                            <h5>{orderDetails.total_amount} MAD</h5>
+                            <Button color="success mt-2" onClick={handleCheckout}>Continuer</Button>
                         </CardBody>
                     </Card>
                 </Col>

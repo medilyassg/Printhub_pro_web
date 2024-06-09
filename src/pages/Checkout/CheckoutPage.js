@@ -66,26 +66,18 @@ const CheckoutPage = () => {
           .product-card {
             display: flex;
             align-items: center;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+            padding: 5px;
           }
 
-          .product-card:hover {
-            transform: scale(1.05);
-          }
-
+          
           .product-image {
-            width: 100px;
+            width: 150px;
             height: auto;
             border-radius: 8px;
             margin-right: 20px;
           }
 
           .product-name {
-            margin-bottom: 10px;
             color: #333;
             flex: 1;
           }
@@ -131,6 +123,18 @@ const CheckoutPage = () => {
               margin-bottom: 10px;
             }
           }
+          .product-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end
+            gap: 5px;
+            flex: 1;
+            justify-content: space-between; /* Ensures the total is at the end */
+          }
+        
+        ]
+        
+         
         `}
       </style>
       <div className="row">
@@ -170,6 +174,7 @@ const CheckoutPage = () => {
           <Card>
             <CardBody>
               <h4 className="mb-3 text-primary">Payment Section</h4>
+              <hr></hr>
               {selectedPaymentMethod === 'youcanpay' && <YouCanPay order={orderDetails} />}
               {selectedPaymentMethod === 'paypal' && <PayPalButton order={orderDetails} />}
             </CardBody>
@@ -190,21 +195,31 @@ const CheckoutPage = () => {
                     {orderDetails.products.map((product, index) => (
                       <div key={index} className="col-12 mb-3">
                         <div className="product-card">
-                          <img src={`http://127.0.0.1:8000/storage/${JSON.parse(product.product.images)[0]}`} alt={product.product.name} className="product-image" />
-                          <div className="d-flex flex-column gap-1">
-                            <h5 className="product-name">{product.product.name}</h5>
-                            <p><strong>Quantity:</strong> {product.quantity}</p>
-                            <p><strong>Total:</strong> {product.price}</p>
-                          </div>
-                        </div>
+                    <img 
+                        src={`http://127.0.0.1:8000/storage/${JSON.parse(product.product.images)[0]}`} 
+                        alt={product.product.name} 
+                        className="product-image" 
+                    />
+                   <div className="product-info">
+                    <div>
+                    <h5 className="product-name">{product.quantity} x {product.product.name}</h5>
+                    <p>{product.product.slug}</p>
+                    </div>
+
+  <div className="product-total-container">
+    <p className="product-name"><strong>{product.price}  MAD </strong></p>
+  </div>
+</div>
+
+                    </div>
+                    <hr></hr>
                       </div>
                     ))}
                   </div>
-                  <hr></hr>
 
                   <div className="total-ttc-container">
                     <div className="total-ttc">
-                      <p>Total TTC :    <strong>{orderDetails.total_amount} MAD </strong></p>
+                      <p>Total TTC :    <strong className='text-danger'>{orderDetails.total_amount} MAD  </strong></p>
                     </div>
                   </div>
                 </div>
