@@ -25,6 +25,10 @@ import { get } from "helpers/api_helper"
 import SubcategoryCard from "pages/Client/components/SubcategoryCard/SubcategoryCard "
 import { use } from "i18next"
 import CheckoutPage from "pages/Checkout/CheckoutPage"
+import ClientLayout from "pages/Client/pages/home/ClientLayout"
+import SuccessPage from "pages/Checkout/SuccessPage"
+import LivraisonPage from "pages/Checkout/LivraisonPage"
+import PaymentPage from "pages/Checkout/PaymentPage"
 // Activating fake backend
 fakeBackend()
 
@@ -92,24 +96,29 @@ const App = () => {
             />
           ))}
         </Route>
-        <Route
-          path="/"
-          element={
-            <Home categories={categories} subcategories={subcategories} cartitems={cartitems} fetchCartItems={fetchCartItems}/>
-          }
-        />
-        <Route
-          path="/cat/:categoryId/:subcategoryId"
-          element={
-            <Details categories={categories} subcategories={subcategories}  cartitems={cartitems}  fetchCartItems={fetchCartItems}/>
-          }
-        />
-        <Route
-          path="/cat/:categoryId"
-          element={
-            <SubcategoryCard categories={categories} subcategories={subcategories}  cartitems={cartitems}/>
-          }
-        />
+
+        <Route path="/" element={
+          <ClientLayout 
+            categories={categories} 
+            subcategories={subcategories} 
+            cartitems={cartitems} 
+            fetchCartItems={fetchCartItems} 
+          />
+        }>
+          <Route index element={<Home />} />
+          <Route path="cat/:categoryId/:subcategoryId" element={<Details categories={categories} 
+            subcategories={subcategories} 
+            cartitems={cartitems} 
+            fetchCartItems={fetchCartItems}  />} />
+          <Route path="cat/:categoryId" element={<SubcategoryCard categories={categories} 
+            subcategories={subcategories} 
+            cartitems={cartitems} 
+            fetchCartItems={fetchCartItems} />} />
+          <Route path="/checkout/success/:orderId" element={<SuccessPage  />} />
+          <Route path="/checkout/shipping/:orderId" element={<LivraisonPage  />} />
+          <Route path="/checkout/:orderId" element={<PaymentPage  />} />
+          <Route path="/checkout/payment/:orderId/:selectedPaymentMethod" element={<CheckoutPage  />} />
+        </Route>
       </Routes>
     </React.Fragment>
   )

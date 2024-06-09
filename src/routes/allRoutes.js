@@ -64,11 +64,7 @@ const authRoutes = [
   { path: "/register", component: <RegisterIndex /> },
   { path: "/pages-404", component: <Pages404 /> },
   { path: "/pages-500", component: <Pages500 /> },
-  { path: "/checkout/shipping/:orderId", component: <LivraisonPage /> },
-  { path: "/checkout/:orderId", component: <PaymentPage /> },
-  { path: "/checkout/payment/:orderId/:selectedPaymentMethod", component: <CheckoutPage /> },
-  { path: "/checkout/success/:orderId", component: <SuccessPage /> },
-
+  
 ];
 
 // const clientRoutes = [

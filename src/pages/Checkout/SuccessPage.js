@@ -1,4 +1,4 @@
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink, Document, pdf } from '@react-pdf/renderer';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Button } from 'reactstrap';
@@ -31,7 +31,7 @@ const SuccessPage = () => {
     
 
     const handleTrackOrders = () => {
-        
+        navigate('/account/orders')
     };
 
     return (
@@ -55,7 +55,6 @@ const SuccessPage = () => {
                     }
 
                     .success-page h1 {
-                        color: #28a745;
                         font-size: 36px;
                         margin-bottom: 20px;
                     }
@@ -67,19 +66,19 @@ const SuccessPage = () => {
                     }
 
                     .success-page .btn-primary {
-                        background-color: #007bff;
-                        border-color: #007bff;
+                        background-color:rgb(98, 110, 212);
+                        border-color:rgb(98, 110, 212);
                         margin-right: 10px;
                     }
 
                     .success-page .btn-link {
-                        color: #007bff;
+                        color:rgb(98, 110, 212);
                         text-decoration: none;
                         font-size: 16px;
                     }
                 `}
             </style>
-            <h1>Order Successfully Placed!</h1>
+            <h1 className='text-success'>Order Successfully Placed!</h1>
             <p className="lead">Thank you for your purchase. Your order has been successfully placed and is being processed.</p>
             <div>
                 <PDFDownloadLink
