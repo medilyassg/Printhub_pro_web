@@ -1,6 +1,6 @@
-import { useFormik } from "formik"
-import { get } from "helpers/api_helper"
-import React, { useEffect, useState } from "react"
+import { useFormik } from "formik";
+import { get } from "helpers/api_helper";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -10,85 +10,91 @@ import {
   Input,
   Label,
   Row,
-} from "reactstrap"
-import * as Yup from "yup"
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
+import * as Yup from "yup";
+import Select from "react-select";
 
 const EditForm = props => {
-  const [subcategories, setSubcategories] = useState([])
-  const [categories, setCategories] = useState([])
-  const [selectedProperties, setSelectedProperties] = useState([])
-  const [openSubcategory, setOpenSubcategory] = useState(null)
-  const [SelectedSubCat, setSelectedSubCat] = useState(null)
+  const [subcategories, setSubcategories] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedProperties, setSelectedProperties] = useState([]);
+  const [openSubcategory, setOpenSubcategory] = useState(null);
+  const [SelectedSubCat, setSelectedSubCat] = useState(null);
+  const [rulesModalOpen, setRulesModalOpen] = useState(false);
+  const [quantityPriceRules, setQuantityPriceRules] = useState({});
 
   useEffect(() => {
-    if (props.product && props.product.subCategory) { 
-      setSelectedSubCat(props.product.subCategory.id)
+    if (props.product?.subCategory) {
+      setSelectedSubCat(props.product.subCategory.id);
     }
-    if (props.product && props.product.propriete) { 
-      setSelectedProperties(props.product.propriete.map(property => property.id))
+    if (props.product?.propriete) {
+      setSelectedProperties(
+        props.product.propriete.map(property => property.id)
+      );
     }
-  }, [props.product])
+    if (props.product?.quantity_price_rules) {
+      setQuantityPriceRules(props.product.quantity_price_rules);
+    }
+  }, [props.product]);
 
   const toggleSubcategory = index => {
     if (openSubcategory === index) {
-      setOpenSubcategory(null)
+      setOpenSubcategory(null);
     } else {
-      setOpenSubcategory(index)
+      setOpenSubcategory(index);
     }
-  }
+  };
 
   const handleSubCatChange = async e => {
-    const subcat = e.target.value
-    setSelectedSubCat(subcat)
-    validation.setFieldValue('sub_category_id', subcat);
-  }
+    const subcat = e.target.value;
+    setSelectedSubCat(subcat);
+    validation.setFieldValue("sub_category_id", subcat);
+  };
 
   useEffect(() => {
-    const fetchcategories = async () => {
+    const fetchCategories = async () => {
       try {
-        const response = await get("http://127.0.0.1:8000/api/subcategories")
-        const data = await response.data
-        setCategories(data)
+        const response = await get("http://127.0.0.1:8000/api/subcategories");
+        const data = await response.data;
+        setCategories(data);
       } catch (error) {
-        console.error("Error fetching categories:", error)
+        console.error("Error fetching categories:", error);
       }
-    }
+    };
 
-    fetchcategories()
-  }, [])
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchSubcategories = async () => {
       try {
         const response = await get(
           "http://127.0.0.1:8000/api/ProprieteCategorie"
-        )
-        const data = await response.data
-        setSubcategories(data)
+        );
+        const data = await response.data;
+        setSubcategories(data);
       } catch (error) {
-        console.error("Error fetching subcategories:", error)
+        console.error("Error fetching subcategories:", error);
       }
-    }
+    };
 
-    fetchSubcategories()
-  }, [])
+    fetchSubcategories();
+  }, []);
 
   const handleCheckboxChange = property => {
     const propertyId = property.id;
     setSelectedProperties(prevState => {
       if (prevState.includes(propertyId)) {
-        // If property is already selected, remove it
-        console.log("Removing property:", propertyId);
         return prevState.filter(id => id !== propertyId);
       } else {
-        // If property is not selected, add it
-        console.log("Adding property:", propertyId);
         return [...prevState, propertyId];
       }
     });
   };
-  
-  
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Please Enter Name"),
@@ -98,27 +104,68 @@ const EditForm = props => {
     price_unit: Yup.number().required("Please Enter Price Unit"),
     quantity: Yup.number().required("Please Enter Quantity"),
     quantity_type: Yup.string().required("Please Enter Quantity Type"),
-  })
+    quantity_price_rules: Yup.object().test(
+      "has-rules",
+      "Please add at least one quantity price rule",
+      value => Object.keys(value).length > 0
+    ),
+  });
 
   const validation = useFormik({
     initialValues: {
-      name: props.product.name || "",
-      slug: props.product.slug || "",
-      description: props.product.description || "",
-      design_price: props.product.design_price || "",
-      price_unit: props.product.price_unit || "",
-      quantity: props.product.quantity || "",
-      quantity_type: props.product.quantity_type || "",
-      sub_category_id: props.product.subCategory.id,
+      name: props.product?.name || "",
+      slug: props.product?.slug || "",
+      description: props.product?.description || "",
+      design_price: props.product?.design_price || "",
+      price_unit: props.product?.price_unit || "",
+      quantity: props.product?.quantity || "",
+      quantity_type: props.product?.quantity_type || "",
+      sub_category_id: props.product?.subCategory?.id || "",
       propriete: [],
-
+      quantity_price_rules: props.product?.quantity_price_rules || {},
     },
     validationSchema,
     onSubmit: values => {
-      props.handleEdit(props.product.id, { ...values, propriete: selectedProperties });
+      props.handleEdit(props.product.id, {
+        ...values,
+        propriete: selectedProperties,
+      });
     },
   });
-  
+
+  const handleAddRule = event => {
+    event.preventDefault();
+    const form = event.target;
+    const newRule = {
+      operator: form.operator.value,
+      quantity: form.quantity.value,
+      discount: form.discount.value,
+    };
+    const newRuleIndex = Object.keys(quantityPriceRules).length;
+    setQuantityPriceRules({ ...quantityPriceRules, [newRuleIndex]: newRule });
+    setRulesModalOpen(false);
+    validation.setFieldValue("quantity_price_rules", {
+      ...quantityPriceRules,
+      [newRuleIndex]: newRule,
+    });
+  };
+
+  const handleQuantityPriceRulesChange = selectedOptions => {
+    const newRules = {};
+    selectedOptions.forEach((option, index) => {
+      newRules[index] = option.value;
+    });
+    setQuantityPriceRules(newRules);
+    validation.setFieldValue("quantity_price_rules", newRules);
+  };
+
+  const quantityPriceRuleOptions = Object.values(quantityPriceRules).map(
+    (rule, index) => ({
+      value: rule,
+      label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
+      key: `${rule.quantity}-${rule.operator}-${rule.discount}-${index}`, // Ensure unique keys
+    })
+  );
 
   return (
     <Form onSubmit={validation.handleSubmit}>
@@ -248,14 +295,46 @@ const EditForm = props => {
         </Col>
         <Col md={6}>
           <div className="mb-3">
+            <Label className="form-label">Quantity Price Rules</Label>
+            <Select
+              name="quantity_price_rules"
+              isMulti
+              options={quantityPriceRuleOptions}
+              className="basic-multi-select"
+              classNamePrefix="select"
+              onChange={handleQuantityPriceRulesChange}
+              value={Object.values(quantityPriceRules).map((rule, index) => ({
+                value: rule,
+                label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
+                key: `${rule.quantity}-${rule.operator}-${rule.discount}-${index}`, // Ensure unique keys
+              }))}
+            />
+            {validation.touched.quantity_price_rules &&
+              validation.errors.quantity_price_rules && (
+                <FormFeedback className="d-block">
+                  {validation.errors.quantity_price_rules}
+                </FormFeedback>
+              )}
+            <Button
+              type="button"
+              color="secondary"
+              className="ms-2"
+              onClick={() => setRulesModalOpen(true)}
+            >
+              Add Rule
+            </Button>
+          </div>
+        </Col>
+        <Col md={6}>
+          <div className="mb-3">
             <Label className="form-label">Sub Category</Label>
             <Input
               type="select"
               name="sub_category_id"
               value={SelectedSubCat}
               onChange={e => {
-                handleSubCatChange(e)
-                validation.handleChange(e)
+                handleSubCatChange(e);
+                validation.handleChange(e);
               }}
               invalid={
                 validation.touched.sub_category_id &&
@@ -317,14 +396,61 @@ const EditForm = props => {
         </Col>
       </Row>
 
+      <Modal isOpen={rulesModalOpen} toggle={() => setRulesModalOpen(false)}>
+        <ModalHeader toggle={() => setRulesModalOpen(false)}>
+          Add Quantity Price Rule
+        </ModalHeader>
+        <ModalBody>
+          <Form onSubmit={handleAddRule}>
+            <Row>
+              <Col md={4}>
+                <div className="mb-3">
+                  <Label className="form-label">Comparison Operator</Label>
+                  <Input type="select" name="operator" required>
+                    <option value=">">Greater Than (&gt;)</option>
+                    <option value="<">Less Than (&lt;)</option>
+                    <option value="=">Equal To (=)</option>
+                  </Input>
+                </div>
+              </Col>
+              <Col md={4}>
+                <div className="mb-3">
+                  <Label className="form-label">Quantity</Label>
+                  <Input type="number" name="quantity" required />
+                </div>
+              </Col>
+              <Col md={4}>
+                <div className="mb-3">
+                  <Label className="form-label">Discount</Label>
+                  <Input type="text" name="discount" required />
+                </div>
+              </Col>
+            </Row>
+            <Button type="submit" color="primary">
+              Add Rule
+            </Button>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={() => setRulesModalOpen(false)}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+
       <Button type="submit" color="primary">
-        edit Product
-      </Button> 
-      <Button type="button" color="secondary" className="ms-2" onClick={props.handleCancel}>
+        Edit Product
+      </Button>
+      <Button
+        type="button"
+        color="secondary"
+        className="ms-2"
+        onClick={props.handleCancel}
+      >
         Cancel
       </Button>
     </Form>
-  )
-}
+  );
+};
 
-export default EditForm
+export default EditForm;

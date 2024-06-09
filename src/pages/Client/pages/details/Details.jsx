@@ -10,8 +10,10 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { Button, Row, Col, Collapse } from "react-bootstrap"
 import Header from "pages/Client/components/header/Header"
-import { Input, Label, Modal, ModalBody, ModalHeader, Spinner } from "reactstrap"
+import { Input, Label, Modal, ModalBody, ModalHeader } from "reactstrap"
 import img1 from "../../images/popular/product-8-1.jpg"
+import { tailspin } from 'ldrs'
+tailspin.register()
 
 import { get, post } from "helpers/api_helper"
 import useSweetAlert from "helpers/notifications"
@@ -37,58 +39,59 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   }
 
   const calculateTotalPrice = (quantity, selectedProperties) => {
-    let totalPrice = parseFloat(productDetails.price_unit || 0);
-    
+    let totalPrice = parseFloat(productDetails.price_unit || 0)
+
     // Add the prices of selected properties to the total price
     for (const category of propertyCategories) {
-      const selectedPropertyId = activeProperties[category.id];
+      const selectedPropertyId = activeProperties[category.id]
       if (selectedPropertyId) {
-        const selectedProperty = category.propriete.find(prop => prop.id === selectedPropertyId);
+        const selectedProperty = category.propriete.find(
+          prop => prop.id === selectedPropertyId
+        )
         if (selectedProperty) {
-          totalPrice += parseFloat(selectedProperty.price || 0);
+          totalPrice += parseFloat(selectedProperty.price || 0)
         }
       }
     }
-  
+
     // Apply quantity price rules if applicable
-    const { quantity_price_rules } = productDetails;
+    const { quantity_price_rules } = productDetails
     if (quantity_price_rules && Array.isArray(quantity_price_rules)) {
       quantity_price_rules.forEach(rule => {
-        const { quantity: ruleQuantity, operator, discount } = rule;
+        const { quantity: ruleQuantity, operator, discount } = rule
         if (isValidQuantityOperator(operator, quantity, ruleQuantity)) {
-          totalPrice = applyQuantityRule(totalPrice, quantity, discount);
+          totalPrice = applyQuantityRule(totalPrice, quantity, discount)
         }
-      });
+      })
     }
-  
-    return totalPrice;
-  };
-  
+
+    return totalPrice
+  }
+
   const isValidQuantityOperator = (operator, quantity, ruleQuantity) => {
     switch (operator) {
       case ">":
-        return parseInt(quantity) > parseInt(ruleQuantity);
+        return parseInt(quantity) > parseInt(ruleQuantity)
       case "<":
-        return parseInt(quantity) < parseInt(ruleQuantity);
+        return parseInt(quantity) < parseInt(ruleQuantity)
       case "=":
-        return parseInt(quantity) === parseInt(ruleQuantity);
+        return parseInt(quantity) === parseInt(ruleQuantity)
       default:
-        return false;
+        return false
     }
-  };
-  
+  }
+
   const applyQuantityRule = (totalPrice, quantity, discount) => {
     // Apply the discount based on the operator
     switch (discount.charAt(discount.length - 1)) {
-      case '%':
-        const discountPercentage = parseFloat(discount) / 100;
-        return totalPrice * (1 - discountPercentage);
+      case "%":
+        const discountPercentage = parseFloat(discount) / 100
+        return totalPrice * (1 - discountPercentage)
       default:
         // Add the discounted amount to the total price
-        return totalPrice + parseFloat(discount) * quantity;
+        return totalPrice + parseFloat(discount) * quantity
     }
-  };
-    
+  }
 
   const handleQuantityChange = e => {
     const value = parseInt(e.target.value)
@@ -111,7 +114,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       const userObj = JSON.parse(authUser)
       setUser(userObj.user)
       if (userObj.user.customer) {
-        setCustomerId(userObj.user.customer.id) 
+        setCustomerId(userObj.user.customer.id)
       }
     }
   }, [])
@@ -199,7 +202,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
         parseFloat(productDetails.price_unit || 0)
       )
       setTotalPrice(newTotalPrice || parseFloat(productDetails.price_unit || 0))
-    } 
+    }
   }, [activeProperties, propertyCategories, productDetails])
 
   const settings = {
@@ -218,10 +221,12 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="text-center">
-          <Spinner animation="border" role="status" className="text-primary">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-          <p className="mt-2 text-primary">Loading...</p>
+          <l-tailspin
+            size="40"
+            stroke="5"
+            speed="0.9"
+            color="black"
+          ></l-tailspin>{" "}
         </div>
       </div>
     )
@@ -252,9 +257,8 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
         property: property,
       },
     }))
-    
   }
-  console.log(selectedProperty);
+  console.log(selectedProperty)
 
   const isAuthenticated = localStorage.getItem("authUser") !== null
 

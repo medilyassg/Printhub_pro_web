@@ -5,7 +5,7 @@ import Icon2for from "../../images/all-in/icon-2.png";
 import Icon3for from "../../images/all-in/icon-3.png";
 import Icon4for from "../../images/all-in/icon-4.png";
 import Icon5for from "../../images/all-in/icon-5.png";
-import MainLogo from "../../images/logo.png";
+import Logo from "../../images/logo-png.png"
 import { Link } from "react-router-dom";
 import {
   CallMadeOutlined,
@@ -93,7 +93,11 @@ const Footer = () => {
               <div className="col-md-3 part1">
                 <Link>
                   {" "}
-                  <img src={MainLogo} />
+                  <img
+                    src={Logo}
+                    style={{ height: "26%", width: "26%" }}
+                    alt="Logo"
+                  />
                 </Link>{" "}
                 <br />
                 <br />
