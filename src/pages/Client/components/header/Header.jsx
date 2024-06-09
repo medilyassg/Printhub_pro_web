@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
+import { useNavigate } from 'react-router-dom';
+
 import Logo from "../../images/logo.svg"
 import searchIcon from "../../images/search.png"
 import "./header.css"
@@ -38,10 +40,13 @@ const Header = props => {
   const countryList = []
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [total_amount,setTotalAmount]=useState();
   const toggleRightCanvas = () => {
     setIsRight(!isRight)
   }
   const [windowWidth, setwindowWidth] = useState(window.innerWidth)
+  const authUser = JSON.parse(localStorage.getItem('authUser'));
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -97,41 +102,60 @@ const Header = props => {
     InputSearchRef.current.focus()
   }
   const handleOrder = async () => {
-    const customerId = props.cartitems[0]?.customer_id
-    const cartId = props.cartitems[0]?.id
+    const customerId = props.cartitems[0]?.customer_id;
+    const cartId = props.cartitems[0]?.id;
+    let total_amount = 12;
 
     if (!customerId || !cartId) {
-      showErrorAlert("Order Created", error.response.data.message)
-      return
-    }
-    const orderData = {
-      customer_id: customerId,
-      cart_id: cartId,
-      status: "accepted",
-      progress: "Processing",
-      products: [],
+        showErrorAlert("Order Creation Error", "Missing customer or cart ID");
+        return;
     }
 
+    const orderData = {
+        customer_id: customerId,
+        cart_id: cartId,
+        status: "accepted",
+        progress: "Processing",
+        total_amount: total_amount, // Placeholder, will update later
+        products: [],
+        phone_number: authUser.user.phone_number || '',
+        email: authUser.user.email || '',
+        address: authUser.user.address && authUser.user.address[0] ? authUser.user.address[0].line : '',
+        city: authUser.user.address && authUser.user.address[0] ? authUser.user.address[0].city : '',
+        zip_code: authUser.user.address && authUser.user.address[0] ? authUser.user.address[0].zip : '',
+    };
+
     if (props.cartitems && Array.isArray(props.cartitems)) {
-      orderData.products = props.cartitems.flatMap(cartItem =>
-        cartItem.cart_items.map(item => ({
-          product_id: item.product_id,
-          price: item.price,
-          quantity: item.quantity,
-          total: item.price * item.quantity,
-          details:JSON.parse(item.details),
-        }))
-      )
+        orderData.products = props.cartitems.flatMap(cartItem =>
+            cartItem.cart_items.map(item => {
+                const itemTotal = item.price * item.quantity; // Calculate item total
+                total_amount += itemTotal;
+                console.log(`Item Total: ${itemTotal}, Cumulative Total Amount: ${total_amount}`); // Debug log
+                return {
+                    product_id: item.product_id,
+                    price: item.price,
+                    quantity: item.quantity,
+                    total: itemTotal,
+                    details: JSON.parse(item.details),
+                };
+            })
+        );
     }
+
+    // Update total_amount in orderData
+    orderData.total_amount = total_amount;
+
     try {
-      const response = await post("http://127.0.0.1:8000/api/orders", orderData)
-      showSuccessAlert("Order Created", response.message)
-      setIsRight(false)
-      props.fetchCartItems()
+        const response = await post("http://127.0.0.1:8000/api/orders", orderData);
+        setIsRight(false);
+        props.fetchCartItems();
+        // Navigate to the shipping page with the order ID
+        navigate(`/checkout/shipping/${response.id}`);
     } catch (error) {
-      showErrorAlert("Order Created", error.response.message)
+        showErrorAlert("Order Creation Error", error.response.message);
     }
-  }
+};
+
   const handleDelete = async cardItemId => {
     try {
       const response = await del(
@@ -188,7 +212,7 @@ console.log(props.cartitems)
     <>
       <div className="headerWrapper" ref={HeaderRef}>
         <header>
-          <div className="container-fluid">
+          <div className="container-fluid" style={{padding:"15px 0"}}>
             <div className="row">
               <div className="col d-flex align-items-center justify-content-start">
                 <Link to="/">
@@ -277,7 +301,7 @@ console.log(props.cartitems)
                                             <div>Name: {product.name}</div>
                                             <div>Slug: {product.slug}</div>
                                             <div>
-                                              Price Unit: {product.price_unit}
+                                              Price Unit: {cart.price}
                                             </div>
                                             <div>
                                               Quantity ordered: {cart.quantity}

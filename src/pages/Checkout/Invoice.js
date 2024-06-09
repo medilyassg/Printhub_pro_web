@@ -98,29 +98,36 @@ const ListItem = ({ children }) => (
   </View>
 );
 
-const MyDocument = (props) => {
-  const [CompanyInfo, setCompanyInfo] = useState(null);
-  const [logoBase64, setLogoBase64] = useState("");
-  const [footerBase64, setFooterBase64] = useState("");
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await get("http://127.0.0.1:8000/api/company-info");
-        const data = response[0];
-        setCompanyInfo(data);
+const Invoice = (props) => {
+    const [CompanyInfo, setCompanyInfo] = useState(null);
+    const [logoBase64, setLogoBase64] = useState("");
+    const [footerBase64, setFooterBase64] = useState("");
+  
+    const authUser = JSON.parse(localStorage.getItem('authUser'));
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await get("http://127.0.0.1:8000/api/company-info");
+          const data = response[0];
+          setCompanyInfo(data);
+  
+          const logoResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.logo}`);
+          setLogoBase64(logoResponse.base64);
+          const fotterResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.printed_footer}`);
+          setFooterBase64(fotterResponse.base64);
+        } catch (error) {
+          console.error('Error fetching company info:', error);
+        }
+      };
+      
+      fetchData();
+    }, []);
+  
+    
+  
 
-        // Fetch base64 encoded logo image directly
-        const logoResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.logo}`);
-        setLogoBase64(logoResponse.base64);
-        const fotterResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.printed_footer}`);
-        setFooterBase64(fotterResponse.base64);
-      } catch (error) {
-        console.error('Error fetching company info:', error);
-      }
-    };
 
-    fetchData();
-  }, []);
 
   return (
     <Document style={{ border: '1px solid #001', margin: 20 }}>
@@ -129,7 +136,7 @@ const MyDocument = (props) => {
         <View style={styles.header}>
         {logoBase64 && <Image src={`data:image/png;base64,${logoBase64}`} style={{ width: 100, height: 60 }} />}
           <View>
-            <Text style={[styles.headerText, styles.textRight]}>Devis #1</Text>
+            <Text style={[styles.headerText, styles.textRight]}>Invoice #1</Text>
             <Text style={styles.headerText}>Date: {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
           </View>
         </View>
@@ -147,13 +154,13 @@ const MyDocument = (props) => {
           </View>
           <View style={[styles.section, styles.column]}>
             <Text style={styles.bold}>Client</Text>
-            <Text>{props.user.customer ? props.user.customer.company_name ? props.user.customer.company_name : props.user.name + ' ' + props.user.last_name : ""}</Text>
-            <Text>{props.user.address.length > 0 ? props.user.address[0].city + "," + props.user.address[0].line : ""}</Text>
-            <Text>{props.user.city}</Text>
-            <Text>{props.user.region}</Text>
-            <Text>{props.user.address.length > 0 ? props.user.address[0].zip : ""}</Text>
-            <Text>{props.user.country}</Text>
-            <Text>Identifiant Commun d'Entreprise :{props.user.customer ? props.user.customer.ice : ""}</Text>
+            <Text>{authUser.user.customer ? authUser.user.customer.company_name ? authUser.user.customer.company_name : authUser.user.name + ' ' + authUser.user.last_name : ""}</Text>
+            <Text>{authUser.user.address.length > 0 ? authUser.user.address[0].city + "," + authUser.user.address[0].line : ""}</Text>
+            <Text>{authUser.user.city}</Text>
+            <Text>{authUser.user.region}</Text>
+            <Text>{authUser.user.address.length > 0 ? authUser.user.address[0].zip : ""}</Text>
+            <Text>{authUser.user.country}</Text>
+            <Text>Identifiant Commun d'Entreprise :{authUser.user.customer ? authUser.user.customer.ice : ""}</Text>
           </View>
         </View>
 
@@ -164,24 +171,28 @@ const MyDocument = (props) => {
             <Text style={[styles.tableCell, styles.bold, { width: '25%' }]}>Quantité</Text>
             <Text style={[styles.tableCell, styles.bold, { width: '25%' }]}>Total</Text>
           </View>
-          <View style={styles.tableRow}>
-            <View style={[styles.tableCell, { width: '50%' }]}>
-              <Text style={[styles.bold, { color: "" }]}>{props.product.name}</Text>
-              {props.properties &&
-                <div style={{ margin: 20 }}>
-                  {Object.keys(props.properties).map((categoryId) => (
-                    <ListItem key={categoryId}>
-                      {props.properties[categoryId].category}: {props.properties[categoryId].property.name}
-                    </ListItem>
-                  ))}
-                </div>
-              }
+          {/* Render products from order */}
+          {props.order && props.order.products.map((product, index) => (
+            <View style={styles.tableRow} key={index}>
+              <View style={[styles.tableCell, { width: '50%' }]}>
+                <Text style={[styles.bold, { color: "" }]}>{product.product.name}</Text>
+                {/* Render product details */}
+                {product.details && (
+  <View style={{ margin: 20 }}>
+    {Object.values(JSON.parse(product.details)).map((detail, index) => (
+      <Text key={index}>{detail.category}: {detail.property.name}</Text>
+    ))}
+  </View>
+)}
+              </View>
+              <Text style={[styles.tableCell, { width: '25%' }]}>{product.quantity}</Text>
+              <Text style={[styles.tableCell, { width: '25%' }]}>{product.price} MAD</Text>
             </View>
-            <Text style={[styles.tableCell, { width: '25%' }]}>{props.quantity}</Text>
-            <Text style={[styles.tableCell, { width: '25%' }]}>{props.total}</Text>
-          </View>
+          ))}
         </View>
-
+        <View style={{ marginTop: 20, textAlign: 'right' }}>
+  <Text style={styles.bold}>Total TTC: {props.order && props.order.total_amount} MAD</Text>
+</View>
         {/* Footer */}
         <View style={styles.footer}>
           <Text>La commande doit être effectuée directement sur le site printHub.ma</Text>
@@ -193,4 +204,4 @@ const MyDocument = (props) => {
   );
 };
 
-export default MyDocument;
+export default Invoice;

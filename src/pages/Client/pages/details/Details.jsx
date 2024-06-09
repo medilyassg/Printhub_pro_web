@@ -126,9 +126,9 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       cart_items: [
         {
           product_id: productDetails.id,
-          quantity: productDetails.quantity,
-          price: productDetails.price_unit,
-          total: productDetails.price_unit * productDetails.quantity,
+          quantity: quantity,
+          price: totalPrice,
+          total: totalPrice * quantity,
           details:selectedProperty
         },
       ],
@@ -372,11 +372,11 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   </tr>
                   <tr>
                     <td>Price Unit</td>
-                    <td>{price_unit} MAD</td>
+                    <td>{totalPrice} MAD</td>
                   </tr>
                   <tr>
                     <td>Price Total</td>
-                    <td>{totalPrice.toFixed(2)} MAD</td>
+                    <td>{quantity ?   totalPrice.toFixed(2) * quantity : totalPrice.toFixed(2)} MAD</td>
                   </tr>
                 </tbody>
               </table>
@@ -385,9 +385,10 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   document={
                     <MyDocument
                       user={user}
-                      total={totalPrice.toFixed(2)}
+                      total={quantity ?   totalPrice.toFixed(2) * quantity : totalPrice.toFixed(2)}
                       product={productDetails}
                       properties={selectedProperty}
+                      quantity={quantity}
                     />
                   }
                   fileName="devis.pdf"
@@ -490,7 +491,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   Prix unitaire {productDetails && productDetails.price_unit}MAD
                 </div>
                 <div className="price-total">
-                  Total {totalPrice.toFixed(2)} MAD
+                  Total {quantity ?   totalPrice.toFixed(2) * quantity : totalPrice.toFixed(2)} MAD
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">

@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 
 // Profile
 import UserProfile from "../pages/Authentication/user-profile";
@@ -27,6 +26,13 @@ import ClientOrderIndex from "pages/clientPages/orders";
 import ClientAddressesIndex from "pages/clientPages/addresses.js";
 import SettingsIndex from "pages/settings/index.js";
 
+import PaymentCredentials from "pages/settings/PaymentCredentials";
+import LivraisonPage from "pages/Checkout/LivraisonPage";
+import PaymentPage from "pages/Checkout/PaymentPage";
+import CheckoutPage from "pages/Checkout/CheckoutPage";
+import SuccessPage from "pages/Checkout/SuccessPage";
+import TransactionIndex from "pages/Orders/Order/transactions/TransactionIndex";
+
 
 const userRoutes = [
   { path: "/dashboard", component: <Dashboard /> },
@@ -38,13 +44,16 @@ const userRoutes = [
   { path: "/products", component: <Productindex /> },
   { path: "/properties", component: <Propertyindex /> },
   { path: "/orders", component: <OrderIndex /> },
-  { path: "/settings", component: <SettingsIndex /> },
+  { path: "/transactions", component: <TransactionIndex /> },
+  { path: "/settings/company-info", component: <SettingsIndex /> },
+  { path: "/settings/payments-info", component: <PaymentCredentials /> },
   { path: "/propriets-categories", component: <PropertyCategoryindex /> },
   { path: "/account/orders", component: <ClientOrderIndex /> },
   { path: "/account/addresses", component: <ClientAddressesIndex /> },
 
   //profile
   { path: "/profile", component: <UserProfile /> },
+
 
   
 ];
@@ -55,6 +64,11 @@ const authRoutes = [
   { path: "/register", component: <RegisterIndex /> },
   { path: "/pages-404", component: <Pages404 /> },
   { path: "/pages-500", component: <Pages500 /> },
+  { path: "/checkout/shipping/:orderId", component: <LivraisonPage /> },
+  { path: "/checkout/:orderId", component: <PaymentPage /> },
+  { path: "/checkout/payment/:orderId/:selectedPaymentMethod", component: <CheckoutPage /> },
+  { path: "/checkout/success/:orderId", component: <SuccessPage /> },
+
 ];
 
 // const clientRoutes = [

@@ -24,6 +24,7 @@ import Details from "pages/Client/pages/details/Details"
 import { get } from "helpers/api_helper"
 import SubcategoryCard from "pages/Client/components/SubcategoryCard/SubcategoryCard "
 import { use } from "i18next"
+import CheckoutPage from "pages/Checkout/CheckoutPage"
 // Activating fake backend
 fakeBackend()
 

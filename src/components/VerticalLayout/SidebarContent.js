@@ -268,18 +268,33 @@ const SidebarContent = props => {
                       <Link to="/orders" >{props.t("Orders")}</Link>
                     </li>
                   )}
-
+                    <li>
+                      <Link to="/transactions" >{props.t("Transactions")}</Link>
+                    </li>
 
                 </ul>
-                <li>
-                <Link to="/settings" className=" waves-effect">
+                
+              </li>
+              <li>
+                <Link to="/#" className="has-arrow waves-effect">
                   <i className="ti-settings"></i>
                   <span>{props.t("Settings")}</span>
                 </Link>
-                  </li>
+                <ul className="sub-menu" aria-expanded="false">
+
+                    <li>
+                      <Link to="/settings/company-info" >{props.t("Company")}</Link>
+                    </li>
+
+                    <li>
+                      <Link to="/settings/payments-info" >{props.t("Payments")}</Link>
+                    </li>
+
+
+                </ul>
+                
               </li>
-
-
+              
 
             </ul>
 

@@ -68,7 +68,7 @@ const OrderIndex = () => {
             setOrders(response.orders.original.orders);
             setProgressOptions(response.orders.original.progressOptions);
         } catch (error) {
-            setError(error.response.data.message);
+            // setError(error.response.data.message);
 
         }
     };
