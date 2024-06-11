@@ -41,6 +41,7 @@ const Header = props => {
   const [searchTerm, setSearchTerm] = useState("")
   const [searchResults, setSearchResults] = useState([])
   const [total_amount, setTotalAmount] = useState()
+  const [totallAmount, setTotallAmount] = useState(0);
   const toggleRightCanvas = () => {
     setIsRight(!isRight)
   }
@@ -80,6 +81,18 @@ const Header = props => {
     }
   }
   useEffect(() => {
+    let total = 0;
+    if (props.cartitems && Array.isArray(props.cartitems)) {
+      total = props.cartitems.reduce((sum, cartItem) => {
+        return sum + cartItem.cart_items.reduce((itemSum, item) => {
+          return itemSum + item.price * item.quantity;
+        }, 0);
+      }, 0);
+    }
+    setTotallAmount(total);
+  }, [props.cartitems]);
+
+  useEffect(() => {
     const handleScroll = () => {
       if (HeaderRef.current) {
         const position = window.pageYOffset
@@ -115,7 +128,7 @@ const Header = props => {
       customer_id: customerId,
       cart_id: cartId,
       status: "accepted",
-      progress: "Processing",
+      progress: "Pending",
       total_amount: total_amount, // Placeholder, will update later
       products: [],
       phone_number: authUser.user.phone_number || "",
@@ -393,6 +406,9 @@ const Header = props => {
                             <p>Your cart is empty</p>
                           )}
                         </OffcanvasBody>
+                        <h4 className="text-center">
+                        Total TTC : {totallAmount} MAD
+                        </h4>
                         <Link
                           className="btn btn-primary waves-effect waves-light m-4"
                           onClick={handleOrder}
