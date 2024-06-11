@@ -283,11 +283,14 @@ const SidebarContent = props => {
                 <ul className="sub-menu" aria-expanded="false">
 
                     <li>
-                      <Link to="/settings/company-info" >{props.t("Company")}</Link>
+                      <Link to="/settings/company-info" >{props.t("Company Info")}</Link>
                     </li>
 
                     <li>
-                      <Link to="/settings/payments-info" >{props.t("Payments")}</Link>
+                      <Link to="/settings/payments-info" >{props.t("Payments Credentiels")}</Link>
+                    </li>
+                    <li>
+                      <Link to="/settings/Banks" >{props.t("Banks Accounts")}</Link>
                     </li>
 
 

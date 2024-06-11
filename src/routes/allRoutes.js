@@ -32,6 +32,8 @@ import PaymentPage from "pages/Checkout/PaymentPage";
 import CheckoutPage from "pages/Checkout/CheckoutPage";
 import SuccessPage from "pages/Checkout/SuccessPage";
 import TransactionIndex from "pages/Orders/Order/transactions/TransactionIndex";
+import BankIndex from "pages/settings/banks";
+import VirmentBancaire from "pages/Checkout/VirmentBancaire";
 
 
 const userRoutes = [
@@ -47,6 +49,7 @@ const userRoutes = [
   { path: "/transactions", component: <TransactionIndex /> },
   { path: "/settings/company-info", component: <SettingsIndex /> },
   { path: "/settings/payments-info", component: <PaymentCredentials /> },
+  { path: "/settings/banks", component: <BankIndex /> },
   { path: "/propriets-categories", component: <PropertyCategoryindex /> },
   { path: "/account/orders", component: <ClientOrderIndex /> },
   { path: "/account/addresses", component: <ClientAddressesIndex /> },
@@ -64,6 +67,7 @@ const authRoutes = [
   { path: "/register", component: <RegisterIndex /> },
   { path: "/pages-404", component: <Pages404 /> },
   { path: "/pages-500", component: <Pages500 /> },
+  { path: "/virmentbancaire", component: <VirmentBancaire /> },
   
 ];
 
