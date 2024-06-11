@@ -7,16 +7,20 @@ const styles = StyleSheet.create({
   page: {
     padding: 30,
     border: '1px solid #001',
+    fontFamily: 'Helvetica',
   },
   header: {
     marginBottom: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderBottom: '2px solid #101481',
+    paddingBottom: 10,
   },
   headerText: {
     fontWeight: 'normal',
     fontSize: 10,
+    color: '#555',
   },
   footer: {
     position: 'absolute',
@@ -25,6 +29,7 @@ const styles = StyleSheet.create({
     right: 30,
     textAlign: 'center',
     fontSize: 8,
+    color: '#555',
   },
   section: {
     marginBottom: 30,
@@ -38,6 +43,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     marginTop: 20,
     marginBottom: 20,
+    border: '1px solid #ddd',
   },
   tableRow: {
     flexDirection: 'row',
@@ -58,6 +64,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#101481',
   },
   textRight: {
     textAlign: 'right',
@@ -89,6 +96,15 @@ const styles = StyleSheet.create({
   listItemContent: {
     flex: 1,
     fontSize: 10,
+  },
+  logo: {
+    width: 100,
+    height: 60,
+  },
+  footerImage: {
+    width: 100,
+    height: 60,
+    marginTop: 10,
   },
 });
 const ListItem = ({ children }) => (

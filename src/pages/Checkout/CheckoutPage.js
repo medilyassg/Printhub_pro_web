@@ -9,6 +9,30 @@ const CheckoutPage = () => {
   const { orderId, selectedPaymentMethod } = useParams();
   const [shippingInfo, setShippingInfo] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
+  const [CompanyInfo, setCompanyInfo] = useState(null);
+  const [logoBase64, setLogoBase64] = useState("");
+  const [footerBase64, setFooterBase64] = useState("");
+
+  
+
+useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await get("http://127.0.0.1:8000/api/company-info");
+          const data = response[0];
+          setCompanyInfo(data);
+  
+          const logoResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.logo}`);
+          setLogoBase64(logoResponse.base64);
+          const footerResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.printed_footer}`);
+          setFooterBase64(footerResponse.base64);
+        } catch (error) {
+          console.error('Error fetching company info:', error);
+        }
+      };
+  
+      fetchData();
+    }, []);
 
   useEffect(() => {
     const fetchShippingInfo = async () => {
@@ -33,7 +57,7 @@ const CheckoutPage = () => {
     fetchOrderDetails();
   }, [orderId]);
 
-  if (!orderDetails) {
+  if (!orderDetails || !CompanyInfo || !logoBase64 || !footerBase64) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="text-center">
@@ -175,8 +199,8 @@ const CheckoutPage = () => {
             <CardBody>
               <h4 className="mb-3 text-primary">Payment Section</h4>
               <hr></hr>
-              {selectedPaymentMethod === 'youcanpay' && <YouCanPay order={orderDetails} />}
-              {selectedPaymentMethod === 'paypal' && <PayPalButton order={orderDetails} />}
+              {selectedPaymentMethod === 'youcanpay' && <YouCanPay order={orderDetails} CompanyInfo={CompanyInfo} logoBase64={logoBase64} footerBase64={footerBase64}/>}
+              {selectedPaymentMethod === 'paypal' && <PayPalButton order={orderDetails} CompanyInfo={CompanyInfo} logoBase64={logoBase64} footerBase64={footerBase64}/>}
             </CardBody>
           </Card>
         </div>

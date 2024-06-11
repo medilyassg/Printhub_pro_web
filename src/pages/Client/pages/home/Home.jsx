@@ -5,6 +5,7 @@ import Banner from "../../components/banner/Banner";
 import Footer from "pages/Client/components/footer/Footer";
 
 
+
 const Home = (props) => {
   useEffect(() => {
     document.title = "Home";
@@ -15,8 +16,8 @@ const Home = (props) => {
       
       <HomeSlider />
       <Banner />
-      <FeaturedProducts products={featuredProducts} />
-      <Testimonials />
+      {/* <FeaturedProducts products={featuredProducts} /> */}
+      {/* <Testimonials /> */}
       <Footer />
       <Footer />
     </>

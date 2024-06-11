@@ -23,7 +23,7 @@ const PayPalButton = (props) => {
     }
     const generatePDF = async (order) => {
        
-        const doc = <Invoice order={order} />;
+        const doc = <Invoice order={order} CompanyInfo={props.CompanyInfo} logoBase64={props.logoBase64} footerBase64={props.footerBase64}/>;
         const asPdf = pdf(doc);
         const blob = await asPdf.toBlob();
         return blob;

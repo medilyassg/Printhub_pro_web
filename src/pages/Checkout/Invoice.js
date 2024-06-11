@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet, Image, PDFDownloadLink } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';
 import { get } from 'helpers/api_helper';
 
@@ -7,16 +7,20 @@ const styles = StyleSheet.create({
   page: {
     padding: 30,
     border: '1px solid #001',
+    fontFamily: 'Helvetica',
   },
   header: {
     marginBottom: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderBottom: '2px solid #101481',
+    paddingBottom: 10,
   },
   headerText: {
     fontWeight: 'normal',
     fontSize: 10,
+    color: '#555',
   },
   footer: {
     position: 'absolute',
@@ -25,6 +29,7 @@ const styles = StyleSheet.create({
     right: 30,
     textAlign: 'center',
     fontSize: 8,
+    color: '#555',
   },
   section: {
     marginBottom: 30,
@@ -38,6 +43,7 @@ const styles = StyleSheet.create({
     width: 'auto',
     marginTop: 20,
     marginBottom: 20,
+    border: '1px solid #ddd',
   },
   tableRow: {
     flexDirection: 'row',
@@ -58,6 +64,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#101481',
   },
   textRight: {
     textAlign: 'right',
@@ -90,51 +97,31 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 10,
   },
+  logo: {
+    width: 100,
+    height: 60,
+  },
+  footerImage: {
+    width: 100,
+    height: 60,
+    marginTop: 10,
+  },
 });
-const ListItem = ({ children }) => (
-  <View style={styles.listItem}>
-    <Text style={styles.bulletPoint}>•</Text>
-    <Text style={styles.listItemContent}>{children}</Text>
-  </View>
-);
+
 
 const Invoice = (props) => {
-    const [CompanyInfo, setCompanyInfo] = useState(null);
-    const [logoBase64, setLogoBase64] = useState("");
-    const [footerBase64, setFooterBase64] = useState("");
-  
-    const authUser = JSON.parse(localStorage.getItem('authUser'));
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await get("http://127.0.0.1:8000/api/company-info");
-          const data = response[0];
-          setCompanyInfo(data);
-  
-          const logoResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.logo}`);
-          setLogoBase64(logoResponse.base64);
-          const fotterResponse = await get(`http://127.0.0.1:8000/api/base64?logoFileName=${data.printed_footer}`);
-          setFooterBase64(fotterResponse.base64);
-        } catch (error) {
-          console.error('Error fetching company info:', error);
-        }
-      };
-      
-      fetchData();
-    }, []);
-  
-    
-  
+ 
 
+  const authUser = JSON.parse(localStorage.getItem('authUser'));
 
+  
 
   return (
     <Document style={{ border: '1px solid #001', margin: 20 }}>
       <Page style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-        {logoBase64 && <Image src={`data:image/png;base64,${logoBase64}`} style={{ width: 100, height: 60 }} />}
+          {props.logoBase64 && <Image src={`data:image/png;base64,${props.logoBase64}`} style={styles.logo} />}
           <View>
             <Text style={[styles.headerText, styles.textRight]}>Invoice #1</Text>
             <Text style={styles.headerText}>Date: {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</Text>
@@ -144,13 +131,13 @@ const Invoice = (props) => {
         {/* Company and Client Information */}
         <View style={{ flexDirection: 'row', columnGap: "80px", marginBottom: 20 }}>
           <View style={[styles.section, styles.column]}>
-            <Text style={styles.bold}>{CompanyInfo && CompanyInfo.company_name}</Text>
-            <Text>{CompanyInfo && CompanyInfo.address}</Text>
-            <Text>Téléphone: {CompanyInfo && CompanyInfo.phone_number}</Text>
-            <Text>Email: {CompanyInfo && CompanyInfo.email}</Text>
-            <Text>Site: {CompanyInfo && CompanyInfo.site}</Text>
-            <Text>Numéro de TVA: {CompanyInfo && CompanyInfo.tva}</Text>
-            <Text>Identifiant Commun d'Entreprise: {CompanyInfo && CompanyInfo.ice}</Text>
+            <Text style={styles.bold}>{props.CompanyInfo && props.CompanyInfo.company_name}</Text>
+            <Text>{props.CompanyInfo && props.CompanyInfo.address}</Text>
+            <Text>Téléphone: {props.CompanyInfo && props.CompanyInfo.phone_number}</Text>
+            <Text>Email: {props.CompanyInfo && props.CompanyInfo.email}</Text>
+            <Text>Site: {props.CompanyInfo && props.CompanyInfo.site}</Text>
+            <Text>Numéro de TVA: {props.CompanyInfo && props.CompanyInfo.tva}</Text>
+            <Text>Identifiant Commun d'Entreprise: {props.CompanyInfo && props.CompanyInfo.ice}</Text>
           </View>
           <View style={[styles.section, styles.column]}>
             <Text style={styles.bold}>Client</Text>
@@ -178,12 +165,12 @@ const Invoice = (props) => {
                 <Text style={[styles.bold, { color: "" }]}>{product.product.name}</Text>
                 {/* Render product details */}
                 {product.details && (
-  <View style={{ margin: 20 }}>
-    {Object.values(JSON.parse(product.details)).map((detail, index) => (
-      <Text key={index}>{detail.category}: {detail.property.name}</Text>
-    ))}
-  </View>
-)}
+                  <View style={{ margin: 20 }}>
+                    {Object.values(JSON.parse(product.details)).map((detail, index) => (
+                      <Text key={index}>{detail.category}: {detail.property.name}</Text>
+                    ))}
+                  </View>
+                )}
               </View>
               <Text style={[styles.tableCell, { width: '25%' }]}>{product.quantity}</Text>
               <Text style={[styles.tableCell, { width: '25%' }]}>{product.price} MAD</Text>
@@ -191,13 +178,13 @@ const Invoice = (props) => {
           ))}
         </View>
         <View style={{ marginTop: 20, textAlign: 'right' }}>
-  <Text style={styles.bold}>Total TTC: {props.order && props.order.total_amount} MAD</Text>
-</View>
+          <Text style={styles.bold}>Total TTC: {props.order && props.order.total_amount} MAD</Text>
+        </View>
         {/* Footer */}
         <View style={styles.footer}>
           <Text>La commande doit être effectuée directement sur le site printHub.ma</Text>
           <Text>Le service commercial</Text>
-          {footerBase64 && <Image src={`data:image/png;base64,${footerBase64}`} style={{ width: 100, height: 60 }} />}
+          {props.footerBase64 && <Image src={`data:image/png;base64,${props.footerBase64}`} style={styles.footerImage} />}
         </View>
       </Page>
     </Document>

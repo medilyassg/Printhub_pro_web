@@ -6,16 +6,15 @@ import Invoice from './Invoice';
 import { pdf } from '@react-pdf/renderer';
 
 const YouCanPay = (props) => {
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleCancel = () => {
       navigate('/');
     };
-  
-    useEffect(async () => {
-        setLoading(true);
 
+
+    useEffect(async () => {
+        
         try {
             const response = await post('http://127.0.0.1:8000/api/create-payment', {
                 amount: props.order.total_amount,
@@ -48,7 +47,7 @@ const YouCanPay = (props) => {
                     .catch(errorCallback);
             });
             const generatePDF = async (order) => {
-                const TempInvoiceComponent = <Invoice order={order} />
+                const TempInvoiceComponent = <Invoice order={order} CompanyInfo={props.CompanyInfo} logoBase64={props.logoBase64} footerBase64={props.footerBase64}/>
             
                 const asPdf = pdf(TempInvoiceComponent);
                 const blob = await asPdf.toBlob();
@@ -91,8 +90,6 @@ const YouCanPay = (props) => {
             }
         } catch (error) {
             console.error('Payment creation failed:', error);
-        } finally {
-            setLoading(false);
         }
     },[])
     

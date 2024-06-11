@@ -104,7 +104,7 @@ const Header = props => {
   const handleOrder = async () => {
     const customerId = props.cartitems[0]?.customer_id
     const cartId = props.cartitems[0]?.id
-    let total_amount = 12
+    let total_amount = 0
 
     if (!customerId || !cartId) {
       showErrorAlert("Order Creation Error", "Missing customer or cart ID")
