@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { MDBDataTable } from "mdbreact";
-import { Row, Col, Input } from "reactstrap";
+import { Row, Col, Input, ModalFooter } from "reactstrap";
 
 //Import Breadcrumb
 import "../../../assets/scss/datatables.scss";
@@ -22,6 +22,9 @@ import ProductView from "./product";
 const OrderTable = (props) => {
     const [modal_products, setmodal_products] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null)
+    const [trackingModal, setTrackingModal] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [trackingNumber, setTrackingNumber] = useState('');
     const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
     useEffect(() => {
         checkUserPermissions();
@@ -31,13 +34,24 @@ const OrderTable = (props) => {
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };
-
+    const toggleTrackingModal = () => setTrackingModal(!trackingModal);
     const tog_product = (order) => {
         setmodal_products(!modal_products);
         setSelectedOrder(order)
         removeBodyCss();
     };
-
+    const handleProgressChange = (orderId, value) => {
+        if (value === 'Delivered') {
+            setSelectedOrderId(orderId);
+            toggleTrackingModal();
+        }
+        props.handleProgressChange(orderId, value);
+    };
+    const handleSaveTrackingNumber = () => {
+        props.saveTrackingNumber(selectedOrderId, trackingNumber);
+        toggleTrackingModal();
+        setTrackingNumber('');
+    };
 
     const data = {
         columns: [
@@ -77,7 +91,7 @@ const OrderTable = (props) => {
                 type="select"
                 name="progress"
                 value={order.progress}
-                onChange={(e) => props.handleProgressChange(order.id, e.target.value)}
+                onChange={(e) => handleProgressChange(order.id, e.target.value)}
             >
                 {props.progressOptions?.map(option => <option value={option}>{option}</option>)}
             </Input>),
@@ -147,6 +161,22 @@ const OrderTable = (props) => {
                 </Modal>
             </Col>
             <MDBDataTable responsive bordered data={data} />
+            <Modal isOpen={trackingModal} toggle={toggleTrackingModal} centered>
+                <ModalHeader toggle={toggleTrackingModal}>Enter Tracking Number</ModalHeader>
+                <ModalBody>
+                    <Input
+                        required
+                        type="text"
+                        value={trackingNumber}
+                        onChange={(e) => setTrackingNumber(e.target.value)}
+                        placeholder="Enter Tracking Number"
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={handleSaveTrackingNumber} >Save</Button>{' '}
+                    <Button color="secondary" onClick={toggleTrackingModal}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
         </React.Fragment>
     );
 };
