@@ -41,7 +41,7 @@ const Header = props => {
   const [searchTerm, setSearchTerm] = useState("")
   const [searchResults, setSearchResults] = useState([])
   const [total_amount, setTotalAmount] = useState()
-  const [totallAmount, setTotallAmount] = useState(0);
+  const [totallAmount, setTotallAmount] = useState(0)
   const toggleRightCanvas = () => {
     setIsRight(!isRight)
   }
@@ -81,16 +81,19 @@ const Header = props => {
     }
   }
   useEffect(() => {
-    let total = 0;
+    let total = 0
     if (props.cartitems && Array.isArray(props.cartitems)) {
       total = props.cartitems.reduce((sum, cartItem) => {
-        return sum + cartItem.cart_items.reduce((itemSum, item) => {
-          return itemSum + item.price * item.quantity;
-        }, 0);
-      }, 0);
+        return (
+          sum +
+          cartItem.cart_items.reduce((itemSum, item) => {
+            return itemSum + item.price * item.quantity
+          }, 0)
+        )
+      }, 0)
     }
-    setTotallAmount(total);
-  }, [props.cartitems]);
+    setTotallAmount(total)
+  }, [props.cartitems])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -290,132 +293,141 @@ const Header = props => {
                 )}
                           
               </div>
-
+              {console.log(authUser.user)}
               <div className="col d-flex align-items-center justify-content-end">
                 <ul className="list list-inline mb-0 headerTabs">
                   {isAuthenticated ? (
                     <>
-                      <li className="list-inline-items">
-                        <Link className="text-dark" onClick={toggleRightCanvas}>
-                          <img src={IconCart} alt="Cart Icon" />
-                          Cart
-                        </Link>
-                      </li>
-                      <Offcanvas
-                        isOpen={isRight}
-                        direction="end"
-                        toggle={toggleRightCanvas}
-                      >
-                        <OffcanvasHeader toggle={toggleRightCanvas}>
-                          Your Cart
-                        </OffcanvasHeader>
-                        <OffcanvasBody>
-                          {props.cartitems &&
-                          props.cartitems.length > 0 &&
-                          props.cartitems[0].cart_items.length > 0 ? (
-                            props.cartitems[0].cart_items.map(cart =>
-                              products.map(
-                                product =>
-                                  product.id === cart.product_id && (
-                                    <Card
-                                      key={cart.id}
-                                      className="mb-3"
-                                      style={{
-                                        border: "1px solid #e0e0e0",
-                                        borderRadius: "10px",
-                                        boxShadow:
-                                          "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                      }}
-                                    >
-                                      <CardBody
-                                        className="d-flex align-items-center"
-                                        style={{ padding: "10px" }}
-                                      >
-                                        <div
-                                          className="image-container"
+                      {authUser.user.customer && (
+                        <li className="list-inline-items">
+                          <Link
+                            className="text-dark"
+                            onClick={toggleRightCanvas}
+                          >
+                            <img src={IconCart} alt="Cart Icon" />
+                            Cart
+                          </Link>
+                          <Offcanvas
+                            isOpen={isRight}
+                            direction="end"
+                            toggle={toggleRightCanvas}
+                          >
+                            <OffcanvasHeader toggle={toggleRightCanvas}>
+                              Your Cart
+                            </OffcanvasHeader>
+                            <OffcanvasBody>
+                              {props.cartitems &&
+                              props.cartitems.length > 0 &&
+                              props.cartitems[0].cart_items.length > 0 ? (
+                                props.cartitems[0].cart_items.map(cart =>
+                                  products.map(
+                                    product =>
+                                      product.id === cart.product_id && (
+                                        <Card
+                                          key={cart.id}
+                                          className="mb-3"
                                           style={{
-                                            flexShrink: 0,
-                                            marginRight: "15px",
+                                            border: "1px solid #e0e0e0",
+                                            borderRadius: "10px",
+                                            boxShadow:
+                                              "0 2px 4px rgba(0, 0, 0, 0.1)",
                                           }}
                                         >
-                                          <CardImg
-                                            top
-                                            className="img-fluid"
-                                            src={
-                                              product.images
-                                                ? `http://127.0.0.1:8000/storage/${
-                                                    JSON.parse(
-                                                      product.images
-                                                    )[0]
-                                                  }`
-                                                : ""
-                                            }
-                                            alt="Product Image"
-                                            style={{
-                                              width: "100px",
-                                              height: "100px",
-                                              objectFit: "cover",
-                                              borderRadius: "10px",
-                                            }}
-                                          />
-                                        </div>
-                                        <div
-                                          className="info-container"
-                                          style={{ flexGrow: 1 }}
-                                        >
-                                          <h5
-                                            className="mb-2"
-                                            style={{ fontSize: "1rem" }}
+                                          <CardBody
+                                            className="d-flex align-items-center"
+                                            style={{ padding: "10px" }}
                                           >
-                                            {product.name}
-                                          </h5>
-                                          <p
-                                            className="mb-1"
-                                            style={{ fontSize: "0.9rem" }}
-                                          >
-                                            <strong>Slug:</strong>{" "}
-                                            {product.slug}
-                                          </p>
-                                          <p
-                                            className="mb-1"
-                                            style={{ fontSize: "0.9rem" }}
-                                          >
-                                            <strong>Price Unit:</strong>{" "}
-                                            {cart.price}
-                                          </p>
-                                          <p
-                                            className="mb-1"
-                                            style={{ fontSize: "0.9rem" }}
-                                          >
-                                            <strong>Quantity ordered:</strong>{" "}
-                                            {cart.quantity}
-                                          </p>
-                                        </div>
-                                        <Button
-                                          className="ml-auto btn-close"
-                                          onClick={() => handleDelete(cart.id)}
-                                        >
-                                          <i className="ti-close" />
-                                        </Button>
-                                      </CardBody>
-                                    </Card>
+                                            <div
+                                              className="image-container"
+                                              style={{
+                                                flexShrink: 0,
+                                                marginRight: "15px",
+                                              }}
+                                            >
+                                              <CardImg
+                                                top
+                                                className="img-fluid"
+                                                src={
+                                                  product.images
+                                                    ? `http://127.0.0.1:8000/storage/${
+                                                        JSON.parse(
+                                                          product.images
+                                                        )[0]
+                                                      }`
+                                                    : ""
+                                                }
+                                                alt="Product Image"
+                                                style={{
+                                                  width: "100px",
+                                                  height: "100px",
+                                                  objectFit: "cover",
+                                                  borderRadius: "10px",
+                                                }}
+                                              />
+                                            </div>
+                                            <div
+                                              className="info-container"
+                                              style={{ flexGrow: 1 }}
+                                            >
+                                              <h5
+                                                className="mb-2"
+                                                style={{ fontSize: "1rem" }}
+                                              >
+                                                {product.name}
+                                              </h5>
+                                              <p
+                                                className="mb-1"
+                                                style={{ fontSize: "0.9rem" }}
+                                              >
+                                                <strong>Slug:</strong>{" "}
+                                                {product.slug}
+                                              </p>
+                                              <p
+                                                className="mb-1"
+                                                style={{ fontSize: "0.9rem" }}
+                                              >
+                                                <strong>Price Unit:</strong>{" "}
+                                                {cart.price}
+                                              </p>
+                                              <p
+                                                className="mb-1"
+                                                style={{ fontSize: "0.9rem" }}
+                                              >
+                                                <strong>
+                                                  Quantity ordered:
+                                                </strong>{" "}
+                                                {cart.quantity}
+                                              </p>
+                                            </div>
+                                            <Button
+                                              className="ml-auto btn-close"
+                                              onClick={() =>
+                                                handleDelete(cart.id)
+                                              }
+                                            >
+                                              <i className="ti-close" />
+                                            </Button>
+                                          </CardBody>
+                                        </Card>
+                                      )
                                   )
-                              )
-                            )
-                          ) : (
-                            <p>Your cart is empty</p>
-                          )}
-                        </OffcanvasBody>
-                        <h4 className="text-center">
-                        Total TTC : {totallAmount} MAD
-                        </h4>
-                        <Link
-                          className="btn btn-primary waves-effect waves-light m-4"
-                          onClick={handleOrder}
-                        >
-                          Commander
-                        </Link>
-                      </Offcanvas>
+                                )
+                              ) : (
+                                <p>Your cart is empty</p>
+                              )}
+                            </OffcanvasBody>
+                            <h4 className="text-center">
+                              Total TTC : {totallAmount} MAD
+                            </h4>
+                            <Link
+                              className="btn btn-primary waves-effect waves-light m-4"
+                              onClick={handleOrder}
+                            >
+                              Commander
+                            </Link>
+                          </Offcanvas>
+                        </li>
+                      )}
 
                       <li className="list-inline-items">
                         <span onClick={() => setOpenDropDown(!openDropDown)}>
@@ -449,11 +461,8 @@ const Header = props => {
                     </>
                   ) : (
                     <li className="list-inline-items">
-                      <Link to="/login">
-                        <span className="text-dark fs-5">
-                          <LoginOutlined />
-                          Login
-                        </span>
+                      <Link to="/login" className="text-dark">
+                        Login
                       </Link>
                     </li>
                   )}
