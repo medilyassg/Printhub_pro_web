@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { MDBDataTable } from "mdbreact";
 import { Row, Col, Input, ModalFooter } from "reactstrap";
-
 //Import Breadcrumb
 import "../../../assets/scss/datatables.scss";
 import { useState } from "react";
@@ -15,6 +14,7 @@ import {
 } from "reactstrap";
 import usePermissions from "helpers/permissions";
 import ProductView from "./product";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -30,7 +30,10 @@ const OrderTable = (props) => {
         checkUserPermissions();
 
     }, [])
-
+    const navigate = useNavigate();
+    const navigateToTracking = (trackingNumber) => {
+        navigate(`/tracking/${trackingNumber}`);
+    };
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };
@@ -84,6 +87,11 @@ const OrderTable = (props) => {
                 field: "products",
                 width: 150,
             },
+            {
+                label: "Tracking",
+                field: "tracking",
+                width: 150,
+            }
         ],
         rows: props.orders?.map(order => ({
             id: order.id,
@@ -133,6 +141,15 @@ const OrderTable = (props) => {
                     </button>
                 </div>
             ),
+            tracking: (<div className="flex">
+                <button
+                    onClick={() => navigateToTracking(order.tracking_num)}
+                    className="btn btn-light btn-sm mx-2"
+                    disabled={!order.tracking_num}  // Disable the button if tracking number is null or empty
+                >
+                    <i className="ti-location-pin"></i>
+                </button>
+            </div>)
         })),
     };
 
@@ -141,7 +158,7 @@ const OrderTable = (props) => {
 
     return (
         <React.Fragment>
-              <Col sm={6} md={4} xl={3}>
+            <Col sm={6} md={4} xl={3}>
                 <Modal isOpen={modal_products} toggle={tog_product} centered>
                     <ModalHeader className="mt-0" toggle={tog_product}>View Products</ModalHeader>
                     <ModalBody>

@@ -32,6 +32,7 @@ import PaymentPage from "pages/Checkout/PaymentPage";
 import CheckoutPage from "pages/Checkout/CheckoutPage";
 import SuccessPage from "pages/Checkout/SuccessPage";
 import TransactionIndex from "pages/Orders/Order/transactions/TransactionIndex";
+import TrackingOrder from "pages/Orders/Tracking/TrackingOrder";
 
 
 const userRoutes = [
@@ -39,8 +40,8 @@ const userRoutes = [
   { path: "/users", component: <Userindex /> },
   { path: "/costumers", component: <Costumerindex /> },
   { path: "/roles", component: <Roleindex /> },
-  {path:"/categories",component:<CategoryIndex/>},
-  {path:"/sub-categories",component:<SubCategoryIndex/>},
+  { path: "/categories", component: <CategoryIndex /> },
+  { path: "/sub-categories", component: <SubCategoryIndex /> },
   { path: "/products", component: <Productindex /> },
   { path: "/properties", component: <Propertyindex /> },
   { path: "/orders", component: <OrderIndex /> },
@@ -50,12 +51,13 @@ const userRoutes = [
   { path: "/propriets-categories", component: <PropertyCategoryindex /> },
   { path: "/account/orders", component: <ClientOrderIndex /> },
   { path: "/account/addresses", component: <ClientAddressesIndex /> },
+  { path: "/tracking/:trackingNumber", component: <TrackingOrder /> },
 
   //profile
   { path: "/profile", component: <UserProfile /> },
 
 
-  
+
 ];
 
 const authRoutes = [
@@ -64,7 +66,7 @@ const authRoutes = [
   { path: "/register", component: <RegisterIndex /> },
   { path: "/pages-404", component: <Pages404 /> },
   { path: "/pages-500", component: <Pages500 /> },
-  
+
 ];
 
 // const clientRoutes = [
