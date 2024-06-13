@@ -32,6 +32,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const [selectedProperty, setSelectedProperty] = useState({})
   const [quantity, setQuantity] = useState()
+  const [discountType, setDiscountType] = useState(null); 
 
   const handleCalculatePrice = () => {
     const updatedPrice = calculateTotalPrice(quantity)
@@ -93,7 +94,13 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     }
   }
 
-  const applyQuantityRule = (totalPrice, quantity, discount, discountType , amount) => {
+  const applyQuantityRule = (
+    totalPrice,
+    quantity,
+    discount,
+    discountType,
+    amount
+  ) => {
     const pricePerUnit = parseFloat(productDetails.price_unit || 0)
 
     switch (discountType) {
@@ -101,9 +108,9 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
         const discountPercentage = parseFloat(discount)
         return totalPrice * (1 - discountPercentage)
       case "fixed":
-        const fixedDiscount = parseFloat(amount);
-        const discountedTotal = pricePerUnit * quantity - fixedDiscount;
-      return discountedTotal;
+        const fixedDiscount = parseFloat(amount)
+        const discountedTotal = pricePerUnit * quantity - fixedDiscount
+        return discountedTotal / quantity
       default:
         return totalPrice
     }
@@ -392,16 +399,16 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   </tr>
                   <tr>
                     <td>Price Unit</td>
-                    <td>{totalPrice} MAD</td>
-                  </tr>
-                  <tr>
-                    <td>Price Total</td>
                     <td>
-                      {quantity
-                        ? totalPrice.toFixed(2) * quantity
+                      {discountType === "fixed"
+                        ? productDetails.price_unit
                         : totalPrice.toFixed(2)}{" "}
                       MAD
                     </td>
+                  </tr>
+                  <tr>
+                    <td>Price Total</td>
+                    <td>{totalPrice.toFixed(2) * quantity} MAD</td>
                   </tr>
                 </tbody>
               </table>
