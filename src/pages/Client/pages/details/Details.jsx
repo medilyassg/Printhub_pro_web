@@ -32,7 +32,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const [selectedProperty, setSelectedProperty] = useState({})
   const [quantity, setQuantity] = useState()
-  const [discountType, setDiscountType] = useState(null); 
+  const [discountType, setDiscountType] = useState(null)
 
   const handleCalculatePrice = () => {
     const updatedPrice = calculateTotalPrice(quantity)
