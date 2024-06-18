@@ -524,7 +524,10 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
               <div className="price-section">
                 <div className="price-unit">
                   {" "}
-                  Prix unitaire {productDetails && productDetails.price_unit}MAD
+                  Prix unitaire {discountType === "fixed"
+                        ? productDetails.price_unit
+                        : totalPrice.toFixed(2)}{" "}
+                      MAD
                 </div>
                 <div className="price-total">
                   Total{" "}
