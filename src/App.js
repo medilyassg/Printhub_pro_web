@@ -29,6 +29,7 @@ import ClientLayout from "pages/Client/pages/home/ClientLayout"
 import SuccessPage from "pages/Checkout/SuccessPage"
 import LivraisonPage from "pages/Checkout/LivraisonPage"
 import PaymentPage from "pages/Checkout/PaymentPage"
+import VirmentBancaire from "pages/Checkout/VirmentBancaire"
 // Activating fake backend
 fakeBackend()
 
@@ -132,6 +133,7 @@ const App = () => {
           <Route path="/checkout/shipping/:orderId" element={<LivraisonPage  />} />
           <Route path="/checkout/:orderId" element={<PaymentPage  />} />
           <Route path="/checkout/payment/:orderId/:selectedPaymentMethod" element={<CheckoutPage  />} />
+          <Route path="/checkout/payment/virmentbancaire" element={<VirmentBancaire  />} />
         </Route>
       </Routes>
     </React.Fragment>
