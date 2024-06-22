@@ -1,14 +1,69 @@
 .bannerSection {
   padding: 25px 0px !important;
-  /* margin-bottom: 100px; */
 }
 
 .bannerSection .box {
+  position: relative;
   overflow: hidden;
   border-radius: 15px !important;
   cursor: pointer;
 }
 
+.bannerSection .box img {
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
 .bannerSection .box:hover img {
   transform: scale(1.1);
+}
+
+.bannerSection .box .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* misleading background */
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.bannerSection .box:hover .overlay {
+  opacity: 1;
+}
+
+.bannerSection .box .seeMoreBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.bannerSection .box:hover .seeMoreBtn {
+  opacity: 1;
+}
+
+.bannerSection .box .description {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px 10px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.bannerSection .box:hover .description {
+  opacity: 1;
 }

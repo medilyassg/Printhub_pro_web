@@ -1,3 +1,4 @@
+import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
 import { useEffect, useState } from 'react';
 import { get } from 'helpers/api_helper';
@@ -110,11 +111,7 @@ const styles = StyleSheet.create({
 
 
 const Invoice = (props) => {
- 
-
   const authUser = JSON.parse(localStorage.getItem('authUser'));
-
-  
 
   return (
     <Document style={{ border: '1px solid #001', margin: 20 }}>
@@ -155,8 +152,9 @@ const Invoice = (props) => {
         <View style={styles.table}>
           <View style={[styles.tableRow, styles.tableHeader]}>
             <Text style={[styles.tableCell, styles.bold, { width: '50%' }]}>Élément</Text>
-            <Text style={[styles.tableCell, styles.bold, { width: '25%' }]}>Quantité</Text>
-            <Text style={[styles.tableCell, styles.bold, { width: '25%' }]}>Total</Text>
+            <Text style={[styles.tableCell, styles.bold, { width: '15%' }]}>Prix Unité (HT)</Text>
+            <Text style={[styles.tableCell, styles.bold, { width: '15%' }]}>Quantité</Text>
+            <Text style={[styles.tableCell, styles.bold, { width: '20%' }]}>Total (HT)</Text>
           </View>
           {/* Render products from order */}
           {props.order && props.order.products.map((product, index) => (
@@ -172,14 +170,22 @@ const Invoice = (props) => {
                   </View>
                 )}
               </View>
-              <Text style={[styles.tableCell, { width: '25%' }]}>{product.quantity}</Text>
-              <Text style={[styles.tableCell, { width: '25%' }]}>{product.price} MAD</Text>
+              <Text style={[styles.tableCell, { width: '15%' }]}>{product.price} MAD</Text>
+              <Text style={[styles.tableCell, { width: '15%' }]}>{product.quantity}</Text>
+              <Text style={[styles.tableCell, { width: '20%' }]}>{(product.price * product.quantity).toFixed(2)} MAD</Text>
             </View>
           ))}
         </View>
-        <View style={{ marginTop: 20, textAlign: 'right' }}>
-          <Text style={styles.bold}>Total TTC: {props.order && props.order.total_amount} MAD</Text>
-        </View>
+        
+        {/* Calculating Subtotal, Tax (20%), and Total TTC */}
+        {props.order && (
+          <View style={[{ marginTop: 20 },styles.textRight]}  >
+            <Text style={styles.bold}>Sous Total (HT): {props.order.total_amount} MAD</Text>
+            <Text style={styles.bold}>Taxe (20%): {(props.order.total_amount * 0.2).toFixed(2)} MAD</Text>
+            <Text style={[styles.bold,{color:"red"}]}>Total TTC:  {(Number(props.order.total_amount) + (props.order.total_amount * 0.2)).toFixed(2)} MAD</Text>
+          </View>
+        )}
+
         {/* Footer */}
         <View style={styles.footer}>
           <Text>La commande doit être effectuée directement sur le site printHub.ma</Text>

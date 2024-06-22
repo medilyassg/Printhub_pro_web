@@ -100,10 +100,92 @@ const PaymentPage = () => {
                     text-align: center;
                     margin-bottom: 20px;
                 }
+                .checkout-page {
+                    background-size: cover;
+                    padding: 30px;
+                    border-radius: 15px;
+                  }
+        
+                  .shipping-info-container {
+                    padding: 10px;
+                    background-color: rgba(255, 255, 255, 0.8);
+                    border-radius: 8px;
+                  }
+        
+                  .product-card {
+                    display: flex;
+                    align-items: center;
+                    padding: 5px;
+                  }
+        
+                  
+                  .product-image {
+                    width: 150px;
+                    height: auto;
+                    border-radius: 8px;
+                    margin-right: 20px;
+                  }
+        
+                  .product-name {
+                    color: #333;
+                    flex: 1;
+                  }
+        
+                  .total-ttc-container {
+                    background-color: rgba(255, 255, 255, 0.9);
+                    border-radius: 8px;
+                    margin: 10px;
+                    text-align: center;
+                  }
+        
+                  .total-ttc {
+                    font-size: 18px;
+                    color: #333;
+                  }
+        
+                  .shipping-info-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 10px;
+                  }
+        
+                  .shipping-info-label {
+                    font-weight: bold;
+                    color: #495057;
+                  }
+        
+                  .shipping-info-value {
+                    color: #6c757d;
+                  }
+        
+                  @media (max-width: 576px) {
+                    .shipping-info-container {
+                      padding: 10px;
+                    }
+        
+                    .product-card {
+                      flex-direction: column;
+                      align-items: flex-start;
+                    }
+        
+                    .product-image {
+                      margin-bottom: 10px;
+                    }
+                  }
+                  .product-info {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end
+                    gap: 5px;
+                    flex: 1;
+                    justify-content: space-between; /* Ensures the total is at the end */
+                  }
+                
+                ]
                 `}
             </style>
             <Row>
-                <Col md={8}>
+                <Col md={7}>
                     <Card>
                         <CardBody>
                             <h4>Choose a payment method</h4>
@@ -121,21 +203,72 @@ const PaymentPage = () => {
                                         <p className="payment-method-name">Moroccan Credit Card</p>
                                     </div>
                                 </Col>
+                                <Col  className={`payment-method-card ${selectedPaymentMethod === 'bank' ? 'selected' : ''}`} onClick={() => handlePaymentMethodSelect('bank')}>
+                                    <div >
+                                        <img src="https://youcanpay.com/build/assets/ycpay-logo-pOUj4Wo3.svg" alt="Moroccan Card" className="payment-method-logo" />
+                                        <p className="payment-method-name">vairment Bancaire </p>
+                                    </div>
+                                </Col>
 
                             </Row>
                         </CardBody>
                     </Card>
                 </Col>
 
-                <Col md={4}>
-                    <Card>
-                        <CardBody>
-                            <h4>Total TTC</h4>
-                            <hr></hr>
-                            <h5>{orderDetails.total_amount} MAD</h5>
-                            <Button color="success mt-2" onClick={handleCheckout}>Continuer</Button>
-                        </CardBody>
-                    </Card>
+                
+                <Col md={5}>
+                    
+                    <Card className="mb-4">
+            <CardBody>
+              <h4 className="mb-3 text-primary">Order Details</h4>
+              <hr></hr>
+
+              {orderDetails && (
+                <div>
+                  <div className="row">
+                    {orderDetails.products.map((product, index) => (
+                      <div key={index} className="col-12 mb-3">
+                        <div className="product-card">
+                    <img 
+                        src={`http://127.0.0.1:8000/storage/${JSON.parse(product.product.images)[0]}`} 
+                        alt={product.product.name} 
+                        className="product-image" 
+                    />
+                   <div className="product-info">
+                    <div>
+                    <h5 className="product-name">{product.quantity} x {product.product.name}</h5>
+                    <p>{product.product.slug}</p>
+                    </div>
+
+  <div className="product-total-container">
+    <p className="product-name"><strong>{product.price}  MAD </strong></p>
+  </div>
+</div>
+
+                    </div>
+                    <hr></hr>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="total-ttc-container">
+                  <div className="total-ttc">
+    <p>Sous Total : <strong>{orderDetails.total_amount} MAD</strong></p>
+    <p>Tax (20%) : <strong>{(orderDetails.total_amount * 0.2).toFixed(2)} MAD</strong></p>
+    <hr />
+    <p>Total TTC : <strong className='text-danger'>
+        {(Number(orderDetails.total_amount) + (orderDetails.total_amount * 0.2)).toFixed(2)} MAD
+    </strong></p>
+</div>
+
+</div>
+
+<Button color="success mt-2" onClick={handleCheckout}>Continuer</Button>
+
+                </div>
+              )}
+            </CardBody>
+          </Card>
                 </Col>
             </Row>
         </Container>

@@ -21,7 +21,7 @@ import {
 import Dropzone from "react-dropzone"
 import { Link } from "react-router-dom"
 import * as Yup from "yup"
-import Select from "react-select";
+import Select from "react-select"
 
 const AddForm = props => {
   const [subcategories, setSubcategories] = useState([])
@@ -31,6 +31,7 @@ const AddForm = props => {
   const [selectedFiles, setSelectedFiles] = useState([])
   const [rulesModalOpen, setRulesModalOpen] = useState(false)
   const [quantityPriceRules, setQuantityPriceRules] = useState({})
+  const [discountType, setDiscountType] = useState("percent")
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -127,42 +128,44 @@ const AddForm = props => {
       const combinedValues = {
         ...values,
         propriete: selectedProperties,
-      };
-      console.log(combinedValues);
+      }
+      console.log(combinedValues)
       selectedFiles.forEach((file, index) => {
-        combinedValues[`file${index}`] = file;
-      });
-      props.handleSave(combinedValues);
+        combinedValues[`file${index}`] = file
+      })
+      props.handleSave(combinedValues)
     },
-  });
+  })
 
   const handleAddRule = (event) => {
-    event.preventDefault();
-    const form = event.target;
+    event.preventDefault()
+    const form = event.target
     const newRule = {
       operator: form.operator.value,
       quantity: form.quantity.value,
-      discount: form.discount.value,
-    };
-    const newRuleIndex = Object.keys(quantityPriceRules).length;
-    setQuantityPriceRules({ ...quantityPriceRules, [newRuleIndex]: newRule });
-    setRulesModalOpen(false);
-    validation.setFieldValue("quantity_price_rules", { ...quantityPriceRules, [newRuleIndex]: newRule });
-  };
+      discountType: form.discountType.value,
+      discount: form.discountType.value === "percent" ? form.discount.value : null,
+      amount: form.discountType.value === "fixed" ? form.amount.value : null,
+    }
+    const newRuleIndex = Object.keys(quantityPriceRules).length
+    setQuantityPriceRules({ ...quantityPriceRules, [newRuleIndex]: newRule })
+    setRulesModalOpen(false)
+    validation.setFieldValue("quantity_price_rules", { ...quantityPriceRules, [newRuleIndex]: newRule })
+  }
 
   const handleQuantityPriceRulesChange = (selectedOptions) => {
-    const newRules = {};
+    const newRules = {}
     selectedOptions.forEach((option, index) => {
-      newRules[index] = option;
-    });
-    setQuantityPriceRules(newRules);
-    validation.setFieldValue("quantity_price_rules", newRules);
-  };
+      newRules[index] = option.value
+    })
+    setQuantityPriceRules(newRules)
+    validation.setFieldValue("quantity_price_rules", newRules)
+  }
 
   const quantityPriceRuleOptions = Object.values(quantityPriceRules).map((rule, index) => ({
     value: rule,
-    label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
-  }));
+    label: `${rule.quantity} ${rule.operator} ${rule.discountType === "percent" ? `${rule.discount}%` : `$${rule.amount}`}`,
+  }))
 
   return (
     <Form onSubmit={validation.handleSubmit}>
@@ -305,7 +308,8 @@ const AddForm = props => {
               onChange={handleQuantityPriceRulesChange}
               value={Object.values(quantityPriceRules).map((rule, index) => ({
                 value: rule,
-                label: `${rule.quantity} ${rule.operator} ${rule.discount}`,
+                label: `${rule.quantity} ${rule.operator} ${rule.discountType === "percent" ? `${rule.discount}%` : `$${rule.amount}`}`,
+                key: `${rule.quantity}-${rule.operator}-${rule.discountType === "percent" ? rule.discount : rule.amount}-${index}`,
               }))}
             />
             {validation.touched.quantity_price_rules && validation.errors.quantity_price_rules && (
@@ -478,11 +482,40 @@ const AddForm = props => {
               </Col>
               <Col md={4}>
                 <div className="mb-3">
-                  <Label className="form-label">Discount</Label>
-                  <Input type="text" name="discount" required />
+                  <Label className="form-label">Discount Type</Label>
+                  <Input
+                    type="select"
+                    name="discountType"
+                    value={discountType}
+                    onChange={(e) => setDiscountType(e.target.value)}
+                    required
+                  >
+                    <option value="percent">Percent</option>
+                    <option value="fixed">Fixed</option>
+                  </Input>
                 </div>
               </Col>
             </Row>
+            {discountType === "percent" && (
+              <Row>
+                <Col md={12}>
+                  <div className="mb-3">
+                    <Label className="form-label">Discount</Label>
+                    <Input type="text" name="discount" required />
+                  </div>
+                </Col>
+              </Row>
+            )}
+            {discountType === "fixed" && (
+              <Row>
+                <Col md={12}>
+                  <div className="mb-3">
+                    <Label className="form-label">Amount</Label>
+                    <Input type="text" name="amount" required />
+                  </div>
+                </Col>
+              </Row>
+            )}
             <Button type="submit" color="primary">
               Add Rule
             </Button>

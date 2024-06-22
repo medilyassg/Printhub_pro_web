@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import YouCanPay from './YouCanPay';
 import { get } from 'helpers/api_helper';
 import PayPalButton from './PayPalButton';
+import VirmentBancaire from './VirmentBancaire';
 
 const CheckoutPage = () => {
   const { orderId, selectedPaymentMethod } = useParams();
@@ -163,7 +164,7 @@ useEffect(() => {
       </style>
       <div className="row">
         {/* Left Column */}
-        <div className="col-md-6">
+        <div className="col-md-7">
           {/* Shipping Info Section */}
           <Card className="mb-4">
             <CardBody>
@@ -201,12 +202,13 @@ useEffect(() => {
               <hr></hr>
               {selectedPaymentMethod === 'youcanpay' && <YouCanPay order={orderDetails} CompanyInfo={CompanyInfo} logoBase64={logoBase64} footerBase64={footerBase64}/>}
               {selectedPaymentMethod === 'paypal' && <PayPalButton order={orderDetails} CompanyInfo={CompanyInfo} logoBase64={logoBase64} footerBase64={footerBase64}/>}
+              {selectedPaymentMethod === 'bank' && <VirmentBancaire />}
             </CardBody>
           </Card>
         </div>
 
         {/* Right Column */}
-        <div className="col-md-6">
+        <div className="col-md-5">
           {/* Order Details Section */}
           <Card className="mb-4">
             <CardBody>
@@ -242,9 +244,14 @@ useEffect(() => {
                   </div>
 
                   <div className="total-ttc-container">
-                    <div className="total-ttc">
-                      <p>Total TTC :    <strong className='text-danger'>{orderDetails.total_amount} MAD  </strong></p>
-                    </div>
+                  <div className="total-ttc">
+    <p>Sous Total : <strong>{orderDetails.total_amount} MAD</strong></p>
+    <p>Tax (20%) : <strong>{(orderDetails.total_amount * 0.2).toFixed(2)} MAD</strong></p>
+    <hr />
+    <p>Total TTC : <strong className='text-danger'>
+        {(Number(orderDetails.total_amount) + (orderDetails.total_amount * 0.2)).toFixed(2)} MAD
+    </strong></p>
+</div>
                   </div>
                 </div>
               )}

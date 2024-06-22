@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, CardBody, Button, Form, Label, Input, FormFe
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useParams, useNavigate } from 'react-router-dom';
-import { get, post, put } from 'helpers/api_helper';
+import { get, put } from 'helpers/api_helper';
 import useSweetAlert from 'helpers/notifications';
 
 const LivraisonPage = () => {
@@ -12,11 +12,9 @@ const LivraisonPage = () => {
     const { showSuccessAlert, showErrorAlert } = useSweetAlert();
     const authUser = JSON.parse(localStorage.getItem('authUser'));
     const [orderDetails, setOrderDetails] = useState(null);
-
     const [shippingInfo, setShippingInfo] = useState(null);
 
     useEffect(() => {
-
         const fetchShippingInfo = async () => {
             try {
                 const response = await get(`http://127.0.0.1:8000/api/shipping-info/${orderId}`);
@@ -25,18 +23,18 @@ const LivraisonPage = () => {
                 console.error('Error fetching shipping info:', error);
             }
         };
+
         const fetchOrderDetails = async () => {
             try {
-              const response = await get(`http://127.0.0.1:8000/api/orders/${orderId}`);
-              setOrderDetails(response);
+                const response = await get(`http://127.0.0.1:8000/api/orders/${orderId}`);
+                setOrderDetails(response);
             } catch (error) {
-              console.error('Error fetching order details:', error);
+                console.error('Error fetching order details:', error);
             }
-          };
-      
-          fetchShippingInfo();
-          fetchOrderDetails();
+        };
 
+        fetchShippingInfo();
+        fetchOrderDetails();
     }, [orderId]);
 
     const validationSchema = Yup.object({
@@ -70,29 +68,58 @@ const LivraisonPage = () => {
             }
         },
     });
+
+    const handleAddressSelect = (addressIndex) => {
+        const selectedAddress = authUser.user.address[addressIndex];
+        formik.setValues({
+            phone_number: shippingInfo?.phone_number || '',
+            email: shippingInfo?.email || '',
+            address: selectedAddress.line,
+            city: selectedAddress.city,
+            zip_code: selectedAddress.zip,
+        });
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        formik.handleSubmit();
+    };
+
     if (!shippingInfo || !orderDetails) {
         return (
-          <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="text-center">
-              <Spinner animation="border" role="status" className="text-primary">
-                <span className="visually-hidden">Loading...</span>
-              </Spinner>
-              <p className="mt-2 text-primary">Loading...</p>
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <div className="text-center">
+                    <Spinner animation="border" role="status" className="text-primary">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                    <p className="mt-2 text-primary">Loading...</p>
+                </div>
             </div>
-          </div>
-        )
-      }
+        );
+    }
+
     return (
         <Container className="livraison-page">
             <h1 className="text-center my-4 text-primary">Shipping</h1>
             <Row>
-                <Col md={8}>
+                <Col md={7}>
                     <Card>
                         <CardBody>
-                            <h4>Information de Livraison</h4>
-                            <hr></hr>
-                            <Form onSubmit={formik.handleSubmit}>
+                            <h4 className='text-primary'>Information de Livraison</h4>
+                            <hr />
+                            <Form onSubmit={handleSubmit}>
                                 <Row>
+                                    <Col md={12}>
+                                        <Label>Sélectionner une adresse:</Label>
+                                        <Input type="select" onChange={(e) => handleAddressSelect(e.target.value)}>
+                                            {authUser.user.address.map((address, index) => (
+                                                <option key={index} value={index} selected={index==0}>{address.city} , {address.line} , {address.zip} </option>
+                                            ))}
+                                        </Input>
+                                    </Col>
+                                </Row>
+                                <Row className="mt-3">
                                     <Col md={6}>
                                         <Label>Numéro de téléphone</Label>
                                         <Input
@@ -163,13 +190,51 @@ const LivraisonPage = () => {
                         </CardBody>
                     </Card>
                 </Col>
-                <Col md={4}>
-                    <Card>
+                <Col md={5}>
+                    <Card className="mb-4">
                         <CardBody>
-                            <h4>Total TTC</h4>
-                            <hr></hr>
-                            <h5>{orderDetails.total_amount} MAD</h5>
-                            <Button color="success mt-2" onClick={() => navigate(`/checkout/${orderId}`)}>Continuer</Button>
+                            <h4 className="mb-3 text-primary">Order Details</h4>
+                            <hr />
+                            {orderDetails && (
+                                <div>
+                                    <div className="row">
+                                        {orderDetails.products.map((product, index) => (
+                                            <div key={index} className="col-12 mb-3">
+                                                <div className="product-card">
+                                                    <img
+                                                        src={`http://127.0.0.1:8000/storage/${JSON.parse(product.product.images)[0]}`}
+                                                        alt={product.product.name}
+                                                        className="product-image"
+                                                    />
+                                                    <div className="product-info">
+                                                        <div>
+                                                            <h5 className="product-name">{product.quantity} x {product.product.name}</h5>
+                                                            <p>{product.product.slug}</p>
+                                                        </div>
+                                                        <div className="product-total-container">
+                                                            <p className="product-name"><strong>{product.price} MAD </strong></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="total-ttc-container">
+                                        <div className="total-ttc">
+                                            <p>Sous Total : <strong>{orderDetails.total_amount} MAD</strong></p>
+                                            <p>Tax (20%) : <strong>{(orderDetails.total_amount * 0.2).toFixed(2)} MAD</strong></p>
+                                            <hr />
+                                            <p>Total TTC : <strong className='text-danger'>
+                                                {(Number(orderDetails.total_amount) + (orderDetails.total_amount * 0.2)).toFixed(2)} MAD
+                                            </strong></p>
+                                        </div>
+                                    </div>
+
+                                    <Button color="success mt-2" onClick={() => navigate(`/checkout/${orderId}`)}>Continuer</Button>
+                                </div>
+                            )}
                         </CardBody>
                     </Card>
                 </Col>

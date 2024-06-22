@@ -17,7 +17,7 @@ const YouCanPay = (props) => {
         
         try {
             const response = await post('http://127.0.0.1:8000/api/create-payment', {
-                amount: props.order.total_amount,
+                amount:  (Number(props.order.total_amount) + (props.order.total_amount * 0.2)).toFixed(2),
                 name: 'John Doe',
                 address: '123 Main St',
                 zip_code: '12345',

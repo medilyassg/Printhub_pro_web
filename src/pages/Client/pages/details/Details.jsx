@@ -12,7 +12,7 @@ import { Button, Row, Col, Collapse } from "react-bootstrap"
 import Header from "pages/Client/components/header/Header"
 import { Input, Label, Modal, ModalBody, ModalHeader } from "reactstrap"
 import img1 from "../../images/popular/product-8-1.jpg"
-import { tailspin } from 'ldrs'
+import { tailspin } from "ldrs"
 tailspin.register()
 
 import { get, post } from "helpers/api_helper"
@@ -32,13 +32,14 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const { showSuccessAlert, showErrorAlert } = useSweetAlert()
   const [selectedProperty, setSelectedProperty] = useState({})
   const [quantity, setQuantity] = useState()
+  const [discountType, setDiscountType] = useState(null)
 
   const handleCalculatePrice = () => {
     const updatedPrice = calculateTotalPrice(quantity)
     setTotalPrice(parseFloat(updatedPrice.toFixed(2)))
   }
 
-  const calculateTotalPrice = (quantity, selectedProperties) => {
+  const calculateTotalPrice = quantity => {
     let totalPrice = parseFloat(productDetails.price_unit || 0)
 
     // Add the prices of selected properties to the total price
@@ -58,9 +59,21 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     const { quantity_price_rules } = productDetails
     if (quantity_price_rules && Array.isArray(quantity_price_rules)) {
       quantity_price_rules.forEach(rule => {
-        const { quantity: ruleQuantity, operator, discount } = rule
+        const {
+          quantity: ruleQuantity,
+          operator,
+          discount,
+          discountType,
+          amount,
+        } = rule
         if (isValidQuantityOperator(operator, quantity, ruleQuantity)) {
-          totalPrice = applyQuantityRule(totalPrice, quantity, discount)
+          totalPrice = applyQuantityRule(
+            totalPrice,
+            quantity,
+            discount,
+            discountType,
+            amount
+          )
         }
       })
     }
@@ -81,15 +94,25 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
     }
   }
 
-  const applyQuantityRule = (totalPrice, quantity, discount) => {
-    // Apply the discount based on the operator
-    switch (discount.charAt(discount.length - 1)) {
-      case "%":
-        const discountPercentage = parseFloat(discount) / 100
+  const applyQuantityRule = (
+    totalPrice,
+    quantity,
+    discount,
+    discountType,
+    amount
+  ) => {
+    const pricePerUnit = parseFloat(productDetails.price_unit || 0)
+
+    switch (discountType) {
+      case "percent":
+        const discountPercentage = parseFloat(discount)
         return totalPrice * (1 - discountPercentage)
+      case "fixed":
+        const fixedDiscount = parseFloat(amount)
+        const discountedTotal = pricePerUnit * quantity - fixedDiscount
+        return discountedTotal / quantity
       default:
-        // Add the discounted amount to the total price
-        return totalPrice + parseFloat(discount) * quantity
+        return totalPrice
     }
   }
 
@@ -132,7 +155,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
           quantity: quantity,
           price: totalPrice,
           total: totalPrice * quantity,
-          details:selectedProperty
+          details: selectedProperty,
         },
       ],
     }
@@ -376,11 +399,16 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   </tr>
                   <tr>
                     <td>Price Unit</td>
-                    <td>{totalPrice} MAD</td>
+                    <td>
+                      {discountType === "fixed"
+                        ? productDetails.price_unit
+                        : totalPrice.toFixed(2)}{" "}
+                      MAD
+                    </td>
                   </tr>
                   <tr>
                     <td>Price Total</td>
-                    <td>{quantity ?   totalPrice.toFixed(2) * quantity : totalPrice.toFixed(2)} MAD</td>
+                    <td>{totalPrice.toFixed(2) * quantity} MAD</td>
                   </tr>
                 </tbody>
               </table>
@@ -389,7 +417,11 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   document={
                     <MyDocument
                       user={user}
-                      total={quantity ?   totalPrice.toFixed(2) * quantity : totalPrice.toFixed(2)}
+                      total={
+                        quantity
+                          ? totalPrice.toFixed(2) * quantity
+                          : totalPrice.toFixed(2)
+                      }
                       product={productDetails}
                       properties={selectedProperty}
                       quantity={quantity}
@@ -492,10 +524,17 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
               <div className="price-section">
                 <div className="price-unit">
                   {" "}
-                  Prix unitaire {productDetails && productDetails.price_unit}MAD
+                  Prix unitaire {discountType === "fixed"
+                        ? productDetails.price_unit
+                        : totalPrice.toFixed(2)}{" "}
+                      MAD
                 </div>
                 <div className="price-total">
-                  Total {quantity ?   totalPrice.toFixed(2) * quantity : totalPrice.toFixed(2)} MAD
+                  Total{" "}
+                  {quantity
+                    ? totalPrice.toFixed(2) * quantity
+                    : totalPrice.toFixed(2)}{" "}
+                  MAD
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">

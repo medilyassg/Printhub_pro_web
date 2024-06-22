@@ -15,7 +15,7 @@ const PayPalButton = (props) => {
             purchase_units: [
                 {
                     amount: {
-                        value: props.order.total_amount,
+                        value: (Number(props.order.total_amount) + (props.order.total_amount * 0.2)).toFixed(2),
                     },
                 },
             ],

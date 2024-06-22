@@ -31,7 +31,7 @@ const VirmentBancaire = () => {
       <div className="row justify-content-center">
         {bankInfo.map((bank, index) => (
           <div key={index} className="col-md-8 mb-4">
-            <div className="card border-dark shadow-lg h-100">
+            <div className="card  shadow-lg border border-primary">
               <div className="card-body">
                 <div className="text-center mb-3">
                   <h5 className="card-title mb-1 text-danger">{bank.bank_name}</h5>
