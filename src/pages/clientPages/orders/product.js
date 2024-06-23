@@ -20,7 +20,7 @@ const ProductView = ({ product, productDetails }) => {
     const details = JSON.parse(product.details);
     return (
         <React.Fragment>
-            <Col sm={12} md={12} xl={4}>
+            <Col sm={12} md={12} xl={12}>
                 <Card className="d-flex flex-row">
                     <CardImg
                         top

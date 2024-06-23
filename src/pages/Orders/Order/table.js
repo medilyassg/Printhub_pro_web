@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { MDBDataTable } from "mdbreact";
-import { Row, Col, Input } from "reactstrap";
-
+import { Row, Col, Input, ModalFooter } from "reactstrap";
 //Import Breadcrumb
 import "../../../assets/scss/datatables.scss";
 import { useState } from "react";
@@ -15,6 +14,7 @@ import {
 } from "reactstrap";
 import usePermissions from "helpers/permissions";
 import ProductView from "./product";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -22,22 +22,39 @@ import ProductView from "./product";
 const OrderTable = (props) => {
     const [modal_products, setmodal_products] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null)
+    const [trackingModal, setTrackingModal] = useState(false);
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [trackingNumber, setTrackingNumber] = useState('');
     const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
     useEffect(() => {
         checkUserPermissions();
 
     }, [])
-
+    const navigate = useNavigate();
+    const navigateToTracking = (trackingNumber) => {
+        navigate(`/tracking/${trackingNumber}`);
+    };
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };
-
+    const toggleTrackingModal = () => setTrackingModal(!trackingModal);
     const tog_product = (order) => {
         setmodal_products(!modal_products);
         setSelectedOrder(order)
         removeBodyCss();
     };
-
+    const handleProgressChange = (orderId, value) => {
+        if (value === 'Delivered') {
+            setSelectedOrderId(orderId);
+            toggleTrackingModal();
+        }
+        props.handleProgressChange(orderId, value);
+    };
+    const handleSaveTrackingNumber = () => {
+        props.saveTrackingNumber(selectedOrderId, trackingNumber);
+        toggleTrackingModal();
+        setTrackingNumber('');
+    };
 
     const data = {
         columns: [
@@ -70,6 +87,11 @@ const OrderTable = (props) => {
                 field: "products",
                 width: 150,
             },
+            {
+                label: "Tracking",
+                field: "tracking",
+                width: 150,
+            }
         ],
         rows: props.orders?.map(order => ({
             id: order.id,
@@ -77,7 +99,7 @@ const OrderTable = (props) => {
                 type="select"
                 name="progress"
                 value={order.progress}
-                onChange={(e) => props.handleProgressChange(order.id, e.target.value)}
+                onChange={(e) => handleProgressChange(order.id, e.target.value)}
             >
                 {props.progressOptions?.map(option => <option value={option}>{option}</option>)}
             </Input>),
@@ -119,6 +141,15 @@ const OrderTable = (props) => {
                     </button>
                 </div>
             ),
+            tracking: (<div className="flex">
+                <button
+                    onClick={() => navigateToTracking(order.tracking_num)}
+                    className="btn btn-light btn-sm mx-2"
+                    disabled={!order.tracking_num}  // Disable the button if tracking number is null or empty
+                >
+                    <i className="ti-location-pin"></i>
+                </button>
+            </div>)
         })),
     };
 
@@ -147,6 +178,22 @@ const OrderTable = (props) => {
                 </Modal>
             </Col>
             <MDBDataTable responsive bordered data={data} />
+            <Modal isOpen={trackingModal} toggle={toggleTrackingModal} centered>
+                <ModalHeader toggle={toggleTrackingModal}>Enter Tracking Number</ModalHeader>
+                <ModalBody>
+                    <Input
+                        required
+                        type="text"
+                        value={trackingNumber}
+                        onChange={(e) => setTrackingNumber(e.target.value)}
+                        placeholder="Enter Tracking Number"
+                    />
+                </ModalBody>
+                <ModalFooter>
+                    <Button color="primary" onClick={handleSaveTrackingNumber} >Save</Button>{' '}
+                    <Button color="secondary" onClick={toggleTrackingModal}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
         </React.Fragment>
     );
 };

@@ -85,6 +85,19 @@ const OrderIndex = () => {
 
         }
     };
+    const saveTrackingNumber = async (orderId, trackingNumber) => {
+        try {
+            const response =await put(`http://127.0.0.1:8000/api/orders/${orderId}/tracking`, { tracking_num: trackingNumber, id: orderId });
+            showSuccessAlert('Adding Order Tracking Number ', response.message);
+            setError('');
+            fetchOrders();
+
+        } catch (error) {
+            showErrorAlert('Adding Order Tracking Number', error.response.message);
+
+        }
+       
+    };
     
     document.title = "Orders Table";
     return (
@@ -97,7 +110,7 @@ const OrderIndex = () => {
                         <Col className="col-12">
                             <Card>
                                 <CardBody>
-                                    <OrderTable orders={orders} products={products} progressOptions={progressOptions} handleStatusChange={handleEdit} handleProgressChange={handleEditProgress} /> 
+                                    <OrderTable orders={orders} products={products} progressOptions={progressOptions} handleStatusChange={handleEdit} handleProgressChange={handleEditProgress} saveTrackingNumber={saveTrackingNumber}/> 
                                 </CardBody>
                             </Card>
                         </Col>

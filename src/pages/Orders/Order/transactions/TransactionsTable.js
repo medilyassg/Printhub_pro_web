@@ -19,6 +19,11 @@ const TransactionsTable = (props) => {
     }, [])
 
     const downloadInvoice = (invoiceUrl) => {
+        if (!invoiceUrl) {
+            console.error('Invoice URL is null or undefined');
+            return;
+        }
+    
         // Construct the full URL for downloading the invoice
         const fullUrl = `http://127.0.0.1:8000/storage/${invoiceUrl}`;
     
@@ -33,6 +38,7 @@ const TransactionsTable = (props) => {
         // Remove the link from the DOM once the download is completed
         link.parentNode.removeChild(link);
     };
+    
     
 
     
@@ -90,14 +96,14 @@ const TransactionsTable = (props) => {
                   )}
                 </div>
               ),
-            invoice:(
+              invoice: trans.invoice ? (
                 <button className="btn btn-primary btn-sm" onClick={() => downloadInvoice(trans.invoice)}>
-                Download Invoice
-            </button>
-            )
-              
-
-        })),
+                    Download Invoice
+                </button>
+            ) : (
+                <span>No Invoice</span>
+            ),
+        }))
     };
 
 

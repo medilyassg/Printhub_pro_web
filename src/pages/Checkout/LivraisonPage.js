@@ -102,6 +102,94 @@ const LivraisonPage = () => {
     return (
         <Container className="livraison-page">
             <h1 className="text-center my-4 text-primary">Shipping</h1>
+            <style>
+        {`
+          .checkout-page {
+            background-size: cover;
+            padding: 30px;
+            border-radius: 15px;
+          }
+
+          .shipping-info-container {
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+          }
+
+          .product-card {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+          }
+
+          
+          .product-image {
+            width: 150px;
+            height: auto;
+            border-radius: 8px;
+            margin-right: 20px;
+          }
+
+          .product-name {
+            color: #333;
+            flex: 1;
+          }
+
+          .total-ttc-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            margin: 10px;
+            text-align: center;
+          }
+
+          .total-ttc {
+            font-size: 18px;
+            color: #333;
+          }
+
+          .shipping-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+          }
+
+          .shipping-info-label {
+            font-weight: bold;
+            color: #495057;
+          }
+
+          .shipping-info-value {
+            color: #6c757d;
+          }
+
+          @media (max-width: 576px) {
+            .shipping-info-container {
+              padding: 10px;
+            }
+
+            .product-card {
+              flex-direction: column;
+              align-items: flex-start;
+            }
+
+            .product-image {
+              margin-bottom: 10px;
+            }
+          }
+          .product-info {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end
+            gap: 5px;
+            flex: 1;
+            justify-content: space-between; /* Ensures the total is at the end */
+          }
+        
+        ]
+        
+         
+        `}
+      </style>
             <Row>
                 <Col md={7}>
                     <Card>

@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 import usePermissions from "helpers/permissions";
 import ProductView from "./product";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -22,7 +23,11 @@ import ProductView from "./product";
 const OrderTable = (props) => {
     const [modal_products, setmodal_products] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null)
-    const { hasPermissions, checkUserPermissions } = usePermissions(); // Call the usePermissions hook
+    const { hasPermissions, checkUserPermissions } = usePermissions(); 
+    const navigate = useNavigate();
+    const navigateToTracking = (trackingNumber) => {
+        navigate(`/tracking/${trackingNumber}`);
+    };
     useEffect(() => {
         checkUserPermissions();
 
@@ -31,6 +36,7 @@ const OrderTable = (props) => {
     const removeBodyCss = () => {
         document.body.classList.add("no_padding");
     };
+    
 
     const tog_product = (order) => {
         setmodal_products(!modal_products);
@@ -69,7 +75,11 @@ const OrderTable = (props) => {
                 label: "Products",
                 field: "products",
                 width: 150,
-            },
+            }, {
+                label: "Tracking",
+                field: "tracking",
+                width: 150,
+            }
         ],
         rows: props.orders?.map(order => ({
             id: order.id,
@@ -109,6 +119,15 @@ const OrderTable = (props) => {
                     </button>
                 </div>
             ),
+            tracking: (<div className="flex">
+                <button
+                    onClick={() => navigateToTracking(order.tracking_num)}
+                    className="btn btn-light btn-sm mx-2"
+                    disabled={!order.tracking_num}
+                >
+                    <i className="ti-location-pin"></i>
+                </button>
+            </div>)
         })),
     };
 

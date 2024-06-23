@@ -162,23 +162,41 @@ const MyDocument = (props) => {
             <Text>Identifiant Commun d'Entreprise: {CompanyInfo && CompanyInfo.ice}</Text>
           </View>
           <View style={[styles.section, styles.column]}>
-            <Text style={styles.bold}>Client</Text>
-            <Text>{props.user.customer ? props.user.customer.company_name ? props.user.customer.company_name : props.user.name + ' ' + props.user.last_name : ""}</Text>
-            <Text>{props.user.address.length > 0 ? props.user.address[0].city + "," + props.user.address[0].line : ""}</Text>
-            <Text>{props.user.city}</Text>
-            <Text>{props.user.region}</Text>
-            <Text>{props.user.address.length > 0 ? props.user.address[0].zip : ""}</Text>
-            <Text>{props.user.country}</Text>
-            <Text>Identifiant Commun d'Entreprise :{props.user.customer ? props.user.customer.ice : ""}</Text>
-          </View>
+  <Text style={styles.bold}>Client</Text>
+  {props.user.customer.type === 'professional' ? (
+    <>
+      <Text>{props.user.customer ? props.user.customer.company_name : ""}</Text>
+      <Text>{props.user.name} {props.user.last_name}</Text>
+      <Text>{props.user.address.length > 0 ? `${props.user.address[0].city}, ${props.user.address[0].line}` : ""}</Text>
+      <Text>{props.user.city}</Text>
+      <Text>{props.user.region}</Text>
+      <Text>{props.user.address.length > 0 ? props.user.address[0].zip : ""}</Text>
+      <Text>{props.user.country}</Text>
+      <Text>{props.user.customer ? `Identifiant Commun d'Entreprise : ${props.user.customer.ice}` : ""}</Text>
+    </>
+  ) : (
+    <>
+      <Text>{props.user.name} {props.user.last_name}</Text>
+      <Text>{props.user.address.length > 0 ? `${props.user.address[0].city}, ${props.user.address[0].line}` : ""}</Text>
+      <Text>{props.user.city}</Text>
+      <Text>{props.user.region}</Text>
+      <Text>{props.user.address.length > 0 ? props.user.address[0].zip : ""}</Text>
+      <Text>{props.user.country}</Text>
+    </>
+  )}
+</View>
+
+
+          
         </View>
 
         {/* Table */}
         <View style={styles.table}>
           <View style={[styles.tableRow, styles.tableHeader]}>
             <Text style={[styles.tableCell, styles.bold, { width: '50%' }]}>Élément</Text>
-            <Text style={[styles.tableCell, styles.bold, { width: '25%' }]}>Quantité</Text>
-            <Text style={[styles.tableCell, styles.bold, { width: '25%' }]}>Total</Text>
+            <Text style={[styles.tableCell, styles.bold, { width: '15%' }]}>Prix Unité (HT)</Text>
+            <Text style={[styles.tableCell, styles.bold, { width: '15%' }]}>Quantité</Text>
+            <Text style={[styles.tableCell, styles.bold, { width: '20%' }]}>Total (HT)</Text>
           </View>
           <View style={styles.tableRow}>
             <View style={[styles.tableCell, { width: '50%' }]}>
@@ -193,11 +211,17 @@ const MyDocument = (props) => {
                 </div>
               }
             </View>
-            <Text style={[styles.tableCell, { width: '25%' }]}>{props.quantity}</Text>
-            <Text style={[styles.tableCell, { width: '25%' }]}>{props.total}</Text>
+            <Text style={[styles.tableCell, { width: '15%' }]}>{props.product.price_unit}</Text>
+            <Text style={[styles.tableCell, { width: '15%' }]}>{props.quantity}</Text>
+            <Text style={[styles.tableCell, { width: '20%' }]}>{props.total}</Text>
+
           </View>
         </View>
-
+        <View style={[{ marginTop: 20 },styles.textRight]}  >
+            <Text style={styles.bold}>Sous Total (HT): {props.total} MAD</Text>
+            <Text style={styles.bold}>Taxe (20%): {(props.total * 0.2).toFixed(2)} MAD</Text>
+            <Text style={[styles.bold,{color:"red"}]}>Total TTC:  {(Number(props.total) + (props.total * 0.2)).toFixed(2)} MAD</Text>
+          </View>
         {/* Footer */}
         <View style={styles.footer}>
           <Text>La commande doit être effectuée directement sur le site printHub.ma</Text>
