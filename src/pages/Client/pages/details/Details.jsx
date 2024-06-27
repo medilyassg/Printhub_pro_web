@@ -105,7 +105,10 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
 
     switch (discountType) {
       case "percent":
-        const discountPercentage = parseFloat(discount)
+        let discountPercentage = parseFloat(discount)
+        if (discountPercentage > 1) {
+          discountPercentage = discountPercentage / 100 
+        }
         return totalPrice * (1 - discountPercentage)
       case "fixed":
         const fixedDiscount = parseFloat(amount)
@@ -122,7 +125,6 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
       setQuantity(value)
     }
   }
-
   const tog_panier = () => {
     setModalPanier(!modal_panier)
   }
@@ -524,10 +526,11 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
               <div className="price-section">
                 <div className="price-unit">
                   {" "}
-                  Prix unitaire {discountType === "fixed"
-                        ? productDetails.price_unit
-                        : totalPrice.toFixed(2)}{" "}
-                      MAD
+                  Prix unitaire{" "}
+                  {discountType === "fixed"
+                    ? productDetails.price_unit
+                    : totalPrice.toFixed(2)}{" "}
+                  MAD
                 </div>
                 <div className="price-total">
                   Total{" "}
