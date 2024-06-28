@@ -6,6 +6,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, LineElement, 
 import { withTranslation } from "react-i18next";
 import "chartist/dist/scss/chartist.scss";
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { get } from "helpers/api_helper";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -24,10 +25,10 @@ const Dashboard = props => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/users");
-        const jsonData = await response.json();
+        const response = await get("http://127.0.0.1:8000/api/users");
+        const jsonData = await response.data;
 
-        const totalUserCount = jsonData.data.length;
+        const totalUserCount = jsonData.length;
         
         console.log("Number of users:", totalUserCount);
 
@@ -46,10 +47,10 @@ const Dashboard = props => {
   useEffect(() => {
     const fetchActiveUsers = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/customers");
-        const jsonData = await response.json();
+        const response = await get("http://127.0.0.1:8000/api/costumers");
+        const jsonData = await response.data;
 
-        const activeUserCount = jsonData.data.length;
+        const activeUserCount = jsonData.length;
         
         console.log("Number of active users:", activeUserCount);
 
@@ -68,10 +69,10 @@ const Dashboard = props => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/products");
-        const jsonData = await response.json();
+        const response = await get("http://127.0.0.1:8000/api/products");
+        const jsonData = await response.data;
 
-        const productCount = jsonData.data.length;
+        const productCount = jsonData.length;
         
         console.log("Number of products:", productCount);
 
@@ -90,10 +91,10 @@ const Dashboard = props => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/orders");
-        const jsonData = await response.json();
+        const response = await get("http://127.0.0.1:8000/api/orders");
+        const jsonData = await response.data;
 
-        const orderCount = jsonData.data.length;
+        const orderCount = jsonData.length;
         
         console.log("Number of orders:", orderCount);
 
