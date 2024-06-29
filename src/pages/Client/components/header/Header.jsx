@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import Logo from "../../images/logo.svg"
+import Logo from "../../../../assets/images/logo-dark.png";
+
 import searchIcon from "../../images/search.png"
 import "./header.css"
 import axios from "axios"
@@ -129,6 +130,7 @@ const Header = props => {
 
     const orderData = {
       customer_id: customerId,
+      tracking_num:0,
       cart_id: cartId,
       status: "accepted",
       progress: "Pending",
@@ -243,8 +245,8 @@ const Header = props => {
             <div className="row">
               <div className="col d-flex align-items-center justify-content-start">
                 <Link to="/">
-                  {/* <img src={Logo} style={{ height: "60px", width: "190px" }} /> */}
-                  printHub
+                  <img src={Logo} style={{ height: "60px", width: "190px" }} />
+                  
                 </Link>
               </div>
 
@@ -417,7 +419,7 @@ const Header = props => {
                               )}
                             </OffcanvasBody>
                             <h4 className="text-center">
-                              Total TTC : {totallAmount} MAD
+                              Sous Total : {totallAmount} MAD
                             </h4>
                             <Link
                               className="btn btn-primary waves-effect waves-light m-4"

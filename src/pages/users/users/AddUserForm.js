@@ -205,11 +205,11 @@ const AddUserForm = props => {
                       <FormFeedback>{validation.errors.email}</FormFeedback>
                     </Col>
                     <Col xs={12} sm={6} className="mb-3">
-                      <Label className="form-label" htmlFor="phone_number">phone_number</Label>
+                      <Label className="form-label" htmlFor="phone_number">Phone Number</Label>
                       <Input
                         name="phone_number"
                         className="form-control"
-                        placeholder="Enter phone_number"
+                        placeholder="Enter phone number"
                         type="text"
                         id="phone_number"
                         onChange={validation.handleChange}

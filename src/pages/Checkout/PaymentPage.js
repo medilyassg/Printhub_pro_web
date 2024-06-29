@@ -230,7 +230,11 @@ const PaymentPage = () => {
                       <div key={index} className="col-12 mb-3">
                         <div className="product-card">
                     <img 
-                        src={`http://127.0.0.1:8000/storage/${JSON.parse(product.product.images)[0]}`} 
+                        src={`${product.product.images
+                          ? `http://127.0.0.1:8000/storage/${
+                              JSON.parse(product.product.images)[0]
+                            }`
+                          : ""}`}
                         alt={product.product.name} 
                         className="product-image" 
                     />

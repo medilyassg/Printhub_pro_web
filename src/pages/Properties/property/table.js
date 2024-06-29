@@ -73,7 +73,7 @@ const PropertyTable = props => {
       price: property.price,
       category: property.category.name,
       actions: (
-        <div className="flex">
+        <div className="d-flex align-items-center">
                     {hasPermissions.updateProperty && 
 
           <button

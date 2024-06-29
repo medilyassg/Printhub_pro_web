@@ -111,7 +111,7 @@ const ParticularRegister = props => {
       try {
         const response = await post('http://127.0.0.1:8000/api/register',{
           ...values,
-          addresses: [{line:values.address1}, {line:values.address2}],
+          addresses: [{line:values.address1,city:selectedCity,zip:"0000"}, {line:values.address2,city:selectedCity,zip:"0000"}],
           customer_type:"particular",
       });
         if (response.data.user) {
@@ -199,7 +199,7 @@ const ParticularRegister = props => {
                           <FormFeedback>{validation.errors.email}</FormFeedback>
                         </Col>
                         <Col xs={12} sm={6} className="mb-3">
-                          <Label className="form-label" htmlFor="phone_number">phone_number</Label>
+                          <Label className="form-label" htmlFor="phone_number">phone number</Label>
                           <Input
                             name="phone_number"
                             className="form-control"

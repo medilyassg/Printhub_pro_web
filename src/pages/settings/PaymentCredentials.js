@@ -113,7 +113,7 @@ const PaymentCredentials = () => {
                                                 name="paypal_client_id"
                                                 className="form-control"
                                                 placeholder="Enter PayPal Client ID"
-                                                type="text"
+                                                type="password"
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
                                                 value={validation.values.paypal_client_id}
@@ -130,7 +130,7 @@ const PaymentCredentials = () => {
                                                 name="paypal_client_secret"
                                                 className="form-control"
                                                 placeholder="Enter PayPal Client Secret"
-                                                type="text"
+                                                type="password"
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
                                                 value={validation.values.paypal_client_secret}
@@ -154,7 +154,7 @@ const PaymentCredentials = () => {
                                                 name="youcanpay_private_key"
                                                 className="form-control"
                                                 placeholder="Enter YouCanPay Private Key"
-                                                type="text"
+                                                type="password"
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
                                                 value={validation.values.youcanpay_private_key}
@@ -171,7 +171,7 @@ const PaymentCredentials = () => {
                                                 name="youcanpay_public_key"
                                                 className="form-control"
                                                 placeholder="Enter YouCanPay Public Key"
-                                                type="text"
+                                                type="password"
                                                 onChange={validation.handleChange}
                                                 onBlur={validation.handleBlur}
                                                 value={validation.values.youcanpay_public_key}

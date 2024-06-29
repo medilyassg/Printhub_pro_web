@@ -59,7 +59,7 @@ const ProprieteCategorieTable = props => {
       name: property.name,
       description: property.description,
       actions: (
-        <div className="flex">
+        <div className="d-flex align-items-center">
           {hasPermissions.updateProprieteCategorie && (
             <button
               className="btn btn-info btn-sm mx-2"

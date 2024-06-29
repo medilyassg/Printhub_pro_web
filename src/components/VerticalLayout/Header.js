@@ -79,8 +79,8 @@ const Header = props => {
                 <span className="logo-sm">
                   <img src={logosmImg} alt="" height="22" />
                 </span>
-                <span className="logo-lg">
-                  <img src={logodarkImg} alt="" height="17" />
+                <span className="logo-xl">
+                  <img src={logodarkImg} alt="" height="50" />
                 </span>
               </Link>
 
@@ -89,7 +89,7 @@ const Header = props => {
                   <img src={logosmImg} alt="" height="22" />
                 </span>
                 <span className="logo-lg">
-                  <img src={logolightImg} alt="" height="18" />
+                  <img src={logolightImg} alt="" height="50" />
                 </span>
               </Link>
             </div>
@@ -107,16 +107,7 @@ const Header = props => {
           </div>
 
           <div className="d-flex">
-            <form className="app-search d-none d-lg-block">
-              <div className="position-relative">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder={props.t("Search") + "..."}
-                />
-                <span className="fa fa-search"></span>
-              </div>
-            </form>
+            
 
             <Dropdown
               className="d-inline-block d-lg-none ms-2"
@@ -160,7 +151,6 @@ const Header = props => {
               </button>
             </div>
 
-            <NotificationDropdown />
             <ProfileMenu />
 
             <div

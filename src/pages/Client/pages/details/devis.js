@@ -163,7 +163,7 @@ const MyDocument = (props) => {
           </View>
           <View style={[styles.section, styles.column]}>
   <Text style={styles.bold}>Client</Text>
-  {props.user.customer.type === 'professional' ? (
+  {props.user.customer && props.user.customer.type === 'professional' ? (
     <>
       <Text>{props.user.customer ? props.user.customer.company_name : ""}</Text>
       <Text>{props.user.name} {props.user.last_name}</Text>

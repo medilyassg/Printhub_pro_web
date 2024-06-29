@@ -100,9 +100,7 @@ const AddForm = props => {
     description: Yup.string().required("Please Enter Description"),
     design_price: Yup.number().required("Please Enter Design Price"),
     price_unit: Yup.number().required("Please Enter Price Unit"),
-    quantity: Yup.number().required("Please Enter Quantity"),
     sub_category_id: Yup.string().required("Please Select Sub Category"),
-    quantity_type: Yup.string().required("Please Enter Quantity Type"),
     quantity_price_rules: Yup.object().test(
       'has-rules',
       'Please add at least one quantity price rule',
@@ -117,9 +115,7 @@ const AddForm = props => {
       description: "",
       design_price: "",
       price_unit: "",
-      quantity: "",
       sub_category_id: "",
-      quantity_type: "",
       propriete: [],
       quantity_price_rules: {},
     },
@@ -128,6 +124,9 @@ const AddForm = props => {
       const combinedValues = {
         ...values,
         propriete: selectedProperties,
+        quantity_type:"fixed",
+        quantity: 100,
+
       }
       console.log(combinedValues)
       selectedFiles.forEach((file, index) => {
@@ -258,44 +257,11 @@ const AddForm = props => {
             <FormFeedback>{validation.errors.price_unit}</FormFeedback>
           </div>
         </Col>
-        <Col md={6}>
-          <div className="mb-3">
-            <Label className="form-label">Quantity</Label>
-            <Input
-              type="number"
-              className="form-control"
-              name="quantity"
-              onChange={validation.handleChange}
-              onBlur={validation.handleBlur}
-              value={validation.values.quantity || ""}
-              invalid={
-                validation.touched.quantity && validation.errors.quantity
-              }
-            />
-            <FormFeedback>{validation.errors.quantity}</FormFeedback>
-          </div>
-        </Col>
+        
       </Row>
 
       <Row>
-        <Col md={6}>
-          <div className="mb-3">
-            <Label className="form-label">Quantity Type</Label>
-            <Input
-              type="text"
-              className="form-control"
-              name="quantity_type"
-              onChange={validation.handleChange}
-              onBlur={validation.handleBlur}
-              value={validation.values.quantity_type || ""}
-              invalid={
-                validation.touched.quantity_type &&
-                validation.errors.quantity_type
-              }
-            />
-            <FormFeedback>{validation.errors.quantity_type}</FormFeedback>
-          </div>
-        </Col>
+       
         <Col md={6}>
           <div className="mb-3">
             <Label className="form-label">Quantity Price Rules</Label>

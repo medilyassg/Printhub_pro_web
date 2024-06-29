@@ -49,12 +49,7 @@ const ProductTable = props => {
         sort: "asc",
         width: 150,
       },
-      {
-        label: "slug",
-        field: "slug",
-        sort: "asc",
-        width: 150,
-      },
+      
       {
         label: "description",
         field: "description",
@@ -73,14 +68,9 @@ const ProductTable = props => {
         sort: "asc",
         width: 150,
       },
+    
       {
-        label: "Quantity",
-        field: "quantity",
-        sort: "asc",
-        width: 150,
-      },
-      {
-        label: "subCategory name",
+        label: "Category name",
         field: "subCategory",
         sort: "asc",
         width: 150,
@@ -101,14 +91,12 @@ const ProductTable = props => {
         </div>
         ),
       name: product.name,
-      slug: product.slug,
       description: product.description,
       design_price: product.design_price,
       price_unit: product.price_unit,
-      quantity: product.quantity,
       subCategory : product.subCategory ?  product.subCategory.nom : "",
       actions: (
-        <div className="flex">
+        <div className="d-flex align-items-center">
                     {hasPermissions.updateProduct && 
 
           <button
@@ -134,7 +122,7 @@ const ProductTable = props => {
 
   return (
     <React.Fragment>
-      <Modal isOpen={modal_edit} toggle={tog_edit} centered>
+      <Modal isOpen={modal_edit} toggle={tog_edit} centered size="lg">
         <ModalHeader className="mt-0" toggle={tog_edit}>
           Edit Product
         </ModalHeader>
