@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import PropTypes from "prop-types"
-import { Link, useParams } from "react-router-dom" // Import useParams
+import { Link, useNavigate, useParams } from "react-router-dom" // Import useParams
 import "./Details.css"
 import Rating from "@mui/material/Rating"
 import "react-inner-image-zoom/lib/InnerImageZoom/styles.css"
@@ -33,7 +33,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
   const [selectedProperty, setSelectedProperty] = useState({})
   const [quantity, setQuantity] = useState()
   const [discountType, setDiscountType] = useState(null)
-
+  const navigate=useNavigate()
   const handleCalculatePrice = () => {
     const updatedPrice = calculateTotalPrice(quantity)
     setTotalPrice(parseFloat(updatedPrice.toFixed(2)))
@@ -338,30 +338,9 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                       : "",
                     index: 2,
                   },
-                  {
-                    src: productDetails.images
-                      ? `http://127.0.0.1:8000/storage/${
-                          JSON.parse(productDetails.images)[3]
-                        }`
-                      : "",
-                    index: 3,
-                  },
-                  {
-                    src: productDetails.images
-                      ? `http://127.0.0.1:8000/storage/${
-                          JSON.parse(productDetails.images)[4]
-                        }`
-                      : "",
-                    index: 4,
-                  },
-                  {
-                    src: productDetails.images
-                      ? `http://127.0.0.1:8000/storage/${
-                          JSON.parse(productDetails.images)[5]
-                        }`
-                      : "",
-                    index: 5,
-                  },
+                  
+
+
                 ].map(item => (
                   <div className="item" key={item.index}>
                     <img
@@ -412,7 +391,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                   </tr>
                 </tbody>
               </table>
-              {isAuthenticated && (
+              {isAuthenticated ? (
                 <PDFDownloadLink
                   document={
                     <MyDocument
@@ -433,10 +412,16 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                     className="btn btn-primary "
                     style={{ width: "100%" }}
                   >
-                    telechrger un devis
+                    telecharger un devis
                   </Button>
                 </PDFDownloadLink>
-              )}
+              ):
+              <Button className="btn btn-primary "
+              style={{ width: "100%" }} onClick={()=>navigate('/login')}>
+                  se connecter pour telecharger un devis
+
+                </Button>
+            }
             </div>
 
             {/* product Info */}
@@ -538,9 +523,16 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-3">
+                {user ? 
                 <Button className="themeBtn" onClick={tog_panier}>
                   ajouter au panier
                 </Button>
+                :
+<Button className="themeBtn" onClick={()=>navigate('/login')}>
+                  se connecter pour ajouter au panier
+                </Button>
+                                }
+
                 <Modal
                   isOpen={modal_panier}
                   toggle={tog_panier}

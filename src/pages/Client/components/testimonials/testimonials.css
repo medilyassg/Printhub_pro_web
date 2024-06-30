@@ -13,16 +13,16 @@
 .testimonial-card {
   padding: 15px;
 }
-
+/* 
 .card {
   border: none;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-}
+} */
 
-.card:hover {
+/* .card:hover {
   transform: translateY(-10px);
-}
+} */
 
 .card-header {
   text-align: center;
@@ -56,10 +56,10 @@
   color: #666;
 }
 
-.card-body {
+/* .card-body {
   text-align: center;
   padding: 20px 15px;
-}
+} */
 
 .rating {
   margin-bottom: 15px;

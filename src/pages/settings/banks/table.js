@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MDBDataTable } from "mdbreact";
 import { Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import EditBankForm from "./EditBankForm";
+import usePermissions from "helpers/permissions";
 
 const BankTable = (props) => {
   const [modalEdit, setModalEdit] = useState(false);
   const [modalDelete, setModalDelete] = useState(false);
   const [selectedBank, setSelectedBank] = useState(null);
-
+  const { hasPermissions, checkUserPermissions } = usePermissions() // Call the usePermissions hook
+  useEffect(() => {
+    checkUserPermissions()
+  }, [])
   const toggleEdit = (bank) => {
     setModalEdit(!modalEdit);
     setSelectedBank(bank);
@@ -71,19 +75,23 @@ const BankTable = (props) => {
       code_swift: bank.code_swift,
       actions: (
         <div className="d-flex align-items-center">
+                    {hasPermissions.updateBank && (
+
           <button
             className="btn btn-info btn-sm mx-2"
             onClick={() => toggleEdit(bank)}
           >
             <i className="ti-pencil-alt"></i>
           </button>
-
+                    )}
+                    {hasPermissions.deleteBank && (
           <button
             className="btn btn-danger btn-sm mx-2"
             onClick={() => toggleDelete(bank)}
           >
             <i className="ti-trash"></i>
           </button>
+                    )}
         </div>
       ),
     })),

@@ -11,13 +11,17 @@ import { post, get, del, put } from "helpers/api_helper";
 import useSweetAlert from "helpers/notifications";
 import BankTable from "./table";
 import AddBankForm from "./AddBankForm";
+import usePermissions from "helpers/permissions";
 
 const BankIndex = () => {
   const [modal_add, setmodal_add] = useState(false);
   const [error, setError] = useState('');
   const [banks, setBanks] = useState([]);
   const { showSuccessAlert, showErrorAlert } = useSweetAlert();
-
+  const { hasPermissions, checkUserPermissions } = usePermissions() // Call the usePermissions hook
+  useEffect(() => {
+    checkUserPermissions()
+  }, [])
   const removeBodyCss = () => {
     document.body.classList.add("no_padding");
   };
@@ -96,7 +100,7 @@ const BankIndex = () => {
       </div>
       <div className="page-content">
         <div className="container-fluid">
-          <Breadcrumbs maintitle="bank" title="banks" breadcrumbItem="Bank Table" tog_add={toggleAdd} />
+          <Breadcrumbs maintitle="bank" title="banks" breadcrumbItem="Bank Table" tog_add={hasPermissions.createBank && toggleAdd} />
 
           <Row>
             <Col className="col-12">

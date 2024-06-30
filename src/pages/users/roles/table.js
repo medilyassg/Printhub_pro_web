@@ -101,12 +101,7 @@ const RoleTable = (props) => {
         sort: "asc",
         width: 150,
       },
-      {
-        label: "Guard Name",
-        field: "guard_name",
-        sort: "asc",
-        width: 150,
-      },
+
       {
         label: "Actions",
         field: "actions",
@@ -116,7 +111,6 @@ const RoleTable = (props) => {
     rows: props.roles.map((role) => ({
       id: role.id,
       name: role.name,
-      guard_name: role.guard_name,
       actions: (
         <div className="d-flex align-items-center">
           {hasPermissions.updateRole &&
@@ -124,13 +118,13 @@ const RoleTable = (props) => {
           <i className="ti-pencil-alt"></i>
         </button>
           }
-          {hasPermissions.deletRole &&
+          {hasPermissions.deleteRole &&
 
           <button className="btn btn-danger btn-sm mx-2" onClick={() => tog_delete(role)}>
             <i className="ti-trash"></i>
           </button>
           }
-          {hasPermissions.editRolePermissions &&
+          {hasPermissions.updateRole &&
 
           <button className="btn btn-success btn-sm mx-2" onClick={() => tog_permissions(role)}>
             add / edit  permission
@@ -152,7 +146,7 @@ const RoleTable = (props) => {
     <React.Fragment>
       <Col sm={6} md={4} xl={3}>
 
-        <Modal isOpen={modal_permissions} toggle={tog_permissions} centered size="lg">
+        <Modal isOpen={modal_permissions} toggle={tog_permissions} centered size="xl">
           <ModalHeader className="mt-0" toggle={tog_permissions}>Add / Edit Role Permissions</ModalHeader>
           <ModalBody>
             <EditRolePermissionForm message={message} rolesPermissions={rolesPermissions} role={SelectedRole} handleEdit={handleEdit} handleCancel={tog_permissions} />

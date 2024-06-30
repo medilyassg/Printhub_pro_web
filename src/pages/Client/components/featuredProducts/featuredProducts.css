@@ -41,13 +41,13 @@
   border-radius: 5px;
 }
 
-.card-body {
+/* .card-body {
   text-align: left;
   font-family: Graphik, sans-serif;
   font-size: 18px;
   line-height: 27px;
   letter-spacing: -0.18px;
-}
+} */
 
 .card-title {
   font-size: 18px;
@@ -60,10 +60,10 @@
   justify-content: center;
 }
 
-.slick-dots li button:before {
+/* .slick-dots li button:before {
   color: #000;
 }
 
 .slick-dots li.slick-active button:before {
   color: #000;
-}
+} */

@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 8,
     color: '#555',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   section: {
     marginBottom: 30,
@@ -103,8 +105,8 @@ const styles = StyleSheet.create({
     height: 60,
   },
   footerImage: {
-    width: 100,
-    height: 60,
+    width: '80%',
+    height: 'auto',
     marginTop: 10,
   },
 });

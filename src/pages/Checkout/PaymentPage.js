@@ -205,7 +205,7 @@ const PaymentPage = () => {
                                 </Col>
                                 <Col  className={`payment-method-card ${selectedPaymentMethod === 'bank' ? 'selected' : ''}`} onClick={() => handlePaymentMethodSelect('bank')}>
                                     <div >
-                                        <img src="https://youcanpay.com/build/assets/ycpay-logo-pOUj4Wo3.svg" alt="Moroccan Card" className="payment-method-logo" />
+                                        <img src="https://www.e-carte-bleue.net/wp-content/uploads/2016/11/Virement-bancaire.png" alt="Moroccan Card" className="payment-method-logo" />
                                         <p className="payment-method-name">vairment Bancaire </p>
                                     </div>
                                 </Col>

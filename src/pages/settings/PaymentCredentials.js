@@ -28,13 +28,17 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 // actions
 import useSweetAlert from 'helpers/notifications';
 import { get, post, put } from 'helpers/api_helper';
+import usePermissions from 'helpers/permissions';
 
 const PaymentCredentials = () => {
     const { showSuccessAlert, showErrorAlert } = useSweetAlert();
 
     const [paymentCredentials, setPaymentCredentials] = useState(null);
     const [id, setId] = useState(null);
-
+    const { hasPermissions, checkUserPermissions } = usePermissions() // Call the usePermissions hook
+    useEffect(() => {
+      checkUserPermissions()
+    }, [])
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -81,7 +85,9 @@ const PaymentCredentials = () => {
         }
     });
 
-    document.title = "Payment Credentials";
+    if(!hasPermissions.managePaymentsCredentials){
+        return ""
+    }
     return (
         <React.Fragment>
             <div className="page-content">

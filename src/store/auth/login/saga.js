@@ -31,9 +31,14 @@ function* loginUser({ payload: { user, history } }) {
 
     // Dispatch the loginSuccess action with the response data
     yield put(loginSuccess(response.data));
+    if(response.data.user.customer){
+      history("/");
 
-    // Navigate to the dashboard
-    history("/dashboard");
+    }
+    else{
+      history("/dashboard");
+
+    }
   } catch (error) {
     showErrorAlert('Login', error.response.data.message);
   }

@@ -98,8 +98,10 @@ const OrderIndex = () => {
         }
        
     };
-    
-    document.title = "Orders Table";
+
+    if(!hasPermissions.browseOrders){
+        return ""
+    }
     return (
         <React.Fragment>
             <div className="page-content">

@@ -28,13 +28,17 @@ import Breadcrumb from "../../components/Common/Breadcrumb";
 import { editProfile, resetProfileFlag } from "../../store/actions";
 import useSweetAlert from 'helpers/notifications';
 import { get, post, put } from 'helpers/api_helper';
+import usePermissions from 'helpers/permissions';
 
 const SettingsIndex = props => {
     const { showSuccessAlert, showErrorAlert } = useSweetAlert();
 
     const [CompanyInfo, setCompanyInfo] = useState(null);
     const [idx, setidx] = useState(1);
-
+    const { hasPermissions, checkUserPermissions } = usePermissions() // Call the usePermissions hook
+    useEffect(() => {
+      checkUserPermissions()
+    }, [])
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -104,7 +108,9 @@ const SettingsIndex = props => {
         }
     });
 
-    document.title = "Profile";
+    if(!hasPermissions.manageCompanyInfo){
+        return ""
+    }
     return (
         <React.Fragment>
             {CompanyInfo &&

@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 8,
     color: '#555',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   section: {
     marginBottom: 30,
@@ -102,11 +104,12 @@ const styles = StyleSheet.create({
     height: 60,
   },
   footerImage: {
-    width: 100,
-    height: 60,
+    width: '80%',
+    height: 'auto',
     marginTop: 10,
   },
 });
+
 const ListItem = ({ children }) => (
   <View style={styles.listItem}>
     <Text style={styles.bulletPoint}>•</Text>
@@ -226,7 +229,7 @@ const MyDocument = (props) => {
         <View style={styles.footer}>
           <Text>La commande doit être effectuée directement sur le site printHub.ma</Text>
           <Text>Le service commercial</Text>
-          {footerBase64 && <Image src={`data:image/png;base64,${footerBase64}`} style={{ width: 100, height: 60 }} />}
+          {footerBase64 && <Image src={`data:image/png;base64,${footerBase64}`} style={styles.footerImage} />}
         </View>
       </Page>
     </Document>

@@ -92,7 +92,7 @@ const Dashboard = props => {
     const fetchOrders = async () => {
       try {
         const response = await get("http://127.0.0.1:8000/api/orders");
-        const jsonData = await response.data;
+        const jsonData = await response.orders.original.orders;
 
         const orderCount = jsonData.length;
         

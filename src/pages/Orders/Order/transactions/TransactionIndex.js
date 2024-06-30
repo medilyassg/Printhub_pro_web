@@ -13,7 +13,10 @@ import TransactionsTable from "./TransactionsTable";
 const TransactionIndex = () => {
     const [transactions, setTransactions] = useState([])
 
-    
+    const { hasPermissions, checkUserPermissions } = usePermissions() // Call the usePermissions hook
+  useEffect(() => {
+    checkUserPermissions()
+  }, [])
     
     
     useEffect(() => {
@@ -31,8 +34,9 @@ const TransactionIndex = () => {
         }
     };
     
-    
-    document.title = "Transactions Table";
+    if(!hasPermissions.browseTransactions){
+        return ""
+    }
     return (
         <React.Fragment>
             <div className="page-content">

@@ -68,10 +68,10 @@ const [error,setError]=useState(null)
                       Welcome Back !
                     </h5>
                     <p className="text-white-50">
-                      Sign in to continue to Veltrix.
+                      Sign in to continue to Print Hub Pro.
                     </p>
                     <Link to="/" className="logo logo-admin">
-                      <img src={logoSm} height="24" alt="logo" />
+                      <img src={logoSm} height="50" alt="logo" className='text-center' />
                     </Link>
                   </div>
                 </div>
