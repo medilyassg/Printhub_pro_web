@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, CardBody, Button, Spinner } from 'reactstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import paypalLogo from "../../assets/images/paypal.png";
+import youcanpaylogo from "../../assets/images/youcanpay.svg";
 import moroccanCardLogo from "../../assets/images/paypal.png";
 import { get } from 'helpers/api_helper';
 
@@ -199,7 +200,7 @@ const PaymentPage = () => {
                                 </Col>
                                 <Col  className={`payment-method-card ${selectedPaymentMethod === 'youcanpay' ? 'selected' : ''}`} onClick={() => handlePaymentMethodSelect('youcanpay')}>
                                     <div >
-                                        <img src="https://youcanpay.com/build/assets/ycpay-logo-pOUj4Wo3.svg" alt="Moroccan Card" className="payment-method-logo" />
+                                        <img src={youcanpaylogo} alt="Moroccan Card" className="payment-method-logo" />
                                         <p className="payment-method-name">Moroccan Credit Card</p>
                                     </div>
                                 </Col>

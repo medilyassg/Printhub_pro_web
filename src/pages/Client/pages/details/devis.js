@@ -214,7 +214,7 @@ const MyDocument = (props) => {
                 </div>
               }
             </View>
-            <Text style={[styles.tableCell, { width: '15%' }]}>{props.product.price_unit}</Text>
+            <Text style={[styles.tableCell, { width: '15%' }]}>{props.price}</Text>
             <Text style={[styles.tableCell, { width: '15%' }]}>{props.quantity}</Text>
             <Text style={[styles.tableCell, { width: '20%' }]}>{props.total}</Text>
 

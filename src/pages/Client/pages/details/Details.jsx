@@ -112,8 +112,8 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
         return totalPrice * (1 - discountPercentage)
       case "fixed":
         const fixedDiscount = parseFloat(amount)
-        const discountedTotal = pricePerUnit * quantity - fixedDiscount
-        return discountedTotal / quantity
+        const discountedTotal = (totalPrice * quantity) - fixedDiscount
+        return discountedTotal /quantity
       default:
         return totalPrice
     }
@@ -403,6 +403,7 @@ const Details = ({ categories, subcategories, cartitems, fetchCartItems }) => {
                           ? totalPrice.toFixed(2) * quantity
                           : totalPrice.toFixed(2)
                       }
+                      price={totalPrice}
                       product={productDetails}
                       properties={selectedProperty}
                       quantity={quantity}

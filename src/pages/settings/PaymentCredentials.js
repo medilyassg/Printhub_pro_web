@@ -13,6 +13,7 @@ import {
     Input
 } from "reactstrap";
 import paypalogo from "../../assets/images/paypal.png";
+import youcanpaylogo from "../../assets/images/youcanpay.svg";
 
 // Formik validation
 import * as Yup from "yup";
@@ -150,7 +151,7 @@ const PaymentCredentials = () => {
 
                                     <Col sm={6}>
                                         <div className='text-center mt-2'>
-                                        <img  style={{ maxWidth: "140px", marginBottom: "20px" }} src="https://youcanpay.com/build/assets/ycpay-logo-pOUj4Wo3.svg" alt="logo" />
+                                        <img  style={{ maxWidth: "140px", marginBottom: "20px" }} src={youcanpaylogo} alt="logo" />
 
                                         </div>
 
